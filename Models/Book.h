@@ -1,12 +1,8 @@
-typedef struct
+typedef struct Book
 {
-    int id;
-    char title[50];
-    char author[50];
-    char genre[50];
-    int quantity;
+    int Id;
+    char Title[50];
+    char Author[50];
+    char Genre[50];
+    int Quantity;
 } Book;
-
-
-
-
