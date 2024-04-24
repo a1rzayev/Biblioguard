@@ -19,8 +19,8 @@ void AddBook(char title, char author, char genre, int quantity){
     book_id = book_id + 1;
 } 
 
-void AddUser(char name, char surname, char password, bool is_admin){
-    User new_user= {user_id, name, surname, password, is_admin};
+void AddUser(char nickname, char name, char surname, char password, bool is_admin){
+    User new_user= {user_id, nickname, name, surname, password, is_admin};
     users[user_id] = new_user;
     user_id = user_id + 1;
 } 
