@@ -1,5 +1,6 @@
 #include "Views/LogIn.h"
 #include "Views/SignUp.h"
+#include "Views/Admin.h"
 #include <string.h>
 #include "Views/Home.h"
 
@@ -29,7 +30,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     }
 
 
-    ShowLoginPage(hwnd); // Show login page initially
+    ShowLoginView(hwnd); // Show login page initially
 
     ShowWindow(hwnd, nCmdShow);
     UpdateWindow(hwnd);
@@ -48,19 +49,22 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         case WM_COMMAND:
             switch (LOWORD(wParam)) {
                 case IDC_SIGNUP_TOLOGIN_BUTTON:
-                    ShowLoginPage(hwnd);
+                    ShowLoginView(hwnd);
                     break;
                 case IDC_LOGIN_TOSIGNUP_BUTTON:
-                    ShowSignupPage(hwnd);
+                    ShowSignupView(hwnd);
                     break;
                 case IDC_SIGNUP_SUBMIT_BUTTON:
-                    char username[256];
-                    GetWindowText(GetDlgItem(hwnd, IDC_SIGNUP_USERNAME_EDIT), username, sizeof(username));
-                    if(!strcmp(username, "admin")) MessageBox(hwnd, username, "Submitted Text", MB_OK | MB_ICONINFORMATION);
-                    else MessageBox(hwnd, "SIGNED UP!", "Info", MB_OK | MB_ICONINFORMATION);
                     break;
                 case IDC_LOGIN_SUBMIT_BUTTON:
-                    MessageBox(hwnd, "LOGGED IN!", "Info", MB_OK | MB_ICONINFORMATION);
+                    char username[256];
+                    char password[256];
+                    GetWindowText(GetDlgItem(hwnd, IDC_LOGIN_USERNAME_EDIT), username, sizeof(username));
+                    GetWindowText(GetDlgItem(hwnd, IDC_LOGIN_PASSWORD_EDIT), password, sizeof(password));
+                    if(!strcmp(username, "admin") && !strcmp(password, "admin123") ) {
+                        ShowAdminView(hwnd);
+                    }
+                    else MessageBox(hwnd, "LOGGED IN!", "Info", MB_OK | MB_ICONINFORMATION);
                     break;
             }
             break;

@@ -2,6 +2,8 @@
 
 #pragma once
 
+#define MAX_BOOKS 100
+
 //login codes
 #define IDC_LOGIN_USERNAME_LABEL 101
 #define IDC_LOGIN_PASSWORD_LABEL 103 
@@ -22,6 +24,9 @@
 #define IDC_SIGNUP_TOLOGIN_BUTTON 208
 
 
+//admin codes
+#define IDC_ADMIN_BOOKS_LABEL 301
+
 //login elements
 HWND LogInUsernameLabel; 
 HWND LogInUsernameInput;
@@ -40,9 +45,12 @@ HWND SignUpPasswordInput;
 HWND SignUpToLoginButton; 
 HWND SignUpSubmitButton; 
 
+//admin elements
+HWND AdminBooksLabel;
+HWND AdminBooksListLabel[MAX_BOOKS * 2];
 
 //hiders
-void hideLogInView(){
+void HideLogInView(){
     ShowWindow(LogInUsernameLabel, SW_HIDE);
     ShowWindow(LogInUsernameInput, SW_HIDE);
     ShowWindow(LogInPasswordLabel, SW_HIDE);
@@ -51,7 +59,7 @@ void hideLogInView(){
     ShowWindow(LogInConfirmButton, SW_HIDE);
 }
 
-void hideSignUpView(){
+void HideSignUpView(){
     ShowWindow(SignUpUsernameLabel, SW_HIDE);
     ShowWindow(SignUpUsernameInput, SW_HIDE);
     ShowWindow(SignUpMailLabel, SW_HIDE);

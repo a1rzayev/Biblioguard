@@ -1,7 +1,12 @@
 #include "Models/User.h"
 
-Book books[1000];
-User users[1000];
+#pragma once
+
+#define MAX_BOOKS 100
+#define MAX_USERS 100
+
+Book books[100];
+User users[100];
 
 int book_id;
 int user_id;
