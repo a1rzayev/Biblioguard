@@ -1,6 +1,7 @@
 #include "Views/LogIn.h"
 #include "Views/SignUp.h"
-//#include "Views/Home.h"
+#include <string.h>
+#include "Views/Home.h"
 
 
 
@@ -53,7 +54,10 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     ShowSignupPage(hwnd);
                     break;
                 case IDC_SIGNUP_SUBMIT_BUTTON:
-                    MessageBox(hwnd, "SIGNED UP!", "Info", MB_OK | MB_ICONINFORMATION);
+                    char username[256];
+                    GetWindowText(GetDlgItem(hwnd, IDC_SIGNUP_USERNAME_EDIT), username, sizeof(username));
+                    if(!strcmp(username, "admin")) MessageBox(hwnd, username, "Submitted Text", MB_OK | MB_ICONINFORMATION);
+                    else MessageBox(hwnd, "SIGNED UP!", "Info", MB_OK | MB_ICONINFORMATION);
                     break;
                 case IDC_LOGIN_SUBMIT_BUTTON:
                     MessageBox(hwnd, "LOGGED IN!", "Info", MB_OK | MB_ICONINFORMATION);
