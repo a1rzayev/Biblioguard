@@ -1,7 +1,12 @@
 #include "Models/User.h"
 
-Book books[1000];
-User users[1000];
+#pragma once
+
+#define MAX_BOOKS 100
+#define MAX_USERS 100
+
+Book books[100];
+User users[100];
 
 int book_id;
 int user_id;
@@ -19,8 +24,8 @@ void AddBook(char title, char author, char genre, int quantity){
     book_id = book_id + 1;
 } 
 
-void AddUser(char name, char surname, char password, bool is_admin){
-    User new_user= {user_id, name, surname, password, is_admin};
+void AddUser(char nickname, char name, char surname, char password, bool is_admin){
+    User new_user= {user_id, nickname, name, surname, password, is_admin};
     users[user_id] = new_user;
     user_id = user_id + 1;
 } 
