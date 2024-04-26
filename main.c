@@ -1,4 +1,5 @@
 #include "Views/LogIn.h"
+#include <stdio.h>
 #include "Views/SignUp.h"
 #include "Views/Admin.h"
 #include <string.h>
@@ -47,6 +48,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch (uMsg) {
         case WM_COMMAND:
+            int buttonID = LOWORD(wParam);
+            if (buttonID >= IDC_ADMIN_EDIT_ID0 && buttonID <= IDC_ADMIN_EDIT_ID0 + MAX_BOOKS - 1) {
+                int buttonIndex = buttonID - IDC_ADMIN_EDIT_ID0;
+                printf("edit button %d clicked!\n", buttonIndex);
+            }
+            else if (buttonID >= IDC_ADMIN_DELETE_ID0 && buttonID <= IDC_ADMIN_DELETE_ID0 + MAX_BOOKS - 1) {
+                int buttonIndex = buttonID - IDC_ADMIN_DELETE_ID0;
+                printf("delete button %d clicked!\n", buttonIndex);
+            }
             switch (LOWORD(wParam)) {
                 case IDC_SIGNUP_TOLOGIN_BUTTON:
                     ShowLoginView(hwnd);

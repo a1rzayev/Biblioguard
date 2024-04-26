@@ -23,10 +23,10 @@ void InitializeBookLabels(HWND hwnd){
     int yPos = 50;
     for (int i = 0; i < MAX_BOOKS; ++i) {
         //if(books[i]) break;
-        AdminBooksListLabel[i * 4] = CreateWindow("STATIC", books[i].author, WS_CHILD | WS_VISIBLE, 110, yPos, 150, BOOK_HEIGHT, hwnd,  (HMENU)(i * 4), NULL, NULL);
-        AdminBooksListLabel[i * 4 + 1] = CreateWindow("STATIC", books[i].genre, WS_CHILD | WS_VISIBLE, 110, yPos + 40, 150, BOOK_HEIGHT, hwnd,  (HMENU)(i * 4 + 1), NULL, NULL);
-        AdminBooksListLabel[i * 4 + 2] = CreateWindow("BUTTON", "Edit", WS_CHILD | WS_VISIBLE, 1044, yPos + 40, 50, BOOK_HEIGHT, hwnd, (HMENU)(i * 4 + 2), NULL, NULL);
-        AdminBooksListLabel[i * 4 + 3] = CreateWindow("BUTTON", "X", WS_CHILD | WS_VISIBLE, 1094, yPos + 40, 50,  BOOK_HEIGHT, hwnd, (HMENU)(i * 4 + 3), NULL, NULL);
+        AdminBooksListLabel[i * 4] = CreateWindow("STATIC", books[i].author, WS_CHILD | WS_VISIBLE, 110, yPos, 150, BOOK_HEIGHT, hwnd, (HMENU)(IDC_ADMIN_TITLE_ID0 + i), NULL, NULL);
+        AdminBooksListLabel[i * 4 + 1] = CreateWindow("STATIC", books[i].genre, WS_CHILD | WS_VISIBLE, 110, yPos + 40, 150, BOOK_HEIGHT, hwnd,  (HMENU)(IDC_ADMIN_DESCRIPTION_ID0 + i), NULL, NULL);
+        AdminBooksListLabel[i * 4 + 2] = CreateWindow("BUTTON", "Edit", WS_CHILD | WS_VISIBLE, 1044, yPos + 40, 50, BOOK_HEIGHT, hwnd, (HMENU)(IDC_ADMIN_EDIT_ID0 + i), NULL, NULL);
+        AdminBooksListLabel[i * 4 + 3] = CreateWindow("BUTTON", "X", WS_CHILD | WS_VISIBLE, 1094, yPos + 40, 50,  BOOK_HEIGHT, hwnd, (HMENU)(IDC_ADMIN_DELETE_ID0 + i), NULL, NULL);
         yPos += 2 * BOOK_HEIGHT;
     }
 }
