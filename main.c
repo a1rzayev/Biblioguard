@@ -22,7 +22,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         wc.lpszClassName,
         wc.lpszClassName,
         WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, CW_USEDEFAULT, 640, 480,
+        CW_USEDEFAULT, CW_USEDEFAULT, 1280, 720,
         NULL, NULL, hInstance, NULL);
 
     if (hwnd == NULL) {
@@ -66,8 +66,56 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     }
                     else MessageBox(hwnd, "LOGGED IN!", "Info", MB_OK | MB_ICONINFORMATION);
                     break;
+                case IDC_ADMIN_TOLOGIN_BUTTON:
+                    ShowLoginView(hwnd);
+                    break;
+                //case 
             }
             break;
+        case WM_VSCROLL: 
+            // Process scrollbar messages
+            SCROLLINFO si;
+            si.cbSize = sizeof(si);
+            si.fMask = SIF_ALL;
+            GetScrollInfo(AdminScrollbar, SB_CTL, &si);
+            int nScrollPos = si.nPos;
+
+            switch (LOWORD(wParam)) {
+                case SB_TOP:
+                    nScrollPos = 0;
+                    break;
+                case SB_BOTTOM:
+                    nScrollPos = booksCount - visibleBooksCount;
+                    break;
+                case SB_LINEUP:
+                    nScrollPos = max(0, nScrollPos - 1);
+                    break;
+                case SB_LINEDOWN:
+                    nScrollPos = min(booksCount - visibleBooksCount, nScrollPos + 1);
+                    break;
+                case SB_PAGEUP:
+                    nScrollPos = max(0, nScrollPos - visibleBooksCount);
+                    break;
+                case SB_PAGEDOWN:
+                    nScrollPos = min(booksCount - visibleBooksCount, nScrollPos + visibleBooksCount);
+                    break;
+                case SB_THUMBTRACK:
+                    nScrollPos = si.nTrackPos;
+                    break;
+            }
+
+            if (nScrollPos != si.nPos) {
+                SetScrollPos(AdminScrollbar, SB_CTL, nScrollPos, TRUE);
+                scrollPos = nScrollPos;
+                UpdateBookLabels(hwnd);
+            }
+            break;
+        case WM_GETMINMAXINFO: {
+            MINMAXINFO* lpMMI = (MINMAXINFO*)lParam;
+            lpMMI->ptMaxTrackSize.x = 1280;
+            lpMMI->ptMaxTrackSize.y = 720;
+            break;
+        }
         case WM_DESTROY:
             PostQuitMessage(0);
             break;
