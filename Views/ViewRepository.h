@@ -62,7 +62,7 @@ HWND AdminToLoginButton;
 HWND AdminToAddButton;
 
 //hiders
-void HideLogInView(HWND hwnd){
+void HideLoginView(HWND hwnd){
     ShowWindow(LogInUsernameLabel, SW_HIDE);
     ShowWindow(LogInUsernameInput, SW_HIDE);
     ShowWindow(LogInPasswordLabel, SW_HIDE);
@@ -72,7 +72,7 @@ void HideLogInView(HWND hwnd){
     UpdateWindow(hwnd);
 }
 
-void HideSignUpView(HWND hwnd){
+void HideSignupView(HWND hwnd){
     ShowWindow(SignUpUsernameLabel, SW_HIDE);
     ShowWindow(SignUpUsernameInput, SW_HIDE);
     ShowWindow(SignUpMailLabel, SW_HIDE);

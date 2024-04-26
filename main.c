@@ -58,10 +58,21 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 printf("delete button %d clicked!\n", buttonIndex);
             }
             switch (LOWORD(wParam)) {
-                case IDC_SIGNUP_TOLOGIN_BUTTON:
+                case IDC_SIGNUP_TOLOGIN_BUTTON:     
+                    HideSignupView(hwnd);
                     ShowLoginView(hwnd);
                     break;
                 case IDC_LOGIN_TOSIGNUP_BUTTON:
+                    // char username1[256];
+                    // char password1[256];
+                    // HWND username1Edit = GetDlgItem(hwnd, IDC_LOGIN_USERNAME_EDIT);
+                    // HWND password1Edit = GetDlgItem(hwnd, IDC_LOGIN_PASSWORD_EDIT);
+                    // GetWindowText(username1Edit, username1, sizeof(username1));
+                    // GetWindowText(password1Edit, password1, sizeof(password1));
+                    // MessageBox(hwnd, username1, password1, MB_OK | MB_ICONINFORMATION);
+                    // SetWindowText(username1Edit, "");
+                    // SetWindowText(password1Edit, "");
+                    HideLoginView(hwnd);
                     ShowSignupView(hwnd);
                     break;
                 case IDC_SIGNUP_SUBMIT_BUTTON:
@@ -69,14 +80,18 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 case IDC_LOGIN_SUBMIT_BUTTON:
                     char username[256];
                     char password[256];
-                    GetWindowText(GetDlgItem(hwnd, IDC_LOGIN_USERNAME_EDIT), username, sizeof(username));
-                    GetWindowText(GetDlgItem(hwnd, IDC_LOGIN_PASSWORD_EDIT), password, sizeof(password));
-                    if(!strcmp(username, "admin") && !strcmp(password, "admin123") ) {
+                    HWND usernameEdit = GetDlgItem(hwnd, IDC_LOGIN_USERNAME_EDIT);
+                    HWND passwordEdit = GetDlgItem(hwnd, IDC_LOGIN_PASSWORD_EDIT);
+                    GetWindowText(usernameEdit, username, sizeof(username));
+                    GetWindowText(passwordEdit, password, sizeof(password));
+                    if(!strcmp(username, "admin") && !strcmp(password, "admin123")) {
+                        HideLoginView(hwnd);
                         ShowAdminView(hwnd);
                     }
-                    else MessageBox(hwnd, "LOGGED IN!", "Info", MB_OK | MB_ICONINFORMATION);
+                    else MessageBox(hwnd, username, password, MB_OK | MB_ICONINFORMATION);
                     break;
                 case IDC_ADMIN_TOLOGIN_BUTTON:
+                    HideAdminView(hwnd);
                     ShowLoginView(hwnd);
                     break;
                 //case 
