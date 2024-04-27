@@ -80,10 +80,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 case IDC_LOGIN_SUBMIT_BUTTON:
                     char username[256];
                     char password[256];
-                    HWND usernameEdit = GetDlgItem(hwnd, IDC_LOGIN_USERNAME_EDIT);
-                    HWND passwordEdit = GetDlgItem(hwnd, IDC_LOGIN_PASSWORD_EDIT);
-                    GetWindowText(usernameEdit, username, sizeof(username));
-                    GetWindowText(passwordEdit, password, sizeof(password));
+                    GetWindowText(LogInUsernameInput, username, sizeof(username));
+                    GetWindowText(LogInPasswordInput, password, sizeof(password));
                     if(!strcmp(username, "admin") && !strcmp(password, "admin123")) {
                         HideLoginView(hwnd);
                         ShowAdminView(hwnd);

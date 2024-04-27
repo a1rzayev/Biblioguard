@@ -69,7 +69,6 @@ void HideLoginView(HWND hwnd){
     ShowWindow(LogInPasswordInput, SW_HIDE);
     ShowWindow(LogInToSignupButton, SW_HIDE);
     ShowWindow(LogInConfirmButton, SW_HIDE);
-    UpdateWindow(hwnd);
 }
 
 void HideSignupView(HWND hwnd){
@@ -85,7 +84,7 @@ void HideSignupView(HWND hwnd){
 }
 
 void HideAdminBooksList(HWND hwnd){
-    for (int i = 0; i < MAX_BOOKS; ++i) {
+    for (int i = 0; i < MAX_BOOKS; ++i) {       
         ShowWindow(AdminBooksListLabel[i * 4], SW_HIDE);
         ShowWindow(AdminBooksListLabel[i * 4 + 1], SW_HIDE);
         ShowWindow(AdminBooksListLabel[i * 4 + 2], SW_HIDE);
@@ -94,8 +93,8 @@ void HideAdminBooksList(HWND hwnd){
 }
 
 void HideAdminView(HWND hwnd){
-    ShowWindow(AdminBooksLabel, SW_HIDE);
     HideAdminBooksList(hwnd);
+    ShowWindow(AdminBooksLabel, SW_HIDE);
     ShowWindow(AdminScrollbar, SW_HIDE);
     ShowWindow(AdminToLoginButton, SW_HIDE);
     ShowWindow(AdminToAddButton, SW_HIDE);
