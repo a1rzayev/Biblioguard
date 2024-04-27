@@ -1,12 +1,12 @@
 typedef struct
 {
-    int id;
+    unsigned int id;
     char title[50];
     char author[50];
     char genre[25];
     float price;
-    int quantityForRent;
-    int quantityForSale; 
-    int rentalDuration;
-    unsigned int popularity; //from 0 to 100
+    unsigned short int quantityForSale; 
+    unsigned short int quantityForRent;
+    unsigned short int rentalDuration;
+    unsigned short int popularity;
 } Book;
