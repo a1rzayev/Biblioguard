@@ -4,6 +4,7 @@
 #include "Views/Admin.h"
 #include <string.h>
 #include "Views/Home.h"
+#include "BookRepository.h"
 
 
 
@@ -84,17 +85,31 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     ShowSignupView(hwnd);
                     break;
                 case IDC_SIGNUP_SUBMIT_BUTTON:
+                    char usernameS[256];
+                    char nameS[256];
+                    char surnameS[256];
+                    char passwordS[256];
+                    GetWindowText(SignUpUsernameInput, usernameS, sizeof(usernameS));
+                    GetWindowText(SignUpNameInput, passwordS, sizeof(nameS));
+                    GetWindowText(SignUpSurnameInput, passwordS, sizeof(surnameS));
+                    GetWindowText(SignUpPasswordInput, passwordS, sizeof(passwordS));
+                    if(isAvailableUsername(usernameS) && strcmp(usernameS, "admin")) {
+                        AddUser(usernameS, nameS, surnameS, passwordS);
+                        HideSignupView(hwnd);
+                        //ShowAdminView(hwnd);
+                    }
+                    else MessageBox(hwnd, "This username is already taken", "Error!", MB_OK | MB_ICONINFORMATION);
                     break;
                 case IDC_LOGIN_SUBMIT_BUTTON:
-                    char username[256];
-                    char password[256];
-                    GetWindowText(LogInUsernameInput, username, sizeof(username));
-                    GetWindowText(LogInPasswordInput, password, sizeof(password));
-                    if(!strcmp(username, "admin") && !strcmp(password, "admin123")) {
+                    char usernameL[256];
+                    char passwordL[256];
+                    GetWindowText(LogInUsernameInput, usernameL, sizeof(usernameL));
+                    GetWindowText(LogInPasswordInput, passwordL, sizeof(passwordL));
+                    if(!strcmp(usernameL, "admin") && !strcmp(passwordL, "admin123")) {
                         HideLoginView(hwnd);
                         ShowAdminView(hwnd);
                     }
-                    else MessageBox(hwnd, username, password, MB_OK | MB_ICONINFORMATION);
+                    else MessageBox(hwnd, usernameL, passwordL, MB_OK | MB_ICONINFORMATION);
                     break;
                 case IDC_ADMIN_TOLOGIN_BUTTON:
                     HideAdminView(hwnd);

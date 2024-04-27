@@ -19,13 +19,15 @@
 
 //signup codes
 #define IDC_SIGNUP_USERNAME_LABEL 201
-#define IDC_SIGNUP_MAIL_LABEL 202
+#define IDC_SIGNUP_NAME_LABEL 202
 #define IDC_SIGNUP_PASSWORD_LABEL 203 
 #define IDC_SIGNUP_USERNAME_EDIT 204
-#define IDC_SIGNUP_MAIL_EDIT 205
+#define IDC_SIGNUP_NAME_EDIT 205
 #define IDC_SIGNUP_PASSWORD_EDIT 206
 #define IDC_SIGNUP_SUBMIT_BUTTON 207    
 #define IDC_SIGNUP_TOLOGIN_BUTTON 208
+#define IDC_SIGNUP_SURNAME_LABEL 209
+#define IDC_SIGNUP_SURNAME_EDIT 210
 
 
 //admin codes
@@ -49,8 +51,10 @@ HWND LogInConfirmButton;
 //signup elements
 HWND SignUpUsernameLabel; 
 HWND SignUpUsernameInput; 
-HWND SignUpMailLabel; 
-HWND SignUpMailInput; 
+HWND SignUpNameLabel; 
+HWND SignUpNameInput; 
+HWND SignUpSurnameLabel; 
+HWND SignUpSurnameInput; 
 HWND SignUpPasswordLabel; 
 HWND SignUpPasswordInput; 
 HWND SignUpToLoginButton; 
@@ -62,6 +66,9 @@ HWND AdminBooksListLabel[MAX_BOOKS * 4];
 HWND AdminScrollbar;
 HWND AdminToLoginButton;
 HWND AdminToAddButton;
+
+
+
 
 //hiders
 void HideLoginView(HWND hwnd){
@@ -76,8 +83,10 @@ void HideLoginView(HWND hwnd){
 void HideSignupView(HWND hwnd){
     ShowWindow(SignUpUsernameLabel, SW_HIDE);
     ShowWindow(SignUpUsernameInput, SW_HIDE);
-    ShowWindow(SignUpMailLabel, SW_HIDE);
-    ShowWindow(SignUpMailInput, SW_HIDE);
+    ShowWindow(SignUpNameLabel, SW_HIDE);
+    ShowWindow(SignUpNameInput, SW_HIDE);
+    ShowWindow(SignUpSurnameLabel, SW_HIDE);
+    ShowWindow(SignUpSurnameInput, SW_HIDE);
     ShowWindow(SignUpPasswordLabel, SW_HIDE);
     ShowWindow(SignUpPasswordInput, SW_HIDE);
     ShowWindow(SignUpToLoginButton, SW_HIDE);
@@ -102,3 +111,6 @@ void HideAdminView(HWND hwnd){
     ShowWindow(AdminToAddButton, SW_HIDE);
     UpdateWindow(hwnd);
 }
+
+
+

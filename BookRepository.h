@@ -11,7 +11,7 @@ User users[MAX_USERS];
 unsigned int lastBookId;
 unsigned int lastUserId;
 
-User currentUser;
+unsigned int currentUserId;
 
 void initProject(){
     lastBookId = 0;
@@ -36,18 +36,23 @@ bool isRentable(unsigned int bookId){
         }
     }
 }
-
+bool isAvailableUsername(char* username){
+    for (int i = 0; i < MAX_USERS; ++i) {
+        if(users[i].username == username) return false;
+    }
+    return true;
+}
 
 
 // adders
-void AddBook(char title, char author, char genre, float price, unsigned short int quantityForSale,
+void AddBook(char* title, char* author, char* genre, float price, unsigned short int quantityForSale,
              unsigned short int quantityForRent, unsigned short int rentalDuration){
-    Book newBook = {lastBookId, title, author, genre, price, quantityForSale, quantityForRent, rentalDuration, 0};
+    Book newBook = {lastBookId, *title, *author, *genre, price, quantityForSale, quantityForRent, rentalDuration, 0};
     books[lastBookId] = newBook;
     lastBookId = lastBookId + 1;
 }
-void AddUser(char nickname, char name, char surname, char password, float totalAmountPaid){
-    User newUser= {lastUserId, nickname, name, surname, password, totalAmountPaid};
+void AddUser(char* username, char* name, char* surname, char* password){
+    User newUser= {lastUserId, *username, *name, *surname, *password, 0};
     users[lastUserId] = newUser;
     lastUserId = lastUserId + 1;
 } 
@@ -87,7 +92,7 @@ bool RentBook(unsigned int buyerId, unsigned int bookId){
 
 
 // editors
-void EditBook(unsigned int bookId, char* title, char author, char genre, float price, unsigned short int quantityForSale,
+void EditBook(unsigned int bookId, char* title, char* author, char* genre, float price, unsigned short int quantityForSale,
              unsigned short int quantityForRent, unsigned short int rentalDuration){
     for (int i = 0; i < MAX_BOOKS; ++i) {
         if(books[i].id == bookId) {

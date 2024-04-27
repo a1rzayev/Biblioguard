@@ -3,14 +3,16 @@
 #pragma once
 
 void ShowSignupView(HWND hwnd) {
-    SignUpUsernameLabel = CreateWindow("STATIC", "Username:", WS_CHILD | WS_VISIBLE, 500, 300, 100, 20, hwnd, (HMENU)IDC_SIGNUP_USERNAME_LABEL, NULL, NULL);
-    SignUpUsernameInput = CreateWindow("EDIT", "", WS_CHILD | WS_VISIBLE | WS_BORDER, 600, 300, 180, 20, hwnd, (HMENU)IDC_SIGNUP_USERNAME_EDIT, NULL, NULL);
-    SignUpMailLabel = CreateWindow("STATIC", "Mail:", WS_CHILD | WS_VISIBLE, 500, 340, 100, 20, hwnd, (HMENU)IDC_SIGNUP_MAIL_LABEL, NULL, NULL);
-    SignUpMailInput = CreateWindow("EDIT", "", WS_CHILD | WS_VISIBLE | WS_BORDER, 600, 340, 180, 20, hwnd, (HMENU)IDC_SIGNUP_MAIL_EDIT, NULL, NULL);
-    SignUpPasswordLabel = CreateWindow("STATIC", "Password:", WS_CHILD | WS_VISIBLE, 500, 380, 100, 20, hwnd, (HMENU)IDC_SIGNUP_PASSWORD_LABEL, NULL, NULL);
-    SignUpPasswordInput = CreateWindow("EDIT", "", WS_CHILD | WS_VISIBLE | WS_BORDER, 600, 380, 180, 20, hwnd, (HMENU)IDC_SIGNUP_PASSWORD_EDIT, NULL, NULL);
-    SignUpSubmitButton = CreateWindow("BUTTON", "SignUp", WS_CHILD | WS_VISIBLE, 500, 420, 100, 20, hwnd, (HMENU)IDC_SIGNUP_SUBMIT_BUTTON, NULL, NULL);
-    SignUpToLoginButton = CreateWindow("BUTTON", " LogIn instead", WS_CHILD | WS_VISIBLE, 680, 420, 100, 20, hwnd, (HMENU)IDC_SIGNUP_TOLOGIN_BUTTON, NULL, NULL);
+    SignUpUsernameLabel = CreateWindow("STATIC", "Username:", WS_CHILD | WS_VISIBLE, 500, 280, 100, 20, hwnd, (HMENU)IDC_SIGNUP_USERNAME_LABEL, NULL, NULL);
+    SignUpUsernameInput = CreateWindow("EDIT", "", WS_CHILD | WS_VISIBLE | WS_BORDER, 600, 280, 180, 20, hwnd, (HMENU)IDC_SIGNUP_USERNAME_EDIT, NULL, NULL);
+    SignUpNameLabel = CreateWindow("STATIC", "Name:", WS_CHILD | WS_VISIBLE, 500, 320, 100, 20, hwnd, (HMENU)IDC_SIGNUP_NAME_LABEL, NULL, NULL);
+    SignUpNameInput = CreateWindow("EDIT", "", WS_CHILD | WS_VISIBLE | WS_BORDER, 600, 320, 180, 20, hwnd, (HMENU)IDC_SIGNUP_NAME_EDIT, NULL, NULL);
+    SignUpSurnameLabel = CreateWindow("STATIC", "Surname:", WS_CHILD | WS_VISIBLE, 500, 360, 100, 20, hwnd, (HMENU)IDC_SIGNUP_SURNAME_LABEL, NULL, NULL);
+    SignUpSurnameInput = CreateWindow("EDIT", "", WS_CHILD | WS_VISIBLE | WS_BORDER, 600, 360, 180, 20, hwnd, (HMENU)IDC_SIGNUP_SURNAME_EDIT, NULL, NULL);
+    SignUpPasswordLabel = CreateWindow("STATIC", "Password:", WS_CHILD | WS_VISIBLE, 500, 400, 100, 20, hwnd, (HMENU)IDC_SIGNUP_PASSWORD_LABEL, NULL, NULL);
+    SignUpPasswordInput = CreateWindow("EDIT", "", WS_CHILD | WS_VISIBLE | WS_BORDER, 600, 400, 180, 20, hwnd, (HMENU)IDC_SIGNUP_PASSWORD_EDIT, NULL, NULL);
+    SignUpSubmitButton = CreateWindow("BUTTON", "SignUp", WS_CHILD | WS_VISIBLE, 500, 440, 100, 20, hwnd, (HMENU)IDC_SIGNUP_SUBMIT_BUTTON, NULL, NULL);
+    SignUpToLoginButton = CreateWindow("BUTTON", " LogIn instead", WS_CHILD | WS_VISIBLE, 680, 440, 100, 20, hwnd, (HMENU)IDC_SIGNUP_TOLOGIN_BUTTON, NULL, NULL);
     
     UpdateWindow(hwnd);
 }

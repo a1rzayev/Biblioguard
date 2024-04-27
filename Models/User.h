@@ -4,7 +4,7 @@
 typedef struct
 {
     unsigned int id;
-    char nickname[20];
+    char username[20];
     char name[20];
     char surname[20];
     char password[30];
