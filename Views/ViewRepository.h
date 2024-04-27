@@ -2,6 +2,8 @@
 
 #pragma once
 
+#define MAIN 1
+
 #define MAX_BOOKS 100
 #define BOOK_HEIGHT 30
 #define SCROLLBAR_WIDTH 20
