@@ -8,6 +8,8 @@ typedef struct
     char name[20];
     char surname[20];
     char password[30];
-    bool is_admin;
-    Book books[256];
+    float totalAmountPaid;
+    Book* purchasedBooks[50]; 
+    Book* rentedBooks[50];
+    
 } User;
