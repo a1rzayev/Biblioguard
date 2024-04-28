@@ -6,6 +6,7 @@
 #include "Views/Home.h"
 #include "BookRepository.h"
 #include "Views/AddBook.h"
+#include "Views/EditBook.h"
 
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -60,17 +61,23 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             int buttonID = LOWORD(wParam);
             if (buttonID >= IDC_ADMIN_EDIT_ID0 && buttonID <= IDC_ADMIN_EDIT_ID0 + MAX_BOOKS - 1) {
                 int buttonIndex = buttonID - IDC_ADMIN_EDIT_ID0;
+                HideAdminView(hwnd);
+                ShowEditView(hwnd, buttonIndex);
                 printf("edit button %d clicked!\n", buttonIndex);
+
             }
             else if (buttonID >= IDC_ADMIN_DELETE_ID0 && buttonID <= IDC_ADMIN_DELETE_ID0 + MAX_BOOKS - 1) {
                 int buttonIndex = buttonID - IDC_ADMIN_DELETE_ID0;
                 printf("delete button %d clicked!\n", buttonIndex);
             }
+
             switch (LOWORD(wParam)) {
-                case IDC_SIGNUP_TOLOGIN_BUTTON:     
-                    HideSignupView(hwnd);
-                    ShowLoginView(hwnd);
+                //edit lifetime
+                case IDC_EDIT_TOADMIN_BUTTON:
+                    HideEditView(hwnd);
+                    ShowAdminView(hwnd);
                     break;
+                //signup lifetime   
                 case IDC_LOGIN_TOSIGNUP_BUTTON:
                     HideLoginView(hwnd);
                     ShowSignupView(hwnd);
@@ -84,13 +91,23 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     GetWindowText(SignUpNameInput, passwordS, sizeof(nameS));
                     GetWindowText(SignUpSurnameInput, passwordS, sizeof(surnameS));
                     GetWindowText(SignUpPasswordInput, passwordS, sizeof(passwordS));
-                    if(isAvailableUsername(usernameS) && strcmp(usernameS, "admin")) {
+                    
+                    if(!isAvailableUsername(usernameS) || !strcmp(usernameS, "admin")) 
+                        MessageBox(hwnd, "This username is already taken", "Error!", MB_OK | MB_ICONERROR);
+                    else if(!strcmp(usernameS, "") || !strcmp(nameS, "") || !strcmp(surnameS, "") || !strcmp(passwordS, ""))
+                        MessageBox(hwnd, "Fill all spaces", "Error!", MB_OK | MB_ICONERROR);
+                    else {
                         SignUp(usernameS, nameS, surnameS, passwordS);
                         HideSignupView(hwnd);
                         //ShowAdminView(hwnd);
                     }
-                    else MessageBox(hwnd, "This username is already taken", "Error!", MB_OK | MB_ICONINFORMATION);
                     break;
+                case IDC_SIGNUP_TOLOGIN_BUTTON:     
+                    HideSignupView(hwnd);
+                    ShowLoginView(hwnd);
+                    break;
+
+                //admin lifetime
                 case IDC_LOGIN_SUBMIT_BUTTON:
                     char usernameL[20];
                     char passwordL[20];
@@ -100,33 +117,37 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                         HideLoginView(hwnd);
                         ShowAdminView(hwnd);
                     }
-                    else MessageBox(hwnd, "Wrong username or password", "Error!", MB_OK | MB_ICONINFORMATION);
-                    break;
+                    else MessageBox(hwnd, "Wrong username or password", "Error!", MB_OK | MB_ICONERROR);
+                    break;      
+                
                 case IDC_ADMIN_TOLOGIN_BUTTON:
                     HideAdminView(hwnd);
                     currentUser = NULL;
                     ShowLoginView(hwnd);
                     break;
+
+                //addbook lifetime
                 case IDC_ADMIN_TOADD_BUTTON:
                     HideAdminView(hwnd);
                     ShowAddbookView(hwnd);
                     break;
                 case IDC_ADDBOOK_SUBMIT_BUTTON:
-                    char titleA[256];
-                    char authorA[256];
-                    GetWindowText(LogInUsernameInput, usernameL, sizeof(usernameL));
-                    GetWindowText(LogInPasswordInput, passwordL, sizeof(passwordL));
+                    char titleA[50];
+                    char authorA[50];
+                    GetWindowText(LogInUsernameInput, titleA, sizeof(titleA));
+                    GetWindowText(LogInPasswordInput, authorA, sizeof(authorA));
                     if(!strcmp(usernameL, "admin") && !strcmp(passwordL, "admin123")) {
                         //AddBook();
                         HideAddbookView(hwnd);
                         ShowAdminView(hwnd);
                     }
-                    else MessageBox(hwnd, "Wrong username or password", "Error!", MB_OK | MB_ICONINFORMATION);
+                    else MessageBox(hwnd, "Wrong info", "Error!", MB_OK | MB_ICONERROR);
                     break;
                 case IDC_ADDBOOK_TOADMIN_BUTTON:
                     HideAddbookView(hwnd);
                     ShowAdminView(hwnd);
                     break;
+                
             }
             break;
         case WM_VSCROLL: 

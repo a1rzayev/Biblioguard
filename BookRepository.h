@@ -1,4 +1,5 @@
 #include "Models/User.h"
+#include <string.h>
 
 #pragma once
 
@@ -37,10 +38,14 @@ bool isRentable(unsigned int bookId){
     }
 }
 bool isAvailableUsername(char* username){
-    for (int i = 0; i < MAX_USERS; ++i) {
+    for (int i = 0; i < MAX_USERS; ++i) 
         if(users[i].username == username) return false;
-    }
     return true;
+}
+char isCorrectSignupInfo(char* username, char* name, char* surname, char* password){
+    if(strlen(username) == 0 || strlen(name) == 0 || strlen(surname) == 0 || strlen(password) == 0) return 0;
+    else if(!isAvailableUsername(username)) return 1;
+    return 2;
 }
 
 

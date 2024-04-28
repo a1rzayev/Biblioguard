@@ -60,6 +60,25 @@
 #define IDC_ADDBOOK_TOADMIN_BUTTON 416
 
 
+//edit codes 
+#define IDC_EDIT_TITLE_LABEL 501
+#define IDC_EDIT_AUTHOR_LABEL 502
+#define IDC_EDIT_GENRE_LABEL 503
+#define IDC_EDIT_PRICE_LABEL 504
+#define IDC_EDIT_QSALE_LABEL 505
+#define IDC_EDIT_QRENT_LABEL 506
+#define IDC_EDIT_RDURATION_LABEL 507
+#define IDC_EDIT_TITLE_EDIT 508
+#define IDC_EDIT_AUTHOR_EDIT 509
+#define IDC_EDIT_GENRE_EDIT 510
+#define IDC_EDIT_PRICE_EDIT 511
+#define IDC_EDIT_QSALE_EDIT 512
+#define IDC_EDIT_QRENT_EDIT 513
+#define IDC_EDIT_RDURATION_EDIT 514
+#define IDC_EDIT_SUBMIT_BUTTON 515
+#define IDC_EDIT_TOADMIN_BUTTON 516
+
+
 
 //login elements
 HWND LogInUsernameLabel; 
@@ -106,9 +125,48 @@ HWND AddbookRdurationInput;
 HWND AddbookSubmitButton;
 HWND AddbookToAdminButton;
 
+//edit elements
+HWND EditTitleLabel;
+HWND EditTitleInput;
+HWND EditAuthorLabel;
+HWND EditAuthorInput;
+HWND EditGenreLabel;
+HWND EditGenreInput;
+HWND EditPriceLabel;
+HWND EditPriceInput;
+HWND EditQsaleLabel;
+HWND EditQsaleInput;
+HWND EditQrentLabel;
+HWND EditQrentInput;
+HWND EditRdurationLabel;
+HWND EditRdurationInput;
+HWND EditSubmitButton;
+HWND EditToAdminButton;
+
 
 
 //hiders
+void HideEditView(HWND hwnd){
+    ShowWindow(EditTitleLabel, SW_HIDE);
+    ShowWindow(EditTitleInput, SW_HIDE);
+    ShowWindow(EditAuthorLabel, SW_HIDE);
+    ShowWindow(EditAuthorInput, SW_HIDE);
+    ShowWindow(EditGenreLabel, SW_HIDE);
+    ShowWindow(EditGenreInput, SW_HIDE);
+    ShowWindow(EditPriceLabel, SW_HIDE);
+    ShowWindow(EditPriceInput, SW_HIDE);
+    ShowWindow(EditQsaleLabel, SW_HIDE);
+    ShowWindow(EditQsaleInput, SW_HIDE);
+    ShowWindow(EditQrentLabel, SW_HIDE);
+    ShowWindow(EditQrentInput, SW_HIDE);
+    ShowWindow(EditRdurationLabel, SW_HIDE);
+    ShowWindow(EditRdurationInput, SW_HIDE);
+    ShowWindow(EditSubmitButton, SW_HIDE);
+    ShowWindow(EditToAdminButton, SW_HIDE);
+    UpdateWindow(hwnd);
+}
+
+
 void HideAddbookView(HWND hwnd){
     ShowWindow(AddbookTitleLabel, SW_HIDE);
     ShowWindow(AddbookTitleInput, SW_HIDE);
