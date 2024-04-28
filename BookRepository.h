@@ -11,7 +11,7 @@ User users[MAX_USERS];
 unsigned int lastBookId;
 unsigned int lastUserId;
 
-unsigned int currentUserId;
+User* currentUser;
 
 void initProject(){
     lastBookId = 0;
@@ -51,9 +51,10 @@ void AddBook(char* title, char* author, char* genre, float price, unsigned short
     books[lastBookId] = newBook;
     lastBookId = lastBookId + 1;
 }
-void AddUser(char* username, char* name, char* surname, char* password){
+void SignUp(char* username, char* name, char* surname, char* password){
     User newUser= {lastUserId, *username, *name, *surname, *password, 0};
     users[lastUserId] = newUser;
+    currentUser = &users[lastUserId];
     lastUserId = lastUserId + 1;
 } 
 

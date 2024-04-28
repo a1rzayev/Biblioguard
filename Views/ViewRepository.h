@@ -40,6 +40,27 @@
 #define IDC_ADMIN_TITLE_ID0 30000
 #define IDC_ADMIN_DESCRIPTION_ID0 40000
 
+
+//addbook codes 
+#define IDC_ADDBOOK_TITLE_LABEL 401
+#define IDC_ADDBOOK_AUTHOR_LABEL 402
+#define IDC_ADDBOOK_GENRE_LABEL 403
+#define IDC_ADDBOOK_PRICE_LABEL 404
+#define IDC_ADDBOOK_QSALE_LABEL 405
+#define IDC_ADDBOOK_QRENT_LABEL 406
+#define IDC_ADDBOOK_RDURATION_LABEL 407
+#define IDC_ADDBOOK_TITLE_EDIT 408
+#define IDC_ADDBOOK_AUTHOR_EDIT 409
+#define IDC_ADDBOOK_GENRE_EDIT 410
+#define IDC_ADDBOOK_PRICE_EDIT 411
+#define IDC_ADDBOOK_QSALE_EDIT 412
+#define IDC_ADDBOOK_QRENT_EDIT 413
+#define IDC_ADDBOOK_RDURATION_EDIT 414
+#define IDC_ADDBOOK_SUBMIT_BUTTON 415
+#define IDC_ADDBOOK_TOADMIN_BUTTON 416
+
+
+
 //login elements
 HWND LogInUsernameLabel; 
 HWND LogInUsernameInput;
@@ -67,10 +88,48 @@ HWND AdminScrollbar;
 HWND AdminToLoginButton;
 HWND AdminToAddButton;
 
+//addbook elements
+HWND AddbookTitleLabel;
+HWND AddbookTitleInput;
+HWND AddbookAuthorLabel;
+HWND AddbookAuthorInput;
+HWND AddbookGenreLabel;
+HWND AddbookGenreInput;
+HWND AddbookPriceLabel;
+HWND AddbookPriceInput;
+HWND AddbookQsaleLabel;
+HWND AddbookQsaleInput;
+HWND AddbookQrentLabel;
+HWND AddbookQrentInput;
+HWND AddbookRdurationLabel;
+HWND AddbookRdurationInput;
+HWND AddbookSubmitButton;
+HWND AddbookToAdminButton;
 
 
 
 //hiders
+void HideAddbookView(HWND hwnd){
+    ShowWindow(AddbookTitleLabel, SW_HIDE);
+    ShowWindow(AddbookTitleInput, SW_HIDE);
+    ShowWindow(AddbookAuthorLabel, SW_HIDE);
+    ShowWindow(AddbookAuthorInput, SW_HIDE);
+    ShowWindow(AddbookGenreLabel, SW_HIDE);
+    ShowWindow(AddbookGenreInput, SW_HIDE);
+    ShowWindow(AddbookPriceLabel, SW_HIDE);
+    ShowWindow(AddbookPriceInput, SW_HIDE);
+    ShowWindow(AddbookQsaleLabel, SW_HIDE);
+    ShowWindow(AddbookQsaleInput, SW_HIDE);
+    ShowWindow(AddbookQrentLabel, SW_HIDE);
+    ShowWindow(AddbookQrentInput, SW_HIDE);
+    ShowWindow(AddbookRdurationLabel, SW_HIDE);
+    ShowWindow(AddbookRdurationInput, SW_HIDE);
+    ShowWindow(AddbookSubmitButton, SW_HIDE);
+    ShowWindow(AddbookToAdminButton, SW_HIDE);
+    UpdateWindow(hwnd);
+}
+
+
 void HideLoginView(HWND hwnd){
     ShowWindow(LogInUsernameLabel, SW_HIDE);
     ShowWindow(LogInUsernameInput, SW_HIDE);
@@ -111,6 +170,3 @@ void HideAdminView(HWND hwnd){
     ShowWindow(AdminToAddButton, SW_HIDE);
     UpdateWindow(hwnd);
 }
-
-
-
