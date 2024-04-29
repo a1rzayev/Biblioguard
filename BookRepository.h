@@ -20,7 +20,7 @@ void initProject(){
 }
 
 
-// checkers(boolean types)
+// checkers
 bool isSalable(unsigned int bookId){
     for (int i = 0; i < MAX_BOOKS; ++i) {
         if(books[i].id == bookId) {
@@ -46,6 +46,15 @@ char isCorrectSignupInfo(char* username, char* name, char* surname, char* passwo
     if(strlen(username) == 0 || strlen(name) == 0 || strlen(surname) == 0 || strlen(password) == 0) return 0;
     else if(!isAvailableUsername(username)) return 1;
     return 2;
+}
+bool isCorrectLogin(char* username, char* password){
+    for (int i = 0; i < MAX_USERS; ++i) {
+        if(users[i].username == username && users[i].password == password){
+            return true;
+            currentUser = &users[i];
+        }
+    }
+    return false;
 }
 
 

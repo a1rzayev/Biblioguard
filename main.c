@@ -7,6 +7,7 @@
 #include "BookRepository.h"
 #include "Views/AddBook.h"
 #include "Views/EditBook.h"
+#include "Views/UserBooks.h"
 
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -88,8 +89,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     char surnameS[20];
                     char passwordS[20];
                     GetWindowText(SignUpUsernameInput, usernameS, sizeof(usernameS));
-                    GetWindowText(SignUpNameInput, passwordS, sizeof(nameS));
-                    GetWindowText(SignUpSurnameInput, passwordS, sizeof(surnameS));
+                    GetWindowText(SignUpNameInput, nameS, sizeof(nameS));
+                    GetWindowText(SignUpSurnameInput, surnameS, sizeof(surnameS));
                     GetWindowText(SignUpPasswordInput, passwordS, sizeof(passwordS));
                     
                     if(!isAvailableUsername(usernameS) || !strcmp(usernameS, "admin")) 
@@ -99,7 +100,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     else {
                         SignUp(usernameS, nameS, surnameS, passwordS);
                         HideSignupView(hwnd);
-                        //ShowAdminView(hwnd);
+                        ShowHomeView(hwnd);
                     }
                     break;
                 case IDC_SIGNUP_TOLOGIN_BUTTON:     
@@ -117,6 +118,10 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                         HideLoginView(hwnd);
                         ShowAdminView(hwnd);
                     }
+                    else if(isCorrectLogin(usernameL, passwordL)){
+                        HideLoginView(hwnd);
+                        ShowHomeView(hwnd);
+                    }
                     else MessageBox(hwnd, "Wrong username or password", "Error!", MB_OK | MB_ICONERROR);
                     break;      
                 
@@ -132,61 +137,150 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     ShowAddbookView(hwnd);
                     break;
                 case IDC_ADDBOOK_SUBMIT_BUTTON:
-                    char titleA[50];
-                    char authorA[50];
-                    GetWindowText(LogInUsernameInput, titleA, sizeof(titleA));
-                    GetWindowText(LogInPasswordInput, authorA, sizeof(authorA));
-                    if(!strcmp(usernameL, "admin") && !strcmp(passwordL, "admin123")) {
-                        //AddBook();
-                        HideAddbookView(hwnd);
-                        ShowAdminView(hwnd);
-                    }
-                    else MessageBox(hwnd, "Wrong info", "Error!", MB_OK | MB_ICONERROR);
+                    // char titleA[50];
+                    // char authorA[50];
+                    // GetWindowText(LogInUsernameInput, titleA, sizeof(titleA));
+                    // GetWindowText(LogInPasswordInput, authorA, sizeof(authorA));
+                    // if(!strcmp(usernameL, "admin") && !strcmp(passwordL, "admin123")) {
+                    //     //AddBook();
+                    //     HideAddbookView(hwnd);
+                    //     ShowAdminView(hwnd);
+                    // }
+                    // else MessageBox(hwnd, "Wrong info", "Error!", MB_OK | MB_ICONERROR);
                     break;
                 case IDC_ADDBOOK_TOADMIN_BUTTON:
                     HideAddbookView(hwnd);
                     ShowAdminView(hwnd);
                     break;
-                
+                case IDC_HOME_TOLOGIN_BUTTON:
+                    HideHomeView(hwnd);
+                    ShowLoginView(hwnd);
+                    break;
+                case IDC_HOME_TOUSERBOOKS_BUTTON:
+                    HideHomeView(hwnd);
+                    ShowUserbooksView(hwnd);
+                    break;
+                case IDC_USERBOOKS_TOHOME_BUTTON:
+                    HideUserbooksView(hwnd);
+                    ShowHomeView(hwnd);
+                    break;
             }
             break;
         case WM_VSCROLL: 
             // process scrollbar messages
-            SCROLLINFO si;
-            si.cbSize = sizeof(si);
-            si.fMask = SIF_ALL;
-            GetScrollInfo(AdminScrollbar, SB_CTL, &si);
-            int nScrollPos = si.nPos;
+            SCROLLINFO adminSi;
+            adminSi.cbSize = sizeof(adminSi);
+            adminSi.fMask = SIF_ALL;
+            GetScrollInfo(AdminScrollbar, SB_CTL, &adminSi);
+            int AdminScrollPos = adminSi.nPos;
+
+            SCROLLINFO userbooksSi;
+            userbooksSi.cbSize = sizeof(userbooksSi);
+            userbooksSi.fMask = SIF_ALL;
+            GetScrollInfo(UserbooksScrollbar, SB_CTL, &userbooksSi);
+            int UserbooksScrollPos = userbooksSi.nPos;
+
+            SCROLLINFO homeSi;
+            homeSi.cbSize = sizeof(homeSi);
+            homeSi.fMask = SIF_ALL;
+            GetScrollInfo(HomeScrollbar, SB_CTL, &homeSi);
+            int HomeScrollPos = homeSi.nPos;
+
 
             switch (LOWORD(wParam)) {
                 case SB_TOP:
-                    nScrollPos = 0;
+                    AdminScrollPos = 0;
                     break;
                 case SB_BOTTOM:
-                    nScrollPos = booksCount - visibleBooksCount;
+                    AdminScrollPos = adminBooksCount - adminVisibleBooksCount;
                     break;
                 case SB_LINEUP:
-                    nScrollPos = max(0, nScrollPos - 1);
+                    AdminScrollPos = max(0, AdminScrollPos - 1);
                     break;
                 case SB_LINEDOWN:
-                    nScrollPos = min(booksCount - visibleBooksCount, nScrollPos + 1);
+                    AdminScrollPos = min(adminBooksCount - adminVisibleBooksCount, AdminScrollPos + 1);
                     break;
                 case SB_PAGEUP:
-                    nScrollPos = max(0, nScrollPos - visibleBooksCount);
+                    AdminScrollPos = max(0, AdminScrollPos - adminVisibleBooksCount);
                     break;
                 case SB_PAGEDOWN:
-                    nScrollPos = min(booksCount - visibleBooksCount, nScrollPos + visibleBooksCount);
+                    AdminScrollPos = min(adminBooksCount - adminVisibleBooksCount, AdminScrollPos + adminVisibleBooksCount);
                     break;
                 case SB_THUMBTRACK:
-                    nScrollPos = si.nTrackPos;
+                    AdminScrollPos = adminSi.nTrackPos;
                     break;
             }
 
-            if (nScrollPos != si.nPos) {
-                SetScrollPos(AdminScrollbar, SB_CTL, nScrollPos, TRUE);
-                scrollPos = nScrollPos;
-                UpdateBookLabels(hwnd);
+            if (AdminScrollPos != adminSi.nPos) {
+                SetScrollPos(AdminScrollbar, SB_CTL, AdminScrollPos, TRUE);
+                adminScrollPos = AdminScrollPos;
+                UpdateAdminBookLabels(hwnd);
             }
+
+
+
+
+
+            switch (LOWORD(wParam)) {
+                case SB_TOP:
+                    UserbooksScrollbar = 0;
+                    break;
+                case SB_BOTTOM:
+                    UserbooksScrollbar = userbooksBooksCount - userbooksVisibleBooksCount;
+                    break;
+                case SB_LINEUP:
+                    UserbooksScrollbar = max(0, UserbooksScrollPos - 1);
+                    break;
+                case SB_LINEDOWN:
+                    UserbooksScrollbar = min(userbooksBooksCount - userbooksVisibleBooksCount, UserbooksScrollPos + 1);
+                    break;
+                case SB_PAGEUP:
+                    UserbooksScrollbar = max(0, UserbooksScrollPos - userbooksVisibleBooksCount);
+                    break;
+                case SB_PAGEDOWN:
+                    UserbooksScrollbar = min(userbooksBooksCount - userbooksVisibleBooksCount, UserbooksScrollPos + userbooksVisibleBooksCount);
+                    break;
+                case SB_THUMBTRACK:
+                    UserbooksScrollbar = userbooksSi.nTrackPos;
+                    break;
+            }
+            if (UserbooksScrollPos != userbooksSi.nPos) {
+                SetScrollPos(UserbooksScrollbar, SB_CTL, UserbooksScrollPos, TRUE);
+                userbooksScrollPos = UserbooksScrollPos;
+                UpdateUserbooksBookLabels(hwnd);
+            }
+
+
+
+            switch (LOWORD(wParam)) {
+                case SB_TOP:
+                    HomeScrollbar = 0;
+                    break;
+                case SB_BOTTOM:
+                    HomeScrollbar = homeBooksCount - homeVisibleBooksCount;
+                    break;
+                case SB_LINEUP:
+                    HomeScrollbar = max(0, HomeScrollPos - 1);
+                    break;
+                case SB_LINEDOWN:
+                    HomeScrollbar = min(homeBooksCount - homeVisibleBooksCount, HomeScrollPos + 1);
+                    break;
+                case SB_PAGEUP:
+                    HomeScrollbar = max(0, HomeScrollPos - homeVisibleBooksCount);
+                    break;
+                case SB_PAGEDOWN:
+                    HomeScrollbar = min(homeBooksCount - homeVisibleBooksCount, HomeScrollPos + homeVisibleBooksCount);
+                    break;
+                case SB_THUMBTRACK:
+                    HomeScrollbar = homeSi.nTrackPos;
+                    break;
+            }
+            if (HomeScrollPos != homeSi.nPos) {
+                SetScrollPos(HomeScrollbar, SB_CTL, HomeScrollPos, TRUE);
+                homeScrollPos = HomeScrollPos;
+                UpdateHomeBookLabels(hwnd);
+            }
+            
             break;
         case WM_GETMINMAXINFO: {
             MINMAXINFO* lpMMI = (MINMAXINFO*)lParam;

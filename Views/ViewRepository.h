@@ -35,10 +35,23 @@
 #define IDC_ADMIN_SCROLLBAR 302
 #define IDC_ADMIN_TOLOGIN_BUTTON 303
 #define IDC_ADMIN_TOADD_BUTTON 304
-#define IDC_ADMIN_EDIT_ID0 10000
-#define IDC_ADMIN_DELETE_ID0 20000
-#define IDC_ADMIN_TITLE_ID0 30000
-#define IDC_ADMIN_DESCRIPTION_ID0 40000
+#define IDC_ADMIN_EDIT_ID0 1000
+#define IDC_ADMIN_DELETE_ID0 2000
+#define IDC_ADMIN_TITLE_ID0 3000
+#define IDC_ADMIN_DESCRIPTION_ID0 4000
+
+
+//userbooks codes
+#define IDC_USERBOOKS_PURCHASED_LABEL 801
+#define IDC_USERBOOKS_RENTED_LABEL 802
+#define IDC_USERBOOKS_SCROLLBAR 803
+#define IDC_USERBOOKS_TOHOME_BUTTON 804
+#define IDC_USERBOOKS_PURCHASED_DELETE_ID0 9000
+#define IDC_USERBOOKS_RENTED_DELETE_ID0 10000
+#define IDC_USERBOOKS_PURCHASED_TITLE_ID0 11000
+#define IDC_USERBOOKS_RENTED_TITLE_ID0 12000
+#define IDC_USERBOOKS_PURCHASED_DESCRIPTION_ID0 13000
+#define IDC_USERBOOKS_RENTED_DESCRIPTION_ID0 14000
 
 
 //addbook codes 
@@ -79,6 +92,16 @@
 #define IDC_EDIT_TOADMIN_BUTTON 516
 
 
+//home codes
+#define IDC_HOME_BOOKS_LABEL 901
+#define IDC_HOME_SCROLLBAR 902
+#define IDC_HOME_TOLOGIN_BUTTON 903
+#define IDC_HOME_TOUSERBOOKS_BUTTON 904
+#define IDC_HOME_BUY_ID0 5000
+#define IDC_HOME_RENT_ID0 6000
+#define IDC_HOME_TITLE_ID0 7000
+#define IDC_HOME_DESCRIPTION_ID0 7000
+
 
 //login elements
 HWND LogInUsernameLabel; 
@@ -106,6 +129,21 @@ HWND AdminBooksListLabel[MAX_BOOKS * 4];
 HWND AdminScrollbar;
 HWND AdminToLoginButton;
 HWND AdminToAddButton;
+
+//userbooks elements
+HWND UserbooksPurchasedLabel;
+HWND UserbooksRentedLabel;
+HWND UserbooksPurchasedListLabel[MAX_BOOKS * 3];
+HWND UserbooksRentedListLabel[MAX_BOOKS * 3];
+HWND UserbooksScrollbar;
+HWND UserbooksToHomeButton;
+
+//admin elements
+HWND HomeBooksLabel;
+HWND HomeBooksListLabel[MAX_BOOKS * 4];
+HWND HomeScrollbar;
+HWND HomeToLoginButton;
+HWND HomeToUserbooksButton;
 
 //addbook elements
 HWND AddbookTitleLabel;
@@ -226,5 +264,55 @@ void HideAdminView(HWND hwnd){
     ShowWindow(AdminScrollbar, SW_HIDE);
     ShowWindow(AdminToLoginButton, SW_HIDE);
     ShowWindow(AdminToAddButton, SW_HIDE);
+    UpdateWindow(hwnd);
+}
+
+
+void HideHomeBooksList(HWND hwnd){
+    for (int i = 0; i < MAX_BOOKS; ++i) {       
+        ShowWindow(HomeBooksListLabel[i * 4], SW_HIDE);
+        ShowWindow(HomeBooksListLabel[i * 4 + 1], SW_HIDE);
+        ShowWindow(HomeBooksListLabel[i * 4 + 2], SW_HIDE);
+        ShowWindow(HomeBooksListLabel[i * 4 + 3], SW_HIDE);
+    }
+}
+
+void HideHomeView(HWND hwnd){
+    HideHomeBooksList(hwnd);
+    ShowWindow(HomeBooksLabel, SW_HIDE);
+    ShowWindow(HomeScrollbar, SW_HIDE);
+    ShowWindow(HomeToLoginButton, SW_HIDE);
+    ShowWindow(HomeToUserbooksButton, SW_HIDE);
+    UpdateWindow(hwnd);
+}
+
+
+
+
+
+
+void HideUserbooksPurchasedList(HWND hwnd){
+    for (int i = 0; i < MAX_BOOKS; ++i) {       
+        ShowWindow(UserbooksPurchasedListLabel[i * 3], SW_HIDE);
+        ShowWindow(UserbooksPurchasedListLabel[i * 3 + 1], SW_HIDE);
+        ShowWindow(UserbooksPurchasedListLabel[i * 3 + 2], SW_HIDE);
+    }
+}
+
+void HideUserbooksRentedList(HWND hwnd){
+    for (int i = 0; i < MAX_BOOKS; ++i) {       
+        ShowWindow(UserbooksRentedListLabel[i * 3], SW_HIDE);
+        ShowWindow(UserbooksRentedListLabel[i * 3 + 1], SW_HIDE);
+        ShowWindow(UserbooksRentedListLabel[i * 3 + 2], SW_HIDE);
+    }
+}
+
+void HideUserbooksView(HWND hwnd){
+    HideUserbooksPurchasedList(hwnd);
+    HideUserbooksRentedList(hwnd);
+    ShowWindow(UserbooksPurchasedLabel, SW_HIDE);
+    ShowWindow(UserbooksRentedLabel, SW_HIDE);
+    ShowWindow(UserbooksScrollbar, SW_HIDE);
+    ShowWindow(UserbooksToHomeButton, SW_HIDE);
     UpdateWindow(hwnd);
 }
