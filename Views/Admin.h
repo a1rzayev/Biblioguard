@@ -12,7 +12,7 @@ void UpdateScrollBar(HWND hwnd) {
     si.cbSize = sizeof(si);
     si.fMask = SIF_RANGE | SIF_PAGE | SIF_POS;
     si.nMin = 0;
-    si.nMax = booksCount - visibleBooksCount;
+    si.nMax = 4 * booksCount - 3 * visibleBooksCount;
     si.nPage = visibleBooksCount;
     si.nPos = scrollPos;
     SetScrollInfo(AdminScrollbar, SB_CTL, &si, TRUE);
@@ -20,7 +20,7 @@ void UpdateScrollBar(HWND hwnd) {
 
 void InitializeBookLabels(HWND hwnd){
     int yPos = 50;
-    for (int i = 0; i < MAX_BOOKS; ++i) {
+    for (int i = 0; i < booksCount; ++i) {
         AdminBooksListLabel[i * 4] = CreateWindow("STATIC", books[i].author, WS_CHILD | WS_VISIBLE, 110, yPos, 150, BOOK_HEIGHT, hwnd, (HMENU)(IDC_ADMIN_TITLE_ID0 + i), NULL, NULL);
         AdminBooksListLabel[i * 4 + 1] = CreateWindow("STATIC", books[i].genre, WS_CHILD | WS_VISIBLE, 110, yPos + 40, 150, BOOK_HEIGHT, hwnd,  (HMENU)(IDC_ADMIN_DESCRIPTION_ID0 + i), NULL, NULL);
         AdminBooksListLabel[i * 4 + 2] = CreateWindow("BUTTON", "Edit", WS_CHILD | WS_VISIBLE, 1044, yPos + 40, 50, BOOK_HEIGHT, hwnd, (HMENU)(IDC_ADMIN_EDIT_ID0 + i), NULL, NULL);
@@ -41,6 +41,8 @@ void UpdateBookLabels(HWND hwnd) {
 }
 
 void ShowAdminView(HWND hwnd){
+    booksCount = MAX_BOOKS;
+
     InitializeBookLabels(hwnd);
     RECT clientRect;
     GetClientRect(hwnd, &clientRect);
@@ -50,7 +52,6 @@ void ShowAdminView(HWND hwnd){
     AdminToLoginButton = CreateWindow("BUTTON", "Back to login", WS_CHILD | WS_VISIBLE, 0, 640, 100, 40, hwnd, (HMENU)IDC_ADMIN_TOLOGIN_BUTTON, NULL, NULL);
     AdminScrollbar = CreateWindow("SCROLLBAR", "", WS_CHILD | WS_VISIBLE | SBS_VERT, clientRect.right - SCROLLBAR_WIDTH, 0, SCROLLBAR_WIDTH, clientRect.bottom, hwnd, NULL, NULL, NULL);
 
-    booksCount = MAX_BOOKS;
     UpdateScrollBar(hwnd);
     UpdateBookLabels(hwnd);
     UpdateWindow(hwnd);
