@@ -57,7 +57,7 @@ void ShowUserbooksView(HWND hwnd){
     UserbooksPurchasedLabel = CreateWindow("STATIC", "Purchased books", WS_CHILD | WS_VISIBLE, 0, 0, 100, 40, hwnd, (HMENU)IDC_USERBOOKS_PURCHASED_LABEL, NULL, NULL);
     UserbooksRentedLabel = CreateWindow("STATIC", "Rented books", WS_CHILD | WS_VISIBLE, 640, 0, 100, 40, hwnd, (HMENU)IDC_USERBOOKS_RENTED_LABEL, NULL, NULL);
     UserbooksToHomeButton = CreateWindow("BUTTON", "Back to home", WS_CHILD | WS_VISIBLE, 0, 640, 100, 40, hwnd, (HMENU)IDC_USERBOOKS_TOHOME_BUTTON, NULL, NULL);
-    UserbooksScrollbar = CreateWindow("SCROLLBAR", "", WS_CHILD | WS_VISIBLE | SBS_VERT, clientRect.right - SCROLLBAR_WIDTH, 0, SCROLLBAR_WIDTH, clientRect.bottom, hwnd, NULL, NULL, NULL);
+    UserbooksScrollbar = CreateWindow("SCROLLBAR", "", WS_CHILD | WS_VISIBLE | SBS_VERT, clientRect.right - SCROLLBAR_WIDTH, 0, SCROLLBAR_WIDTH, clientRect.bottom, hwnd, (HMENU)IDC_USERBOOKS_SCROLLBAR, NULL, NULL);
 
     UpdateUserbooksScrollBar(hwnd);
     UpdateUserbooksBookLabels(hwnd);

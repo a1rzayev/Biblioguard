@@ -168,117 +168,121 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             break;
         case WM_VSCROLL: 
             // process scrollbar messages
-            SCROLLINFO adminSi;
-            adminSi.cbSize = sizeof(adminSi);
-            adminSi.fMask = SIF_ALL;
-            GetScrollInfo(AdminScrollbar, SB_CTL, &adminSi);
-            int AdminScrollPos = adminSi.nPos;
+            if ((HWND)lParam == AdminScrollbar) {
+            case IDC_ADMIN_SCROLLBAR:
+                SCROLLINFO adminSi;
+                adminSi.cbSize = sizeof(adminSi);
+                adminSi.fMask = SIF_ALL;
+                GetScrollInfo(AdminScrollbar, SB_CTL, &adminSi);
+                int AdminScrollPos = adminSi.nPos;
 
-            SCROLLINFO userbooksSi;
-            userbooksSi.cbSize = sizeof(userbooksSi);
-            userbooksSi.fMask = SIF_ALL;
-            GetScrollInfo(UserbooksScrollbar, SB_CTL, &userbooksSi);
-            int UserbooksScrollPos = userbooksSi.nPos;
+                switch (LOWORD(wParam)) {
+                    case SB_TOP:
+                        AdminScrollPos = 0;
+                        break;
+                    case SB_BOTTOM:
+                        AdminScrollPos = adminBooksCount - adminVisibleBooksCount;
+                        break;
+                    case SB_LINEUP:
+                        AdminScrollPos = max(0, AdminScrollPos - 1);
+                        break;
+                    case SB_LINEDOWN:
+                        AdminScrollPos = min(adminBooksCount - adminVisibleBooksCount, AdminScrollPos + 1);
+                        break;
+                    case SB_PAGEUP:
+                        AdminScrollPos = max(0, AdminScrollPos - adminVisibleBooksCount);
+                        break;
+                    case SB_PAGEDOWN:
+                        AdminScrollPos = min(adminBooksCount - adminVisibleBooksCount, AdminScrollPos + adminVisibleBooksCount);
+                        break;
+                    case SB_THUMBTRACK:
+                        AdminScrollPos = adminSi.nTrackPos;
+                        break;
+                    }
 
-            SCROLLINFO homeSi;
-            homeSi.cbSize = sizeof(homeSi);
-            homeSi.fMask = SIF_ALL;
-            GetScrollInfo(HomeScrollbar, SB_CTL, &homeSi);
-            int HomeScrollPos = homeSi.nPos;
+                if (AdminScrollPos != adminSi.nPos) {
+                    SetScrollPos(AdminScrollbar, SB_CTL, AdminScrollPos, TRUE);
+                    adminScrollPos = AdminScrollPos;
+                    UpdateAdminBookLabels(hwnd);
+                }
 
+                break;
+            }
+            else if ((HWND)lParam == UserbooksScrollbar) {
+                SCROLLINFO userbooksSi;
+                userbooksSi.cbSize = sizeof(userbooksSi);
+                userbooksSi.fMask = SIF_ALL;
+                GetScrollInfo(UserbooksScrollbar, SB_CTL, &userbooksSi);
+                int UserbooksScrollPos = userbooksSi.nPos;
 
-            switch (LOWORD(wParam)) {
+                switch (LOWORD(wParam)) {
                 case SB_TOP:
-                    AdminScrollPos = 0;
+                    UserbooksScrollPos = 0;
                     break;
                 case SB_BOTTOM:
-                    AdminScrollPos = adminBooksCount - adminVisibleBooksCount;
+                    UserbooksScrollPos = userbooksBooksCount - userbooksVisibleBooksCount;
                     break;
                 case SB_LINEUP:
-                    AdminScrollPos = max(0, AdminScrollPos - 1);
+                    UserbooksScrollPos = max(0, UserbooksScrollPos - 1);
                     break;
                 case SB_LINEDOWN:
-                    AdminScrollPos = min(adminBooksCount - adminVisibleBooksCount, AdminScrollPos + 1);
+                    UserbooksScrollPos = min(userbooksBooksCount - userbooksVisibleBooksCount, UserbooksScrollPos + 1);
                     break;
                 case SB_PAGEUP:
-                    AdminScrollPos = max(0, AdminScrollPos - adminVisibleBooksCount);
+                    UserbooksScrollPos = max(0, UserbooksScrollPos - userbooksVisibleBooksCount);
                     break;
                 case SB_PAGEDOWN:
-                    AdminScrollPos = min(adminBooksCount - adminVisibleBooksCount, AdminScrollPos + adminVisibleBooksCount);
+                    UserbooksScrollPos = min(userbooksBooksCount - userbooksVisibleBooksCount, UserbooksScrollPos + userbooksVisibleBooksCount);
                     break;
                 case SB_THUMBTRACK:
-                    AdminScrollPos = adminSi.nTrackPos;
+                    UserbooksScrollPos = userbooksSi.nTrackPos;
                     break;
+                }
+                if (UserbooksScrollPos != userbooksSi.nPos) {
+                    SetScrollPos(UserbooksScrollbar, SB_CTL, UserbooksScrollPos, TRUE);
+                    userbooksScrollPos = UserbooksScrollPos;
+                    UpdateUserbooksBookLabels(hwnd);
+                }
+
+                break;
             }
 
-            if (AdminScrollPos != adminSi.nPos) {
-                SetScrollPos(AdminScrollbar, SB_CTL, AdminScrollPos, TRUE);
-                adminScrollPos = AdminScrollPos;
-                UpdateAdminBookLabels(hwnd);
-            }
+            else if ((HWND)lParam == HomeScrollbar) {
+                SCROLLINFO homeSi;
+                homeSi.cbSize = sizeof(homeSi);
+                homeSi.fMask = SIF_ALL;
+                GetScrollInfo(HomeScrollbar, SB_CTL, &homeSi);
+                int HomeScrollPos = homeSi.nPos;
 
-
-
-
-
-            switch (LOWORD(wParam)) {
-                case SB_TOP:
-                    UserbooksScrollbar = 0;
-                    break;
-                case SB_BOTTOM:
-                    UserbooksScrollbar = userbooksBooksCount - userbooksVisibleBooksCount;
-                    break;
-                case SB_LINEUP:
-                    UserbooksScrollbar = max(0, UserbooksScrollPos - 1);
-                    break;
-                case SB_LINEDOWN:
-                    UserbooksScrollbar = min(userbooksBooksCount - userbooksVisibleBooksCount, UserbooksScrollPos + 1);
-                    break;
-                case SB_PAGEUP:
-                    UserbooksScrollbar = max(0, UserbooksScrollPos - userbooksVisibleBooksCount);
-                    break;
-                case SB_PAGEDOWN:
-                    UserbooksScrollbar = min(userbooksBooksCount - userbooksVisibleBooksCount, UserbooksScrollPos + userbooksVisibleBooksCount);
-                    break;
-                case SB_THUMBTRACK:
-                    UserbooksScrollbar = userbooksSi.nTrackPos;
-                    break;
-            }
-            if (UserbooksScrollPos != userbooksSi.nPos) {
-                SetScrollPos(UserbooksScrollbar, SB_CTL, UserbooksScrollPos, TRUE);
-                userbooksScrollPos = UserbooksScrollPos;
-                UpdateUserbooksBookLabels(hwnd);
-            }
-
-
-
-            switch (LOWORD(wParam)) {
-                case SB_TOP:
-                    HomeScrollbar = 0;
-                    break;
-                case SB_BOTTOM:
-                    HomeScrollbar = homeBooksCount - homeVisibleBooksCount;
-                    break;
-                case SB_LINEUP:
-                    HomeScrollbar = max(0, HomeScrollPos - 1);
-                    break;
-                case SB_LINEDOWN:
-                    HomeScrollbar = min(homeBooksCount - homeVisibleBooksCount, HomeScrollPos + 1);
-                    break;
-                case SB_PAGEUP:
-                    HomeScrollbar = max(0, HomeScrollPos - homeVisibleBooksCount);
-                    break;
-                case SB_PAGEDOWN:
-                    HomeScrollbar = min(homeBooksCount - homeVisibleBooksCount, HomeScrollPos + homeVisibleBooksCount);
-                    break;
-                case SB_THUMBTRACK:
-                    HomeScrollbar = homeSi.nTrackPos;
-                    break;
-            }
-            if (HomeScrollPos != homeSi.nPos) {
-                SetScrollPos(HomeScrollbar, SB_CTL, HomeScrollPos, TRUE);
-                homeScrollPos = HomeScrollPos;
-                UpdateHomeBookLabels(hwnd);
+                switch (LOWORD(wParam)) {
+                    case SB_TOP:
+                        HomeScrollPos = 0;
+                        break;
+                    case SB_BOTTOM:
+                        HomeScrollPos = homeBooksCount - homeVisibleBooksCount;
+                        break;
+                    case SB_LINEUP:
+                        HomeScrollPos = max(0, HomeScrollPos - 1);
+                        break;
+                    case SB_LINEDOWN:
+                        HomeScrollPos = min(homeBooksCount - homeVisibleBooksCount, HomeScrollPos + 1);
+                        break;
+                    case SB_PAGEUP:
+                        HomeScrollPos = max(0, HomeScrollPos - homeVisibleBooksCount);
+                        break;
+                    case SB_PAGEDOWN:
+                        HomeScrollPos = min(homeBooksCount - homeVisibleBooksCount, HomeScrollPos + homeVisibleBooksCount);
+                        break;
+                    case SB_THUMBTRACK:
+                        HomeScrollPos = homeSi.nTrackPos;
+                        break;
+                }
+                if (HomeScrollPos != homeSi.nPos) {
+                    SetScrollPos(HomeScrollbar, SB_CTL, HomeScrollPos, TRUE);
+                    homeScrollPos = HomeScrollPos;
+                    UpdateHomeBookLabels(hwnd);
+                }
+                break;
             }
             
             break;

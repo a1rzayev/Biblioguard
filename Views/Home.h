@@ -50,7 +50,7 @@ void ShowHomeView(HWND hwnd){
     HomeBooksLabel = CreateWindow("STATIC", "Books", WS_CHILD | WS_VISIBLE, 0, 0, 100, 40, hwnd, (HMENU)IDC_HOME_BOOKS_LABEL, NULL, NULL);
     HomeToUserbooksButton = CreateWindow("BUTTON", "My books", WS_CHILD | WS_VISIBLE, 0, 600, 100, 40, hwnd, (HMENU)IDC_HOME_TOUSERBOOKS_BUTTON, NULL, NULL);
     HomeToLoginButton = CreateWindow("BUTTON", "Back to login", WS_CHILD | WS_VISIBLE, 0, 640, 100, 40, hwnd, (HMENU)IDC_HOME_TOLOGIN_BUTTON, NULL, NULL);
-    HomeScrollbar = CreateWindow("SCROLLBAR", "", WS_CHILD | WS_VISIBLE | SBS_VERT, clientRect.right - SCROLLBAR_WIDTH, 0, SCROLLBAR_WIDTH, clientRect.bottom, hwnd, NULL, NULL, NULL);
+    HomeScrollbar = CreateWindow("SCROLLBAR", "", WS_CHILD | WS_VISIBLE | SBS_VERT, clientRect.right - SCROLLBAR_WIDTH, 0, SCROLLBAR_WIDTH, clientRect.bottom, hwnd,  (HMENU)IDC_HOME_SCROLLBAR, NULL, NULL);
 
     UpdateHomeScrollBar(hwnd);
     UpdateHomeBookLabels(hwnd);

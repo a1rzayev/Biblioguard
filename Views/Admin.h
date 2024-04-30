@@ -50,7 +50,7 @@ void ShowAdminView(HWND hwnd){
     AdminBooksLabel = CreateWindow("STATIC", "Books", WS_CHILD | WS_VISIBLE, 0, 0, 100, 40, hwnd, (HMENU)IDC_ADMIN_BOOKS_LABEL, NULL, NULL);
     AdminToAddButton = CreateWindow("BUTTON", "Add new book", WS_CHILD | WS_VISIBLE, 0, 600, 100, 40, hwnd, (HMENU)IDC_ADMIN_TOADD_BUTTON, NULL, NULL);
     AdminToLoginButton = CreateWindow("BUTTON", "Back to login", WS_CHILD | WS_VISIBLE, 0, 640, 100, 40, hwnd, (HMENU)IDC_ADMIN_TOLOGIN_BUTTON, NULL, NULL);
-    AdminScrollbar = CreateWindow("SCROLLBAR", "", WS_CHILD | WS_VISIBLE | SBS_VERT, clientRect.right - SCROLLBAR_WIDTH, 0, SCROLLBAR_WIDTH, clientRect.bottom, hwnd, NULL, NULL, NULL);
+    AdminScrollbar = CreateWindow("SCROLLBAR", "", WS_CHILD | WS_VISIBLE | SBS_VERT, clientRect.right - SCROLLBAR_WIDTH, 0, SCROLLBAR_WIDTH, clientRect.bottom, hwnd,  (HMENU)IDC_ADMIN_SCROLLBAR, NULL, NULL);
 
     UpdateAdminScrollBar(hwnd);
     UpdateAdminBookLabels(hwnd);
