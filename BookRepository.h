@@ -1,4 +1,5 @@
 #include "Models/User.h"
+#include <string.h>
 
 #pragma once
 
@@ -11,7 +12,7 @@ User users[MAX_USERS];
 unsigned int lastBookId;
 unsigned int lastUserId;
 
-User currentUser;
+User* currentUser;
 
 void initProject(){
     lastBookId = 0;
@@ -19,7 +20,7 @@ void initProject(){
 }
 
 
-// checkers(boolean types)
+// checkers
 bool isSalable(unsigned int bookId){
     for (int i = 0; i < MAX_BOOKS; ++i) {
         if(books[i].id == bookId) {
@@ -36,19 +37,38 @@ bool isRentable(unsigned int bookId){
         }
     }
 }
-
+bool isAvailableUsername(char* username){
+    for (int i = 0; i < MAX_USERS; ++i) 
+        if(users[i].username == username) return false;
+    return true;
+}
+char isCorrectSignupInfo(char* username, char* name, char* surname, char* password){
+    if(strlen(username) == 0 || strlen(name) == 0 || strlen(surname) == 0 || strlen(password) == 0) return 0;
+    else if(!isAvailableUsername(username)) return 1;
+    return 2;
+}
+bool isCorrectLogin(char* username, char* password){
+    for (int i = 0; i < MAX_USERS; ++i) {
+        if(users[i].username == username && users[i].password == password){
+            return true;
+            currentUser = &users[i];
+        }
+    }
+    return false;
+}
 
 
 // adders
-void AddBook(char title, char author, char genre, float price, unsigned short int quantityForSale,
+void AddBook(char* title, char* author, char* genre, float price, unsigned short int quantityForSale,
              unsigned short int quantityForRent, unsigned short int rentalDuration){
-    Book newBook = {lastBookId, title, author, genre, price, quantityForSale, quantityForRent, rentalDuration, 0};
+    Book newBook = {lastBookId, *title, *author, *genre, price, quantityForSale, quantityForRent, rentalDuration, 0};
     books[lastBookId] = newBook;
     lastBookId = lastBookId + 1;
 }
-void AddUser(char nickname, char name, char surname, char password, float totalAmountPaid){
-    User newUser= {lastUserId, nickname, name, surname, password, totalAmountPaid};
+void SignUp(char* username, char* name, char* surname, char* password){
+    User newUser= {lastUserId, *username, *name, *surname, *password, 0};
     users[lastUserId] = newUser;
+    currentUser = &users[lastUserId];
     lastUserId = lastUserId + 1;
 } 
 
@@ -87,7 +107,7 @@ bool RentBook(unsigned int buyerId, unsigned int bookId){
 
 
 // editors
-void EditBook(unsigned int bookId, char* title, char author, char genre, float price, unsigned short int quantityForSale,
+void EditBook(unsigned int bookId, char* title, char* author, char* genre, float price, unsigned short int quantityForSale,
              unsigned short int quantityForRent, unsigned short int rentalDuration){
     for (int i = 0; i < MAX_BOOKS; ++i) {
         if(books[i].id == bookId) {
