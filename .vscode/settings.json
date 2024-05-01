@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "signup.h": "c"
+        "signup.h": "c",
+        "viewrepository.h": "c"
     }
 }

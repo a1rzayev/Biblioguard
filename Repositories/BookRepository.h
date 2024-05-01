@@ -1,5 +1,6 @@
-#include "Models/User.h"
+#include "../Models/User.h"
 #include <string.h>
+#include <ctype.h>
 
 #pragma once
 
@@ -8,6 +9,9 @@
 
 Book books[MAX_BOOKS];
 User users[MAX_USERS];
+
+booksCount;
+usersCount;
 
 unsigned int lastBookId;
 unsigned int lastUserId;
@@ -21,6 +25,8 @@ void initProject(){
 
 
 // checkers
+
+//books
 bool isSalable(unsigned int bookId){
     for (int i = 0; i < MAX_BOOKS; ++i) {
         if(books[i].id == bookId) {
@@ -37,17 +43,62 @@ bool isRentable(unsigned int bookId){
         }
     }
 }
+unsigned int countNonNullBooks() {
+    int count = 0;
+    for (int i = 0; i < MAX_BOOKS; ++i) {
+        if (books[i].title != "") ++count;
+    }
+    return count;
+}
+
+
+//signup
 bool isAvailableUsername(char* username){
     for (int i = 0; i < MAX_USERS; ++i) 
         if(users[i].username == username) return false;
     return true;
 }
 char isCorrectSignupInfo(char* username, char* name, char* surname, char* password){
-    if(strlen(username) == 0 || strlen(name) == 0 || strlen(surname) == 0 || strlen(password) == 0) return 0;
-    else if(!isAvailableUsername(username)) return 1;
-    return 2;
+    if(!strcmp(username, "") || !strcmp(name, "") || !strcmp(surname, "") || !strcmp(password, "")) return 1;
+    else if(!isAvailableUsername(username) || !strcmp(username, "admin")) return 2;
+    return 0;
 }
+
+
+//addbook & edit
+bool isConvertibleToFloat(char* str){
+    char *endptr;
+    float num = strtod(str, &endptr);
+    if (*endptr == '\0') return true;
+    return false;
+}
+bool isConvertibleToUSInt(char* str){
+    char *endptr;
+    float num = strtod(str, &endptr);
+    if (*endptr == '\0' && fmod(num, 1) == 0 && num >= 0 && num <= USHRT_MAX) {
+        unsigned short int usnum = (unsigned short int) num;
+        return true;
+    } 
+    return false;
+}
+// bool isAvailableTitle(char* title){
+//     for (int i = 0; i < MAX_BOOKS; ++i) 
+//         if(books[i].title == title) return false;
+//     return true;
+// }
+char isCorrectBookInfo(char* title, char* author, char* genre, char* price,  char* qSale, char* qRent, char* rDuration){
+    if(!strcmp(title, "") || !strcmp(author, "") || !strcmp(genre, "") || !strcmp(price, "") ||
+       !strcmp(qSale, "") || !strcmp(qRent, "") || !strcmp(rDuration, "")) return 1;
+    //else if(!isAvailableTitle(title)) return 2;
+    else if(!isConvertibleToFloat(price) || !isConvertibleToUSInt(qSale) ||
+            !isConvertibleToUSInt(qRent) || !isConvertibleToUSInt(rDuration)) return 3;
+    return 0;
+}
+
+
+//login
 bool isCorrectLogin(char* username, char* password){
+    if(username == "admin") return false;
     for (int i = 0; i < MAX_USERS; ++i) {
         if(users[i].username == username && users[i].password == password){
             return true;
@@ -107,17 +158,19 @@ bool RentBook(unsigned int buyerId, unsigned int bookId){
 
 
 // editors
-void EditBook(unsigned int bookId, char* title, char* author, char* genre, float price, unsigned short int quantityForSale,
-             unsigned short int quantityForRent, unsigned short int rentalDuration){
-    for (int i = 0; i < MAX_BOOKS; ++i) {
-        if(books[i].id == bookId) {
-            strcpy(books[bookId].title, title);
-            strcpy(books[bookId].author, author);
-            strcpy(books[bookId].genre, genre);
-            books[bookId].price = price;
-            books[bookId].quantityForSale = quantityForSale;
-            books[bookId].quantityForRent = quantityForRent;
-            books[bookId].rentalDuration = rentalDuration;
-        }
-    }
+void EditBook(unsigned int bookOrder, char* title, char* author, char* genre, float price, unsigned short int quantityForSale,
+    unsigned short int quantityForRent, unsigned short int rentalDuration){
+    strcpy(books[bookOrder].title, title);
+    strcpy(books[bookOrder].author, author);
+    strcpy(books[bookOrder].genre, genre);
+    books[bookOrder].price = price;
+    books[bookOrder].quantityForSale = quantityForSale;
+    books[bookOrder].quantityForRent = quantityForRent;
+    books[bookOrder].rentalDuration = rentalDuration;
+
+}
+
+void DeleteBook(unsigned int bookOrder){
+    unsigned int count = countNonNullBooks();
+    for (int i = bookOrder; i < count - 1; ++i) books[i] = books[i + 1];
 }
