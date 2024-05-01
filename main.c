@@ -97,9 +97,9 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     char resultE = isCorrectBookInfo(titleE, authorE, genreE, priceCharE,
                                                     quantitySCharE, quantityRCharE, rentalDCharE);
 
-                    if(resultE == 2)
-                        MessageBox(hwnd, "This title is already taken", "Error!", MB_OK | MB_ICONERROR);
-                    else if(resultE == 1)
+                    //if(resultE == 2)
+                    //    MessageBox(hwnd, "This title is already taken", "Error!", MB_OK | MB_ICONERROR);
+                    if(resultE == 1)
                         MessageBox(hwnd, "Fill all spaces", "Error!", MB_OK | MB_ICONERROR);
                     else if(resultE == 3)
                         MessageBox(hwnd, "Write correct numbers", "Error!", MB_OK | MB_ICONERROR);
