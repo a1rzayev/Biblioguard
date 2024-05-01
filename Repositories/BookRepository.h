@@ -1,5 +1,6 @@
-#include "Models/User.h"
+#include "../Models/User.h"
 #include <string.h>
+#include <ctype.h>
 
 #pragma once
 
@@ -21,6 +22,8 @@ void initProject(){
 
 
 // checkers
+
+//books
 bool isSalable(unsigned int bookId){
     for (int i = 0; i < MAX_BOOKS; ++i) {
         if(books[i].id == bookId) {
@@ -37,17 +40,55 @@ bool isRentable(unsigned int bookId){
         }
     }
 }
+
+
+//signup
 bool isAvailableUsername(char* username){
     for (int i = 0; i < MAX_USERS; ++i) 
         if(users[i].username == username) return false;
     return true;
 }
 char isCorrectSignupInfo(char* username, char* name, char* surname, char* password){
-    if(strlen(username) == 0 || strlen(name) == 0 || strlen(surname) == 0 || strlen(password) == 0) return 0;
-    else if(!isAvailableUsername(username)) return 1;
-    return 2;
+    if(!strcmp(username, "") || !strcmp(name, "") || !strcmp(surname, "") || !strcmp(password, "")) return 1;
+    else if(!isAvailableUsername(username) || !strcmp(username, "admin")) return 2;
+    return 0;
 }
+
+
+//addbook & edit
+bool isConvertibleToFloat(char* str){
+    char *endptr;
+    float num = strtod(str, &endptr);
+    if (*endptr == '\0') return true;
+    return false;
+}
+bool isConvertibleToUSInt(char* str){
+    char *endptr;
+    float num = strtod(str, &endptr);
+    if (*endptr == '\0' && fmod(num, 1) == 0 && num >= 0 && num <= USHRT_MAX) {
+        unsigned short int usnum = (unsigned short int) num;
+        return true;
+    } 
+    return false;
+}
+bool isAvailableTitle(char* title){
+    for (int i = 0; i < MAX_BOOKS; ++i) 
+        if(books[i].title == title) return false;
+    return true;
+}
+char isCorrectBookInfo(char* title, char* author, char* genre, char* price,  char* qSale, char* qRent, char* rDuration){
+    if(!strcmp(title, "") || !strcmp(author, "") || !strcmp(genre, "") || !strcmp(price, "") ||
+       !strcmp(qSale, "") || !strcmp(qRent, "") || !strcmp(rDuration, "")) return 1;
+    else if(!isAvailableTitle(title)) return 2;
+    else if(!isConvertibleToFloat(price) || !isConvertibleToUSInt(qSale) ||
+            !isConvertibleToUSInt(qRent) || !isConvertibleToUSInt(rDuration)) return 3;
+    return 0;
+}
+
+
+//login
 bool isCorrectLogin(char* username, char* password){
+    if(username == "admin") return false;
     for (int i = 0; i < MAX_USERS; ++i) {
         if(users[i].username == username && users[i].password == password){
             return true;

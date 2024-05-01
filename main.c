@@ -4,7 +4,7 @@
 #include "Views/Admin.h"
 #include <string.h>
 #include "Views/Home.h"
-#include "BookRepository.h"
+#include "Repositories/BookRepository.h"
 #include "Views/AddBook.h"
 #include "Views/EditBook.h"
 #include "Views/UserBooks.h"
@@ -78,6 +78,37 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     HideEditView(hwnd);
                     ShowAdminView(hwnd);
                     break;
+                case IDC_EDIT_SUBMIT_BUTTON:
+                    char titleE[50];
+                    char authorE[50];
+                    char genreE[20];
+                    char priceCharE[5];
+                    char quantitySCharE[4];
+                    char quantityRCharE[4];
+                    char rentalDCharE[4];
+                    GetWindowText(EditTitleInput, titleE, sizeof(titleE));
+                    GetWindowText(EditAuthorInput, authorE, sizeof(authorE));
+                    GetWindowText(EditGenreInput, genreE, sizeof(genreE));
+                    GetWindowText(EditPriceInput, priceCharE, sizeof(priceCharE));
+                    GetWindowText(EditQsaleInput, quantitySCharE, sizeof(quantitySCharE));
+                    GetWindowText(EditQrentInput, quantityRCharE, sizeof(quantityRCharE));
+                    GetWindowText(EditRdurationInput, rentalDCharE, sizeof(rentalDCharE));
+
+                    char resultE = isCorrectBookInfo(titleE, authorE, genreE, priceCharE,
+                                                    quantitySCharE, quantityRCharE, rentalDCharE);
+
+                    if(resultE == 2)
+                        MessageBox(hwnd, "This title is already taken", "Error!", MB_OK | MB_ICONERROR);
+                    else if(resultE == 1)
+                        MessageBox(hwnd, "Fill all spaces", "Error!", MB_OK | MB_ICONERROR);
+                    else if(resultE == 3)
+                        MessageBox(hwnd, "Write correct numbers", "Error!", MB_OK | MB_ICONERROR);
+                    else {
+                        //Addbook(usernameS, nameS, surnameS, passwordS);
+                        HideEditView(hwnd);
+                        ShowAdminView(hwnd);
+                    }
+                    break;
                 //signup lifetime   
                 case IDC_LOGIN_TOSIGNUP_BUTTON:
                     HideLoginView(hwnd);
@@ -92,10 +123,12 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     GetWindowText(SignUpNameInput, nameS, sizeof(nameS));
                     GetWindowText(SignUpSurnameInput, surnameS, sizeof(surnameS));
                     GetWindowText(SignUpPasswordInput, passwordS, sizeof(passwordS));
+
+                    char resultS = isCorrectSignupInfo(usernameS, nameS, surnameS, passwordS);
                     
-                    if(!isAvailableUsername(usernameS) || !strcmp(usernameS, "admin")) 
+                    if(resultS == 2)
                         MessageBox(hwnd, "This username is already taken", "Error!", MB_OK | MB_ICONERROR);
-                    else if(!strcmp(usernameS, "") || !strcmp(nameS, "") || !strcmp(surnameS, "") || !strcmp(passwordS, ""))
+                    else if(resultS == 1)
                         MessageBox(hwnd, "Fill all spaces", "Error!", MB_OK | MB_ICONERROR);
                     else {
                         SignUp(usernameS, nameS, surnameS, passwordS);
@@ -137,16 +170,36 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     ShowAddbookView(hwnd);
                     break;
                 case IDC_ADDBOOK_SUBMIT_BUTTON:
-                    // char titleA[50];
-                    // char authorA[50];
-                    // GetWindowText(LogInUsernameInput, titleA, sizeof(titleA));
-                    // GetWindowText(LogInPasswordInput, authorA, sizeof(authorA));
-                    // if(!strcmp(usernameL, "admin") && !strcmp(passwordL, "admin123")) {
-                    //     //AddBook();
-                    //     HideAddbookView(hwnd);
-                    //     ShowAdminView(hwnd);
-                    // }
-                    // else MessageBox(hwnd, "Wrong info", "Error!", MB_OK | MB_ICONERROR);
+                    char titleA[50];
+                    char authorA[50];
+                    char genreA[20];
+                    char priceCharA[5];
+                    char quantitySCharA[4];
+                    char quantityRCharA[4];
+                    char rentalDCharA[4];
+            
+                    GetWindowText(AddbookTitleInput, titleA, sizeof(titleA));
+                    GetWindowText(AddbookAuthorInput, authorA, sizeof(authorA));
+                    GetWindowText(AddbookGenreInput, genreA, sizeof(genreA));
+                    GetWindowText(AddbookPriceInput, priceCharA, sizeof(priceCharA));
+                    GetWindowText(AddbookQsaleInput, quantitySCharA, sizeof(quantitySCharA));
+                    GetWindowText(AddbookQrentInput, quantityRCharA, sizeof(quantityRCharA));
+                    GetWindowText(AddbookRdurationInput, rentalDCharA, sizeof(rentalDCharA));
+
+                    char resultA = isCorrectBookInfo(titleA, authorA, genreA, priceCharA,
+                                                    quantitySCharA, quantityRCharA, rentalDCharA);
+                    
+                    if(resultA == 2)
+                        MessageBox(hwnd, "This title is already taken", "Error!", MB_OK | MB_ICONERROR);
+                    else if(resultA == 1)
+                        MessageBox(hwnd, "Fill all spaces", "Error!", MB_OK | MB_ICONERROR);
+                    else if(resultA == 3)
+                        MessageBox(hwnd, "Write correct numbers", "Error!", MB_OK | MB_ICONERROR);
+                    else {
+                        //Addbook(usernameS, nameS, surnameS, passwordS);
+                        HideAddbookView(hwnd);
+                        ShowAdminView(hwnd);
+                    }
                     break;
                 case IDC_ADDBOOK_TOADMIN_BUTTON:
                     HideAddbookView(hwnd);
