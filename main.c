@@ -5,6 +5,7 @@
 #include <string.h>
 #include "Views/Home.h"
 #include "Repositories/BookRepository.h"
+#include "Repositories/FileRepository.h"
 #include "Views/AddBook.h"
 #include "Views/EditBook.h"
 #include "Views/UserBooks.h"
@@ -13,6 +14,8 @@
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+    initFileSystem();
+
     WNDCLASS wc = {0};
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = hInstance;
