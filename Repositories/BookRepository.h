@@ -191,10 +191,14 @@ void AddBook(char* title, char* author, char* genre, char* price, char* quantity
 
     char filename[50] = "C:/Biblioguard/Books/";
     strcat(filename, lastBookIdStr);
-    strcat(filename, ".txt");
-    createFile(filename);
-    editBookFile(lastBookIdStr, title, author, genre, price, quantityForSale, quantityForRent, rentalDuration, "0");
-
+    strcat(filename, ".bin");
+    //createFile(filename);
+    
+    //editBookFile(lastBookIdStr, title, author, genre, price, quantityForSale, quantityForRent, rentalDuration, "0");
+    //editBookFileF(&newBook, filename);
+    FILE* outfile = fopen(filename, "wb");
+    fwrite(&newBook, sizeof(Book), 1, outfile);
+    fclose(outfile); 
     lastBookId = lastBookId + 1;
     setLastBookId();
 }
@@ -286,41 +290,40 @@ void getLastUserId(){
 //     }
 //}
 
-void getBookContent(const char *filename) {
-    FILE *file = fopen(filename, "r");
-    if (file != NULL) {
-        char line[9][50];
-        int i = 0;
-        for(i = 0; i < 9; ++i)
-            fgets(line[i], sizeof(line), file);
+// void getBookContent(const char *filename) {
+//     FILE *file = fopen(filename, "r");
+//     if (file != NULL) {
+//         char line[9][50];
+//         int i = 0;
+//         for(i = 0; i < 9; ++i)
+//             fgets(line[i], sizeof(line), file);
+//         for (i = 0; i < MAX_BOOKS; ++i) {
+//             if (isEmptyBook(books[i])) {
+//                 books[i].id = atoi(line[0]);
+//                 books[i].title = line[1];
+//                 books[i].author = line[2];
+//                 books[i].genre = line[3];
+//                 books[i].price = atof(line[4]);
+//                 books[i].quantityForSale = atoi(line[5]);
+//                 books[i].quantityForRent = atoi(line[6]);
+//                 books[i].rentalDuration = atoi(line[7]);
+//                 books[i].popularity = atoi(line[8]);
+//                 break;
+//             }
+//         }        
+//         fclose(file);
+//     }
+//      else {
+//         printf("Unable to open file: %s\n", filename);
+//     }
+// }
 
-        for (i = 0; i < MAX_BOOKS; ++i) {
-            if (isEmptyBook(books[i])) {
-                books[i].id = atoi(line[0]);
-                books[i].title = line[1];
-                books[i].author = line[2];
-                books[i].genre = line[3];
-                books[i].price = atof(line[4]);
-                books[i].quantityForSale = atoi(line[5]);
-                books[i].quantityForRent = atoi(line[6]);
-                books[i].rentalDuration = atoi(line[7]);
-                books[i].popularity = atoi(line[8]);
-                break;
-            }
-        }
-    
-        
-        fclose(file);
-    }
-     else {
-        printf("Unable to open file: %s\n", filename);
-    }
-}
 
 void getBooks(){
     WIN32_FIND_DATA findFileData;
     HANDLE hFind;
     const char *folderPath = "C:/Biblioguard/Books/*";
+    int i = 0;
 
     hFind = FindFirstFile(folderPath, &findFileData);
     if (hFind != INVALID_HANDLE_VALUE) {
@@ -328,7 +331,22 @@ void getBooks(){
             if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE) {
                 char filePath[50];
                 snprintf(filePath, sizeof(filePath), "C:/Biblioguard/Books/%s", findFileData.cFileName);
-                getBookContent(filePath);
+                FILE *file = fopen(filePath, "rb");
+                if (file != NULL) {
+                    Book book;
+                    //rewind(file);
+                    fread(&book, sizeof(Book), 1, file);
+                    books[i] = book;
+                    fclose(file);
+                    //printf("%s", books[i].title);
+                    ++i;
+                }
+                else {
+                    printf("Unable to open file: %s\n", filePath);
+                }
+                // books[i] = readBookFileF(filePath);
+                // printf("%s", books[i].title);
+                // ++i;
             }
         }
         FindClose(hFind);

@@ -32,22 +32,39 @@ void setLastId(const char* filename, unsigned int* lastId){
     }
 }
 
-void editBookFile(char* bookId, char* title, char* author, char* genre,
-                  char* price,  char* qSale, char* qRent, char* rDuration, char* popularity)
+// void editBookFile(char* bookId, char* title, char* author, char* genre,
+//                   char* price,  char* qSale, char* qRent, char* rDuration, char* popularity)
+// {
+//     char filename[50] = "C:/Biblioguard/Books/";
+//     strcat(filename, bookId);
+//     strcat(filename, ".bin");
+//     clearFile(filename);
+//     addToFile(filename, bookId);
+//     addToFile(filename, title);
+//     addToFile(filename, author);
+//     addToFile(filename, genre);
+//     addToFile(filename, price);
+//     addToFile(filename, qSale);
+//     addToFile(filename, qRent);
+//     addToFile(filename, rDuration);
+//     addToFile(filename, popularity);                 
+// }
+void editBookFileF(Book* book, char* filename)
 {
-    char filename[50] = "C:/Biblioguard/Books/";
-    strcat(filename, bookId);
-    strcat(filename, ".txt");
     clearFile(filename);
-    addToFile(filename, bookId);
-    addToFile(filename, title);
-    addToFile(filename, author);
-    addToFile(filename, genre);
-    addToFile(filename, price);
-    addToFile(filename, qSale);
-    addToFile(filename, qRent);
-    addToFile(filename, rDuration);
-    addToFile(filename, popularity);                 
+
+    FILE* outfile = fopen(filename, "wb");
+    fwrite(&book, sizeof(Book), 1, outfile);
+    fclose(outfile);      
+}
+
+Book readBookFileF(char* filename)
+{
+    Book book;
+    FILE* infile = fopen(filename, "wb+");
+    fread(&book, sizeof(Book), 1, infile);
+    fclose(infile);
+    return book;      
 }
 
 void editFile(const char* filename){
@@ -64,6 +81,8 @@ void readFile(const char *filename, char* container) {
         printf("Error opening file: %s\n", filename);
     }
 }
+
+
 
 void initFileSystem(){
     CreateDirectoryA("C:/Biblioguard", NULL);

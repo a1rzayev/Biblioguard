@@ -1,5 +1,4 @@
 #include "Views/LogIn.h"
-#include <stdio.h>
 #include "Views/SignUp.h"
 #include "Views/Admin.h"
 #include <string.h>
