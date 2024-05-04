@@ -21,8 +21,8 @@ void UpdateAdminScrollBar(HWND hwnd) {
 void InitializeAdminBookLabels(HWND hwnd){
     int yPos = 50;
     for (int i = 0; i < adminBooksCount; ++i) {
-        AdminBooksListLabel[i * 4] = CreateWindow("STATIC", books[i].author, WS_CHILD | WS_VISIBLE, 110, yPos, 150, BOOK_HEIGHT, hwnd, (HMENU)(IDC_ADMIN_TITLE_ID0 + i), NULL, NULL);
-        AdminBooksListLabel[i * 4 + 1] = CreateWindow("STATIC", books[i].genre, WS_CHILD | WS_VISIBLE, 110, yPos + 40, 1000, BOOK_HEIGHT, hwnd,  (HMENU)(IDC_ADMIN_DESCRIPTION_ID0 + i), NULL, NULL);
+        AdminBooksListLabel[i * 4] = CreateWindow("STATIC", books[i].title, WS_CHILD | WS_VISIBLE, 110, yPos, 150, BOOK_HEIGHT, hwnd, (HMENU)(IDC_ADMIN_TITLE_ID0 + i), NULL, NULL);
+        AdminBooksListLabel[i * 4 + 1] = CreateWindow("STATIC", books[i].genre, WS_CHILD | WS_VISIBLE, 110, yPos + 40, 1000, BOOK_HEIGHT, hwnd, (HMENU)(IDC_ADMIN_DESCRIPTION_ID0 + i), NULL, NULL);
         AdminBooksListLabel[i * 4 + 2] = CreateWindow("BUTTON", "Edit", WS_CHILD | WS_VISIBLE, 1110, yPos + 40, 50, BOOK_HEIGHT, hwnd, (HMENU)(IDC_ADMIN_EDIT_ID0 + i), NULL, NULL);
         AdminBooksListLabel[i * 4 + 3] = CreateWindow("BUTTON", "X", WS_CHILD | WS_VISIBLE, 1160, yPos + 40, 50,  BOOK_HEIGHT, hwnd, (HMENU)(IDC_ADMIN_DELETE_ID0 + i), NULL, NULL);
         yPos += 2 * BOOK_HEIGHT;

@@ -1,10 +1,6 @@
 #include <windows.h>
 #include <stdio.h>
 
-// void createDirectory(const char* dirDestination) {
-//     if (CreateDirectory(dirDestination, NULL) != 0)
-//         printf("Directory '%s' created successfully.\n", dirDestination);
-// }
 void createFile(const char* filename){
     FILE* file = fopen(filename, "r");
     if (file == NULL) {
@@ -37,7 +33,7 @@ void setLastId(const char* filename, unsigned int* lastId){
 }
 
 void editBookFile(char* bookId, char* title, char* author, char* genre,
-                  char* price,  char* qSale, char* qRent, char* rDuration, char* population)
+                  char* price,  char* qSale, char* qRent, char* rDuration, char* popularity)
 {
     char filename[50] = "C:/Biblioguard/Books/";
     strcat(filename, bookId);
@@ -50,7 +46,8 @@ void editBookFile(char* bookId, char* title, char* author, char* genre,
     addToFile(filename, price);
     addToFile(filename, qSale);
     addToFile(filename, qRent);
-    addToFile(filename, rDuration);                 
+    addToFile(filename, rDuration);
+    addToFile(filename, popularity);                 
 }
 
 void editFile(const char* filename){
@@ -68,21 +65,6 @@ void readFile(const char *filename, char* container) {
     }
 }
 
-// void readEachLine(const char* filename, char* buffer){
-//     FILE *file = fopen(filename, "r");
-
-//     if (file != NULL) {
-//         char buffer[256];
-//         while (fgets(buffer, sizeof(buffer), file) != NULL) {
-//             printf("%s", buffer);
-//         }
-//         fclose(file);
-//     } else {
-//         printf("Ошибка открытия файла!\n");
-//     }
-
-// }
-
 void initFileSystem(){
     CreateDirectoryA("C:/Biblioguard", NULL);
     CreateDirectoryA("C:/Biblioguard/Books", NULL);
@@ -90,7 +72,5 @@ void initFileSystem(){
     createFile("C:/Biblioguard/lastBookId.txt");
     createFile("C:/Biblioguard/lastUserId.txt");
 
-
-    //editBookFile( "2", "hello", "pilim", "kishi", "2324.3", "3", "32", "23");
 } 
 

@@ -1,6 +1,7 @@
 #include "../Models/User.h"
 #include <string.h>
 #include <ctype.h>
+#include <math.h>
 #include "FileRepository.h"
 #include <stdbool.h>
 
@@ -27,10 +28,11 @@ char isCorrectSignupInfo(char* username, char* name, char* surname, char* passwo
 bool isConvertibleToFloat(char* str);
 bool isConvertibleToUSInt(char* str);
 bool isConvertibleToUInt(char* str);
+bool isEmptyBook(Book book);
 char isCorrectBookInfo(char* title, char* author, char* genre, char* price,  char* qSale, char* qRent, char* rDuration);
-float convertToFloat(char str);
-float convertToUSInt(char str);
-float convertToUInt(char str);
+// float convertToFloat(char str);
+// float convertToUSInt(char str);
+// float convertToUInt(char str);
 bool isCorrectLogin(char* username, char* password);
 void setLastBookId();
 void setLastUserId();
@@ -73,6 +75,10 @@ unsigned int countNonNullBooks() {
         if (books[i].title != "") ++count;
     }
     return count;
+}
+
+bool isEmptyBook(Book book) {
+    return (book.title == NULL);
 }
 
 //signup
@@ -126,22 +132,22 @@ char isCorrectBookInfo(char* title, char* author, char* genre, char* price,  cha
 }
 
 //converters
-float convertToFloat(char str){
-    char *endptr;
-    return strtod(str, &endptr);
-}
+// float convertToFloat(char* str){
+//     char *endptr;
+//     return strtod(str, &endptr);
+// }
 
-float convertToUSINT(char str){
-    char *endptr;
-    float num = strtod(str, &endptr);
-    return (unsigned short int) num;
-}
+// float convertToUSINT(char str){
+//     char *endptr;
+//     float num = strtod(str, &endptr);
+//     return (unsigned short int) num;
+// }
 
-float convertToUINT(char str){
-    char *endptr;
-    float num = strtod(str, &endptr);
-    return (unsigned int) num;
-}
+// float convertToUINT(char str){
+//     char *endptr;
+//     float num = strtod(str, &endptr);
+//     return (unsigned int) num;
+// }
 
 
 
@@ -176,8 +182,8 @@ void setLastUserId(){
 // adders
 void AddBook(char* title, char* author, char* genre, char* price, char* quantityForSale,
              char* quantityForRent, char* rentalDuration){
-    Book newBook = {lastBookId, *title, *author, *genre, atof(price), (unsigned short int)quantityForSale,
-                    (unsigned short int)quantityForRent, (unsigned short int)rentalDuration, 0};
+    Book newBook = {lastBookId, title, author, genre, atof(price), atoi(quantityForSale),
+                    atoi(quantityForRent), atoi(rentalDuration), 0};
     books[lastBookId] = newBook;
     
     char lastBookIdStr[5];
@@ -206,8 +212,8 @@ bool BuyBook(unsigned int buyerId, unsigned int bookId){
     for (int i = 0; i < MAX_BOOKS; ++i) {
         if(books[i].id == bookId) {
             for(int j = 0; j < MAX_BOOKS; ++j) {
-                if(users[buyerId].purchasedBooks[j] != NULL){
-                    users[buyerId].purchasedBooks[j] = &books[i];
+                if(users[buyerId].purchasedBooks[j] != -1){
+                    users[buyerId].purchasedBooks[j] = books[i].id;
                     --books[j].quantityForSale;
                     return true;
                 }
@@ -221,8 +227,8 @@ bool RentBook(unsigned int buyerId, unsigned int bookId){
     for (int i = 0; i < MAX_BOOKS; ++i) {
         if(books[i].id == bookId) {
             for(int j = 0; j < MAX_BOOKS; ++j) {
-                if(users[buyerId].purchasedBooks[j] != NULL) {
-                    users[buyerId].purchasedBooks[j] = &books[i];
+                if(users[buyerId].purchasedBooks[j] != -1) {
+                    users[buyerId].purchasedBooks[j] = books[i].id;
                     --books[j].quantityForRent;
                     return true;
                 }
@@ -265,15 +271,45 @@ void getLastUserId(){
     lastUserId = atoi(lastIdC);
 }
 
+// void printFileContent(const char *filename) {
+//     FILE *file = fopen(filename, "r");
+//     if (file != NULL) {
+//         char line[50];
+//         printf("Contents of %s:\n", filename);
+//         while (fgets(line, sizeof(line), file) != NULL) {
+//             printf("%s", line);
+//         }
+//         fclose(file);
+//     }
+//      else {
+//         printf("Unable to open file: %s\n", filename);
+//     }
+//}
 
-void printFileContent(const char *filename) {
+void getBookContent(const char *filename) {
     FILE *file = fopen(filename, "r");
     if (file != NULL) {
-        char line[50];
-        printf("Contents of %s:\n", filename);
-        while (fgets(line, sizeof(line), file) != NULL) {
-            printf("%s", line);
+        char line[9][50];
+        int i = 0;
+        for(i = 0; i < 9; ++i)
+            fgets(line[i], sizeof(line), file);
+
+        for (i = 0; i < MAX_BOOKS; ++i) {
+            if (isEmptyBook(books[i])) {
+                books[i].id = atoi(line[0]);
+                books[i].title = line[1];
+                books[i].author = line[2];
+                books[i].genre = line[3];
+                books[i].price = atof(line[4]);
+                books[i].quantityForSale = atoi(line[5]);
+                books[i].quantityForRent = atoi(line[6]);
+                books[i].rentalDuration = atoi(line[7]);
+                books[i].popularity = atoi(line[8]);
+                break;
+            }
         }
+    
+        
         fclose(file);
     }
      else {
@@ -284,24 +320,22 @@ void printFileContent(const char *filename) {
 void getBooks(){
     WIN32_FIND_DATA findFileData;
     HANDLE hFind;
-    const char *folderPath = "C:/Biblioguard/Books"; // Укажите путь к папке
+    const char *folderPath = "C:/Biblioguard/Books/*";
 
     hFind = FindFirstFile(folderPath, &findFileData);
     if (hFind != INVALID_HANDLE_VALUE) {
          while (FindNextFile(hFind, &findFileData) != 0){
             if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE) {
                 char filePath[50];
-                snprintf(filePath, sizeof(filePath), "%s", findFileData.cFileName);
-                printFileContent(filePath);
+                snprintf(filePath, sizeof(filePath), "C:/Biblioguard/Books/%s", findFileData.cFileName);
+                getBookContent(filePath);
             }
         }
         FindClose(hFind);
     }
     else {
         printf("Unable to open directory: %s\n", folderPath);
-        return 1;
     }
-    
 }
 
 //initializator
