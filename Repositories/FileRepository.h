@@ -32,18 +32,16 @@ void setLastId(const char* filename, unsigned int* lastId){
     FILE* file = fopen(filename, "r");
     char* text;
     if(file != NULL){
-        fgets(text, file);
+        fgets(text,10, file);
     }
 }
 
 void editBookFile(char* bookId, char* title, char* author, char* genre,
-                  char* price,  char* qSale, char* qRent, char* rDuration)
+                  char* price,  char* qSale, char* qRent, char* rDuration, char* population)
 {
-    char* filename = "C:/Biblioguard/Books/";
+    char filename[50] = "C:/Biblioguard/Books/";
     strcat(filename, bookId);
     strcat(filename, ".txt");
-    // CreateDirectoryA(directoryPath, NULL);
-    // createFile()
     clearFile(filename);
     addToFile(filename, bookId);
     addToFile(filename, title);
@@ -59,6 +57,31 @@ void editFile(const char* filename){
     clearFile(filename);
 }
 
+void readFile(const char *filename, char* container) {
+    FILE *file = fopen(filename, "r"); 
+    if (file != NULL) {
+        fgets(container, sizeof(container), file);
+        fclose(file);
+    } 
+    else {
+        printf("Error opening file: %s\n", filename);
+    }
+}
+
+// void readEachLine(const char* filename, char* buffer){
+//     FILE *file = fopen(filename, "r");
+
+//     if (file != NULL) {
+//         char buffer[256];
+//         while (fgets(buffer, sizeof(buffer), file) != NULL) {
+//             printf("%s", buffer);
+//         }
+//         fclose(file);
+//     } else {
+//         printf("Ошибка открытия файла!\n");
+//     }
+
+// }
 
 void initFileSystem(){
     CreateDirectoryA("C:/Biblioguard", NULL);
@@ -66,7 +89,6 @@ void initFileSystem(){
     CreateDirectoryA("C:/Biblioguard/Users", NULL);
     createFile("C:/Biblioguard/lastBookId.txt");
     createFile("C:/Biblioguard/lastUserId.txt");
-    createFile("C:/Biblioguard/Books/test.txt");
 
 
     //editBookFile( "2", "hello", "pilim", "kishi", "2324.3", "3", "32", "23");

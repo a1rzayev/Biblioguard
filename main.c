@@ -5,7 +5,6 @@
 #include <string.h>
 #include "Views/Home.h"
 #include "Repositories/BookRepository.h"
-#include "Repositories/FileRepository.h"
 #include "Views/AddBook.h"
 #include "Views/EditBook.h"
 #include "Views/UserBooks.h"
@@ -15,6 +14,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
     initFileSystem();
+    initBookSystem();
 
     WNDCLASS wc = {0};
     wc.lpfnWndProc = WindowProc;
@@ -199,7 +199,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     else if(resultA == 3)
                         MessageBox(hwnd, "Write correct numbers", "Error!", MB_OK | MB_ICONERROR);
                     else {
-                        //Addbook(usernameS, nameS, surnameS, passwordS);
+                        AddBook(titleA, authorA, genreA, priceCharA, quantitySCharA, quantityRCharA, rentalDCharA);
                         HideAddbookView(hwnd);
                         ShowAdminView(hwnd);
                     }

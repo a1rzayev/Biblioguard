@@ -1,6 +1,8 @@
 #include "../Models/User.h"
 #include <string.h>
 #include <ctype.h>
+#include "FileRepository.h"
+#include <stdbool.h>
 
 #pragma once
 
@@ -10,18 +12,38 @@
 Book books[MAX_BOOKS];
 User users[MAX_USERS];
 
-booksCount;
-usersCount;
+unsigned int booksCount;
+unsigned int usersCount;
 
 unsigned int lastBookId;
 unsigned int lastUserId;
 
 User* currentUser;
 
-void initProject(){
-    lastBookId = 0;
-    lastUserId = 0;
-}
+unsigned int countNonNullBooks();
+bool isSalable(unsigned int bookId);
+bool isRentable(unsigned int bookId);
+char isCorrectSignupInfo(char* username, char* name, char* surname, char* password);
+bool isConvertibleToFloat(char* str);
+bool isConvertibleToUSInt(char* str);
+bool isConvertibleToUInt(char* str);
+char isCorrectBookInfo(char* title, char* author, char* genre, char* price,  char* qSale, char* qRent, char* rDuration);
+float convertToFloat(char str);
+float convertToUSInt(char str);
+float convertToUInt(char str);
+bool isCorrectLogin(char* username, char* password);
+void setLastBookId();
+void setLastUserId();
+void getLastBookId();
+void getLastUserId();
+void AddBook(char* title, char* author, char* genre, char* price, char* quantityForSale,
+             char* quantityForRent, char* rentalDuration);
+void SignUp(char* username, char* name, char* surname, char* password);
+bool BuyBook(unsigned int buyerId, unsigned int bookId);
+bool RentBook(unsigned int buyerId, unsigned int bookId);
+void EditBook(unsigned int bookOrder, char* title, char* author, char* genre, float price, unsigned short int quantityForSale,
+    unsigned short int quantityForRent, unsigned short int rentalDuration);
+void DeleteBook(unsigned int bookOrder);
 
 
 // checkers
@@ -35,6 +57,7 @@ bool isSalable(unsigned int bookId){
         }
     }
 }
+
 bool isRentable(unsigned int bookId){
     for (int i = 0; i < MAX_BOOKS; ++i) {
         if(books[i].id == bookId) {
@@ -43,6 +66,7 @@ bool isRentable(unsigned int bookId){
         }
     }
 }
+
 unsigned int countNonNullBooks() {
     int count = 0;
     for (int i = 0; i < MAX_BOOKS; ++i) {
@@ -51,19 +75,18 @@ unsigned int countNonNullBooks() {
     return count;
 }
 
-
 //signup
 bool isAvailableUsername(char* username){
     for (int i = 0; i < MAX_USERS; ++i) 
         if(users[i].username == username) return false;
     return true;
 }
+
 char isCorrectSignupInfo(char* username, char* name, char* surname, char* password){
     if(!strcmp(username, "") || !strcmp(name, "") || !strcmp(surname, "") || !strcmp(password, "")) return 1;
     else if(!isAvailableUsername(username) || !strcmp(username, "admin")) return 2;
     return 0;
 }
-
 
 //addbook & edit
 bool isConvertibleToFloat(char* str){
@@ -72,6 +95,7 @@ bool isConvertibleToFloat(char* str){
     if (*endptr == '\0') return true;
     return false;
 }
+
 bool isConvertibleToUSInt(char* str){
     char *endptr;
     float num = strtod(str, &endptr);
@@ -81,11 +105,17 @@ bool isConvertibleToUSInt(char* str){
     } 
     return false;
 }
-// bool isAvailableTitle(char* title){
-//     for (int i = 0; i < MAX_BOOKS; ++i) 
-//         if(books[i].title == title) return false;
-//     return true;
-// }
+
+bool isConvertibleToUInt(char* str){
+    char *endptr;
+    float num = strtod(str, &endptr);
+    if (*endptr == '\0' && fmod(num, 1) == 0 && num >= 0 && num <= UINT_MAX) {
+        unsigned int unum = (unsigned int) num;
+        return true;
+    } 
+    return false;
+}
+
 char isCorrectBookInfo(char* title, char* author, char* genre, char* price,  char* qSale, char* qRent, char* rDuration){
     if(!strcmp(title, "") || !strcmp(author, "") || !strcmp(genre, "") || !strcmp(price, "") ||
        !strcmp(qSale, "") || !strcmp(qRent, "") || !strcmp(rDuration, "")) return 1;
@@ -94,6 +124,25 @@ char isCorrectBookInfo(char* title, char* author, char* genre, char* price,  cha
             !isConvertibleToUSInt(qRent) || !isConvertibleToUSInt(rDuration)) return 3;
     return 0;
 }
+
+//converters
+float convertToFloat(char str){
+    char *endptr;
+    return strtod(str, &endptr);
+}
+
+float convertToUSINT(char str){
+    char *endptr;
+    float num = strtod(str, &endptr);
+    return (unsigned short int) num;
+}
+
+float convertToUINT(char str){
+    char *endptr;
+    float num = strtod(str, &endptr);
+    return (unsigned int) num;
+}
+
 
 
 //login
@@ -109,20 +158,47 @@ bool isCorrectLogin(char* username, char* password){
 }
 
 
-// adders
-void AddBook(char* title, char* author, char* genre, float price, unsigned short int quantityForSale,
-             unsigned short int quantityForRent, unsigned short int rentalDuration){
-    Book newBook = {lastBookId, *title, *author, *genre, price, quantityForSale, quantityForRent, rentalDuration, 0};
-    books[lastBookId] = newBook;
-    lastBookId = lastBookId + 1;
+// setters
+void setLastBookId(){
+    char lastIdS[10];
+    itoa(lastBookId, lastIdS, 10);
+    clearFile("C:/Biblioguard/lastBookId.txt");
+    addToFile("C:/Biblioguard/lastBookId.txt", lastIdS);
 }
+
+void setLastUserId(){
+    char lastIdS[10];
+    itoa(lastUserId, lastIdS, 10);
+    clearFile("C:/Biblioguard/lastUserId.txt");
+    addToFile("C:/Biblioguard/lastUserId.txt", lastIdS);
+}
+
+// adders
+void AddBook(char* title, char* author, char* genre, char* price, char* quantityForSale,
+             char* quantityForRent, char* rentalDuration){
+    Book newBook = {lastBookId, *title, *author, *genre, atof(price), (unsigned short int)quantityForSale,
+                    (unsigned short int)quantityForRent, (unsigned short int)rentalDuration, 0};
+    books[lastBookId] = newBook;
+    
+    char lastBookIdStr[5];
+    sprintf(lastBookIdStr, "%hu", lastBookId);
+
+    char filename[50] = "C:/Biblioguard/Books/";
+    strcat(filename, lastBookIdStr);
+    strcat(filename, ".txt");
+    createFile(filename);
+    editBookFile(lastBookIdStr, title, author, genre, price, quantityForSale, quantityForRent, rentalDuration, "0");
+
+    lastBookId = lastBookId + 1;
+    setLastBookId();
+}
+
 void SignUp(char* username, char* name, char* surname, char* password){
     User newUser= {lastUserId, *username, *name, *surname, *password, 0};
     users[lastUserId] = newUser;
     currentUser = &users[lastUserId];
     lastUserId = lastUserId + 1;
 } 
-
 
 
 // functions for user
@@ -140,6 +216,7 @@ bool BuyBook(unsigned int buyerId, unsigned int bookId){
     }
     return false;
 }
+
 bool RentBook(unsigned int buyerId, unsigned int bookId){
     for (int i = 0; i < MAX_BOOKS; ++i) {
         if(books[i].id == bookId) {
@@ -156,7 +233,6 @@ bool RentBook(unsigned int buyerId, unsigned int bookId){
 }
 
 
-
 // editors
 void EditBook(unsigned int bookOrder, char* title, char* author, char* genre, float price, unsigned short int quantityForSale,
     unsigned short int quantityForRent, unsigned short int rentalDuration){
@@ -167,10 +243,71 @@ void EditBook(unsigned int bookOrder, char* title, char* author, char* genre, fl
     books[bookOrder].quantityForSale = quantityForSale;
     books[bookOrder].quantityForRent = quantityForRent;
     books[bookOrder].rentalDuration = rentalDuration;
-
 }
 
 void DeleteBook(unsigned int bookOrder){
     unsigned int count = countNonNullBooks();
     for (int i = bookOrder; i < count - 1; ++i) books[i] = books[i + 1];
+}
+
+
+// getters
+void getLastBookId(){
+    char lastIdC[5];
+    readFile("C:/Biblioguard/lastBookId.txt", lastIdC);
+    lastBookId = atoi(lastIdC);
+    
+}
+
+void getLastUserId(){
+    char lastIdC[5];
+    readFile("C:/Biblioguard/lastUserId.txt", lastIdC);
+    lastUserId = atoi(lastIdC);
+}
+
+
+void printFileContent(const char *filename) {
+    FILE *file = fopen(filename, "r");
+    if (file != NULL) {
+        char line[50];
+        printf("Contents of %s:\n", filename);
+        while (fgets(line, sizeof(line), file) != NULL) {
+            printf("%s", line);
+        }
+        fclose(file);
+    }
+     else {
+        printf("Unable to open file: %s\n", filename);
+    }
+}
+
+void getBooks(){
+    WIN32_FIND_DATA findFileData;
+    HANDLE hFind;
+    const char *folderPath = "C:/Biblioguard/Books"; // Укажите путь к папке
+
+    hFind = FindFirstFile(folderPath, &findFileData);
+    if (hFind != INVALID_HANDLE_VALUE) {
+         while (FindNextFile(hFind, &findFileData) != 0){
+            if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE) {
+                char filePath[50];
+                snprintf(filePath, sizeof(filePath), "%s", findFileData.cFileName);
+                printFileContent(filePath);
+            }
+        }
+        FindClose(hFind);
+    }
+    else {
+        printf("Unable to open directory: %s\n", folderPath);
+        return 1;
+    }
+    
+}
+
+//initializator
+
+void initBookSystem(){
+    getLastBookId();
+    getLastUserId();
+    getBooks();
 }

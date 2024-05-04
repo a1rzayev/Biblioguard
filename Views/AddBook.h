@@ -17,7 +17,7 @@ void ShowAddbookView(HWND hwnd) {
 
     AddbookPriceLabel = CreateWindow("STATIC", "Price:", WS_CHILD | WS_VISIBLE, 350, 400, 100, 20, hwnd, (HMENU)IDC_ADDBOOK_PRICE_LABEL, NULL, NULL);
     AddbookPriceInput = CreateWindow("EDIT", "", WS_CHILD | WS_VISIBLE | WS_BORDER, 450, 400, 180, 20, hwnd, (HMENU)IDC_ADDBOOK_PRICE_EDIT, NULL, NULL);
-    SendMessage(AddbookPriceInput, EM_SETLIMITTEXT, (WPARAM)5, 0);
+    SendMessage(AddbookPriceInput, EM_SETLIMITTEXT, (WPARAM)4, 0);
 
     AddbookQsaleLabel = CreateWindow("STATIC", "Quantity(sale):", WS_CHILD | WS_VISIBLE, 650, 280, 100, 40, hwnd, (HMENU)IDC_ADDBOOK_QSALE_LABEL, NULL, NULL);
     AddbookQsaleInput = CreateWindow("EDIT", "", WS_CHILD | WS_VISIBLE | WS_BORDER, 750, 280, 180, 40, hwnd, (HMENU)IDC_ADDBOOK_QSALE_EDIT, NULL, NULL);
