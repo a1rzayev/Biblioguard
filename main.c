@@ -172,13 +172,13 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     ShowAddbookView(hwnd);
                     break;
                 case IDC_ADDBOOK_SUBMIT_BUTTON:
-                    char titleA[50];
-                    char authorA[50];
-                    char genreA[20];
-                    char priceCharA[5];
-                    char quantitySCharA[4];
-                    char quantityRCharA[4];
-                    char rentalDCharA[4];
+                    char titleA[51];
+                    char authorA[26];
+                    char genreA[26];
+                    char priceCharA[10];
+                    char quantitySCharA[5];
+                    char quantityRCharA[5];
+                    char rentalDCharA[5];
             
                     GetWindowText(AddbookTitleInput, titleA, sizeof(titleA));
                     GetWindowText(AddbookAuthorInput, authorA, sizeof(authorA));

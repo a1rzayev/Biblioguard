@@ -1,13 +1,26 @@
 #include <windows.h>
 #include <stdio.h>
 
-void createFile(const char* filename){
-    FILE* file = fopen(filename, "r");
-    if (file == NULL) {
+void createFile(const char* filename, const char* text){
+    // FILE* file = fopen(filename, "r");
+    // if (file == NULL) {
+    //     file = fopen(filename, "w");
+    //     if (file != NULL) fclose(file);
+    // } 
+    // else fclose(file);
+     FILE *file = fopen(filename, "r");
+    if (file == NULL || fgetc(file) == EOF) {
         file = fopen(filename, "w");
-        if (file != NULL) fclose(file);
-    } 
-    else fclose(file);
+        if (file == NULL) {
+            printf("Error opening file for writing.\n");
+            return;
+        }
+        fprintf(file, text);
+        printf("Text written to file successfully.\n");
+    }
+    else 
+        printf("File is not empty.\n");
+    fclose(file);
 }
 
 void clearFile(const char* filename){
@@ -71,11 +84,25 @@ void editFile(const char* filename){
     clearFile(filename);
 }
 
-void readFile(const char *filename, char* container) {
+size_t readTextFromFile(const char *filename, char *buffer, size_t bufferSize) {
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        perror("Error opening file");
+        exit(EXIT_FAILURE);
+    }
+    size_t bytesRead = fread(buffer, 1, bufferSize - 1, file); 
+    buffer[bytesRead] = '\0'; 
+    fclose(file);
+    return bytesRead;
+}
+
+char* readFile(const char *filename) {
+    char* container;
     FILE *file = fopen(filename, "r"); 
     if (file != NULL) {
         fgets(container, sizeof(container), file);
         fclose(file);
+        return container;
     } 
     else {
         printf("Error opening file: %s\n", filename);
@@ -88,8 +115,9 @@ void initFileSystem(){
     CreateDirectoryA("C:/Biblioguard", NULL);
     CreateDirectoryA("C:/Biblioguard/Books", NULL);
     CreateDirectoryA("C:/Biblioguard/Users", NULL);
-    createFile("C:/Biblioguard/lastBookId.txt");
-    createFile("C:/Biblioguard/lastUserId.txt");
+    createFile("C:/Biblioguard/booksCount.txt", "0");
+    createFile("C:/Biblioguard/lastBookId.txt", "0");
+    createFile("C:/Biblioguard/lastUserId.txt", "0");
 
 } 
 
