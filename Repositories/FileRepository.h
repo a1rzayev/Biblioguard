@@ -2,13 +2,7 @@
 #include <stdio.h>
 
 void createFile(const char* filename, const char* text){
-    // FILE* file = fopen(filename, "r");
-    // if (file == NULL) {
-    //     file = fopen(filename, "w");
-    //     if (file != NULL) fclose(file);
-    // } 
-    // else fclose(file);
-     FILE *file = fopen(filename, "r");
+    FILE *file = fopen(filename, "r");
     if (file == NULL || fgetc(file) == EOF) {
         file = fopen(filename, "w");
         if (file == NULL) {
@@ -45,23 +39,6 @@ void setLastId(const char* filename, unsigned int* lastId){
     }
 }
 
-// void editBookFile(char* bookId, char* title, char* author, char* genre,
-//                   char* price,  char* qSale, char* qRent, char* rDuration, char* popularity)
-// {
-//     char filename[50] = "C:/Biblioguard/Books/";
-//     strcat(filename, bookId);
-//     strcat(filename, ".bin");
-//     clearFile(filename);
-//     addToFile(filename, bookId);
-//     addToFile(filename, title);
-//     addToFile(filename, author);
-//     addToFile(filename, genre);
-//     addToFile(filename, price);
-//     addToFile(filename, qSale);
-//     addToFile(filename, qRent);
-//     addToFile(filename, rDuration);
-//     addToFile(filename, popularity);                 
-// }
 void editBookFileF(Book* book, char* filename)
 {
     clearFile(filename);

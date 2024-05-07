@@ -4,9 +4,6 @@ typedef struct
     char title[50];
     char author[25];
     char genre[25];
-    // char* title;
-    // char* author;
-    // char* genre;
     float price;
     unsigned short int quantityForSale; 
     unsigned short int quantityForRent;

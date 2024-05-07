@@ -4,8 +4,6 @@
 #include <math.h>
 #include "FileRepository.h"
 #include <stdbool.h>
-//#include <cjson/cJSON.h>
-#include <sqlite3.h>
 #include "../Libraries/dirent.h"
 #pragma once
 
@@ -36,15 +34,10 @@ bool isConvertibleToUSInt(char* str);
 bool isConvertibleToUInt(char* str);
 bool isEmptyBook(Book book);
 char isCorrectBookInfo(char* title, char* author, char* genre, char* price,  char* qSale, char* qRent, char* rDuration);
-// float convertToFloat(char str);
-// float convertToUSInt(char str);
-// float convertToUInt(char str);
 bool isCorrectLogin(char* username, char* password);
 void setLastBookId();
 void setLastUserId();
 void setBooksCount();
-// Book *read_data(char *filename, unsigned int *total);
-// bool write_data(char *filename, Book *data, unsigned int total);
 void getLastBookId();
 void getLastUserId();
 void getBooksCount();
@@ -56,9 +49,6 @@ bool RentBook(unsigned int buyerId, unsigned int bookId);
 void EditBook(unsigned int bookOrder, char* title, char* author, char* genre, float price, unsigned short int quantityForSale,
     unsigned short int quantityForRent, unsigned short int rentalDuration);
 void DeleteBook(unsigned int bookOrder);
-
-//void deserializeJsonToBooks(char* jsonStr, Book* books, unsigned int *numBooks);
-//char* serializeBooksToJson(Book books[], unsigned int numBooks);
 
 // checkers
 
@@ -144,22 +134,6 @@ char isCorrectBookInfo(char* title, char* author, char* genre, char* price,  cha
 }
 
 //converters
-// float convertToFloat(char* str){
-//     char *endptr;
-//     return strtod(str, &endptr);
-// }
-// float convertToUSINT(char str){
-//     char *endptr;
-//     float num = strtod(str, &endptr);
-//     return (unsigned short int) num;
-// }
-// float convertToUINT(char str){
-//     char *endptr;
-//     float num = strtod(str, &endptr);
-//     return (unsigned int) num;
-// }
-
-
 
 //login
 bool isCorrectLogin(char* username, char* password){
@@ -197,48 +171,6 @@ void setLastUserId(){
 }
 
 // adders
-// void AddBook(char* title, char* author, char* genre, const char* price,
-//              const char* quantityForSale, const char* quantityForRent, const char* rentalDuration){
-//     Book newBook = {lastBookId, title, author, genre, atof(price), atoi(quantityForSale),
-//                     atoi(quantityForRent), atoi(rentalDuration), 0};
-//                     //strcpy(message, ptr);
-//     books[lastBookId] = newBook;
-//     char lastBookIdStr[5];
-//     sprintf(lastBookIdStr, "%hu", lastBookId);
-//     char filename[50] = "C:/Biblioguard/Books/";
-//     strcat(filename, lastBookIdStr);
-//     strcat(filename, ".dat");
-//     //createFile(filename);
-//     //editBookFile(lastBookIdStr, title, author, genre, price, quantityForSale, quantityForRent, rentalDuration, "0");
-//     //editBookFileF(&newBook, filename);
-//     // FILE* outfile = fopen(filename, "wb");
-//     // fwrite(&newBook, sizeof(Book), 1, outfile);
-//     // fclose(outfile); 
-//     // lastBookId = lastBookId + 1;
-//     // setLastBookId();
-//     // FILE *file = fopen("C:/Biblioguard/books.bin", "wb");
-//     // if (file == NULL) {
-//     //     printf("Error opening file for writing.\n");
-//     //     return 1;
-//     // }
-//     // fwrite(&books, sizeof(Book), booksCount, file);
-//     // fclose(file);
-//     // printf("Data written to file successfully.\n");
-//     // char *booksJson = serializeBooksToJson(books, booksCount);
-//     // clearFile("C:/Biblioguard/books.json");
-//     // addToFile("C:/Biblioguard/books.json", booksJson);
-//     ++lastBookId;
-//     ++booksCount;
-//     setLastBookId();
-//     setBooksCount();
-//     FILE* file;
-//     fopen_s(&file, filename, "w+");
-//     fprintf_s(file, BOOK_FORMAT_OUT, newBook.id, newBook.title,
-//                                          newBook.title, newBook.title,
-//                                          newBook.price, newBook.quantityForSale,
-//                                          newBook.quantityForRent, newBook.popularity);
-//     // write_data("C:/Biblioguard/books.bin", books, booksCount);
-// }
 
 void AddBook(char* title, char* author, char* genre, const char* price,
              const char* quantityForSale, const char* quantityForRent, const char* rentalDuration){
@@ -345,109 +277,7 @@ void getBooksCount(){
     booksCount = atoi(booksCountC);
 }
 
-// void printFileContent(const char *filename) {
-//     FILE *file = fopen(filename, "r");
-//     if (file != NULL) {
-//         char line[50];
-//         printf("Contents of %s:\n", filename);
-//         while (fgets(line, sizeof(line), file) != NULL) {
-//             printf("%s", line);
-//         }
-//         fclose(file);
-//     }
-//      else {
-//         printf("Unable to open file: %s\n", filename);
-//     }
-//}
-
-// void getBookContent(const char *filename) {
-//     FILE *file = fopen(filename, "r");
-//     if (file != NULL) {
-//         char line[9][50];
-//         int i = 0;
-//         for(i = 0; i < 9; ++i)
-//             fgets(line[i], sizeof(line), file);
-//         for (i = 0; i < MAX_BOOKS; ++i) {
-//             if (isEmptyBook(books[i])) {
-//                 books[i].id = atoi(line[0]);
-//                 books[i].title = line[1];
-//                 books[i].author = line[2];
-//                 books[i].genre = line[3];
-//                 books[i].price = atof(line[4]);
-//                 books[i].quantityForSale = atoi(line[5]);
-//                 books[i].quantityForRent = atoi(line[6]);
-//                 books[i].rentalDuration = atoi(line[7]);
-//                 books[i].popularity = atoi(line[8]);
-//                 break;
-//             }
-//         }        
-//         fclose(file);
-//     }
-//      else {
-//         printf("Unable to open file: %s\n", filename);
-//     }
-// }
-
-
 void getBooks(){
-    // WIN32_FIND_DATA findFileData;
-    // HANDLE hFind;
-    // const char *folderPath = "C:/Biblioguard/Books/*";
-    // int i = 0;
-    // hFind = FindFirstFile(folderPath, &findFileData);
-    // if (hFind != INVALID_HANDLE_VALUE) {
-    //      while (FindNextFile(hFind, &findFileData) != 0){
-    //         if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE) {
-    //             char filePath[50];
-    //             snprintf(filePath, sizeof(filePath), "C:/Biblioguard/Books/%s", findFileData.cFileName);
-    //             FILE *file;
-    //             Book gottenbook;
-    //             fopen_s(&file, filePath, "w+");
-    //             fscanf_s(file, BOOK_FORMAT_IN, &gottenbook.id, &gottenbook.title, gottenbook.author, gottenbook.genre,
-    //                     gottenbook.price, &gottenbook.quantityForSale, &gottenbook.quantityForRent, &gottenbook.popularity);
-    //             books[i] = gottenbook;
-    //             ++i;
-    //             // books[i] = readBookFileF(filePath);
-    //             // printf("%s", books[i].title);
-    //             // ++i;
-    //         }
-    //     }
-    //     FindClose(hFind);
-    // }
-    // else printf("Unable to open directory: %s\n", folderPath);
-    // WIN32_FIND_DATA findFileData;
-    // HANDLE hFind;
-        // // Specify the directory path
-    // LPCWSTR directoryPath = L"C:\\Biblioguard\\Books\\"; // Replace this with your directory path
-    // // Concatenate the directory path with the search pattern
-    // wchar_t searchPath[MAX_PATH];
-    // wcscpy_s(searchPath, MAX_PATH, directoryPath);
-    // wcscat_s(searchPath, MAX_PATH, L"*");
-    // // Find the first file in the directory
-    // hFind = FindFirstFile(searchPath, &findFileData);
-    // if (hFind == INVALID_HANDLE_VALUE) {
-    //     printf("No files found in the directory.\n");
-    //     return;
-    // }
-    // int i = 0;
-    // // Iterate through all the files in the directory
-    //  while (FindNextFile(hFind, &findFileData) != 0){
-    //     if (!(findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-    //         printf("File: %ls\n", findFileData.cFileName);
-    //         char filePath[50];
-    //         snprintf(filePath, sizeof(filePath), "C:\\Biblioguard\\Books\\%s", findFileData.cFileName);
-    //         FILE *file;
-    //         Book gottenbook;
-    //         fopen_s(&file, filePath, "w+");
-    //         fscanf_s(file, BOOK_FORMAT_IN, &gottenbook.id, &gottenbook.title, gottenbook.author, gottenbook.genre,
-    //                  gottenbook.price, &gottenbook.quantityForSale, &gottenbook.quantityForRent, &gottenbook.popularity);
-    //         books[i] = gottenbook;
-    //         ++i;
-    //     }
-    // }
-    // // Close the search handle
-    // FindClose(hFind);
-
     DIR *dir;
     struct dirent *ent;
     if ((dir = opendir("C:\\Biblioguard\\Books")) != NULL)
@@ -472,39 +302,16 @@ void getBooks(){
                 } 
                 books[i] = gottenbook;
                 ++i;
-                // fscanf_s(file, BOOK_FORMAT_IN, &gottenbook.id, &gottenbook.title, &gottenbook.author, &gottenbook.genre,
-                //          &gottenbook.price, &gottenbook.quantityForSale, &gottenbook.quantityForRent, &gottenbook.popularity);
-                // books[i] = gottenbook;
-                // ++i;
             }
         }
         closedir(dir);
     }
     else
     {
-        /* could not open directory */
         perror("");
         return;
     }
-
 }
-    // Open the file for reading in binary mode
-    // FILE *file = fopen("C:/Biblioguard/books.bin", "rb");
-    // if (file == NULL) {
-    //     printf("Error opening file for reading.\n");
-    //     return 1;
-    // }
-    // fread(&books, sizeof(Book), booksCount, file);
-    // fclose(file);
-    // printf("Data read from file:\n");
-        // char *booksJson;
-    // readFile("C:/Biblioguard/books.json", booksJson);
-    // deserializeJsonToBooks(booksJson, books, &booksCount);
-    // for (int i = 0; i < booksCount; ++i)
-    //     printf("Id %d: Title: %s, Genre: %d\n", books[i].id, books[i].title, books[i].genre);
-
-    // Book *gottenbooks;
-    // gottenbooks = read_data("C:/Biblioguard/books.bin", &booksCount);
 
 //initializator
 
@@ -513,72 +320,4 @@ void initBookSystem(){
     getLastUserId();
     getBooksCount();
     getBooks();
-}
-
-// void deserializeJsonToBooks(char* jsonStr, Book* books, unsigned int *numBooks) {
-//     cJSON *root = cJSON_Parse(jsonStr); // Parse JSON string
-//     *numBooks = (unsigned int)cJSON_GetArraySize(root); // Get the number of books
-//     for (int i = 0; i < *numBooks; i++) {
-//         cJSON *bookObj = cJSON_GetArrayItem(root, i); // Get the JSON object for each book
-//         books[i].id = cJSON_GetObjectItem(bookObj, "id")->valueint;
-//         strcpy(books[i].title, cJSON_GetObjectItem(bookObj, "title")->valuestring);
-//         strcpy(books[i].author, cJSON_GetObjectItem(bookObj, "author")->valuestring);
-//         strcpy(books[i].genre, cJSON_GetObjectItem(bookObj, "genre")->valuestring);
-//         books[i].price = cJSON_GetObjectItem(bookObj, "price")->valuedouble;
-//         books[i].quantityForSale = cJSON_GetObjectItem(bookObj, "quantityForSale")->valueint;
-//         books[i].quantityForRent = cJSON_GetObjectItem(bookObj, "quantityForRent")->valueint;
-//         books[i].rentalDuration = cJSON_GetObjectItem(bookObj, "rentalDuration")->valueint;
-//         books[i].popularity = cJSON_GetObjectItem(bookObj, "popularity")->valueint;
-//     }
-//     cJSON_Delete(root); // Free cJSON objects
-// }
-// char* serializeBooksToJson(Book books[], unsigned int numBooks) {
-//     cJSON *root = cJSON_CreateArray(); // Create a JSON array
-//     for (int i = 0; i < numBooks; i++) {
-//         cJSON *bookObj = cJSON_CreateObject(); // Create a JSON object for each book
-//         cJSON_AddNumberToObject(bookObj, "id", books[i].id);
-//         cJSON_AddStringToObject(bookObj, "title", books[i].title);
-//         cJSON_AddStringToObject(bookObj, "author", books[i].author);
-//         cJSON_AddStringToObject(bookObj, "genre", books[i].genre);
-//         cJSON_AddNumberToObject(bookObj, "price", books[i].price);
-//         cJSON_AddNumberToObject(bookObj, "quantityForSale", books[i].quantityForSale);
-//         cJSON_AddNumberToObject(bookObj, "quantityForRent", books[i].quantityForRent);
-//         cJSON_AddNumberToObject(bookObj, "rentalDuration", books[i].rentalDuration);
-//         cJSON_AddNumberToObject(bookObj, "popularity", books[i].popularity);
-//         cJSON_AddItemToArray(root, bookObj); // Add book object to the array
-//     }
-//     char *jsonStr = cJSON_Print(root); // Convert cJSON object to JSON string
-//     cJSON_Delete(root); // Free cJSON objects
-//     return jsonStr;
-// }
-
-bool write_data(char *filename, Book *data, unsigned int total) {
-  FILE *file;
-  file = fopen(filename, "wb");
-  if (file == NULL) return false;
-  if (fwrite(&total, sizeof(int), 1, file) != 1)
-    return false;
-  if (fwrite(data, sizeof(Book), total, file) != total)
-    return false;
-  if (fclose(file) == EOF) return false; 
-  return true;
-}
-
-Book *read_data(char *filename, unsigned int *total) {
-    FILE *file;
-    file = fopen(filename, "rb");
-    if (file == NULL)
-        return NULL;
-    if (fread(total, sizeof(unsigned int), 1, file) != 1)
-        return NULL;
-    Book *data = malloc(sizeof(Book) * *total);
-    if (fread(data, sizeof(Book), *total, file) != *total) {
-        free(data);
-        return NULL;
-    }
-    if (fclose(file) == EOF) {
-        free(data);
-        return NULL;
-    }
-    return data;
 }

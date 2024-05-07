@@ -22,9 +22,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 
     RegisterClass(&wc);
-    //HICON icon = LoadIcon(NULL, IDI_QUESTION);
-    //HDC hdc;
-    //DrawIcon(hdc, 10, 20, icon); 
 
     HWND hwnd = CreateWindowEx(
         0,
@@ -38,9 +35,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         return 0;
     }
     SetClassLongPtr(hwnd, GCLP_HICON, (LONG_PTR) LoadIcon(hInstance, MAKEINTRESOURCE(480))); 
-    // HICON hIcon = (HICON)LoadImage(hInstance, "icon.ico", IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
-    // SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
-    // SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
 
 
 
