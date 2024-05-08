@@ -3,6 +3,7 @@
 #include "Views/Admin.h"
 #include <string.h>
 #include "Views/Home.h"
+// #include <stdio.h>
 #include "Repositories/BookRepository.h"
 #include "Views/AddBook.h"
 #include "Views/EditBook.h"
@@ -55,20 +56,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch (uMsg) {
         case WM_COMMAND:
-            int buttonID = LOWORD(wParam);
+            unsigned int buttonID = LOWORD(wParam);
             if (buttonID >= IDC_ADMIN_EDIT_ID0 && buttonID <= IDC_ADMIN_EDIT_ID0 + MAX_BOOKS - 1) {
-                int buttonIndex = buttonID - IDC_ADMIN_EDIT_ID0;
+                unsigned int buttonIndex = buttonID - IDC_ADMIN_EDIT_ID0;
                 HideAdminView(hwnd);
                 ShowEditView(hwnd, buttonIndex);
-                printf("edit button %d clicked!\n", buttonIndex);
-
+                //printf("edit button %d clicked!\n", buttonIndex);
             }
             else if (buttonID >= IDC_ADMIN_DELETE_ID0 && buttonID <= IDC_ADMIN_DELETE_ID0 + MAX_BOOKS - 1) {
-                int buttonIndex = buttonID - IDC_ADMIN_DELETE_ID0;
-                printf("delete button %d clicked!\n", buttonIndex);
+                unsigned int buttonIndex = buttonID - IDC_ADMIN_DELETE_ID0;
+                //printf("delete button %d clicked!\n", buttonIndex);
             }
 
-            switch (LOWORD(wParam)) {
+            switch (buttonID) {
                 //edit lifetime
                 case IDC_EDIT_TOADMIN_BUTTON:
                     HideEditView(hwnd);
@@ -78,7 +78,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     char titleE[50];
                     char authorE[50];
                     char genreE[20];
-                    char priceCharE[5];
+                    char priceCharE[7];
                     char quantitySCharE[4];
                     char quantityRCharE[4];
                     char rentalDCharE[4];
@@ -100,7 +100,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     else if(resultE == 3)
                         MessageBox(hwnd, "Write correct numbers", "Error!", MB_OK | MB_ICONERROR);
                     else {
-                        //Addbook(usernameS, nameS, surnameS, passwordS);
+                        EditBook(buttonID - IDC_ADMIN_EDIT_ID0, titleE, authorE, genreE, priceCharE, quantitySCharE, quantityRCharE, rentalDCharE);
                         HideEditView(hwnd);
                         ShowAdminView(hwnd);
                     }

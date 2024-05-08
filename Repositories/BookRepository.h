@@ -10,21 +10,25 @@
 #define MAX_BOOKS 100
 #define MAX_USERS 100
 
+
+
+//usable variables
 Book books[MAX_BOOKS];
 User users[MAX_USERS];
 
 unsigned int booksCount = 0;
 unsigned int usersCount = 0;
-
 unsigned int lastBookId = 0;
 unsigned int lastUserId = 0;
 
 User* currentUser;
 
-
 const char* BOOK_FORMAT_IN = "(%i, %[^,], %[^,], %[^,], %f, %hu, %hu, %hu)\n";
 const char* BOOK_FORMAT_OUT = "(%i, %s, %s, %s, %f, %hu, %hu, %hu)\n";
+const char* USER_FORMAT_IN = "(%i, %[^,], %[^,], %[^,], %[^,], %f)\n";
+const char* USER_FORMAT_OUT = "(%i, %s, %s, %s, %s, %f)\n";
 
+//declarations of functions
 unsigned int countNonNullBooks();
 bool isSalable(unsigned int bookId);
 bool isRentable(unsigned int bookId);
@@ -37,18 +41,35 @@ char isCorrectBookInfo(char* title, char* author, char* genre, char* price,  cha
 bool isCorrectLogin(char* username, char* password);
 void setLastBookId();
 void setLastUserId();
+void setUsersCount();
 void setBooksCount();
 void getLastBookId();
 void getLastUserId();
 void getBooksCount();
+void getUsersCount();
+void getBooks();
+void getUsers();
 void AddBook(char* title, char* author, char* genre, const char* price,
              const char* quantityForSale, const char* quantityForRent, const char* rentalDuration);
 void SignUp(char* username, char* name, char* surname, char* password);
 bool BuyBook(unsigned int buyerId, unsigned int bookId);
 bool RentBook(unsigned int buyerId, unsigned int bookId);
-void EditBook(unsigned int bookOrder, char* title, char* author, char* genre, float price, unsigned short int quantityForSale,
-    unsigned short int quantityForRent, unsigned short int rentalDuration);
+void EditBook(unsigned int bookOrder, char* title, char* author, char* genre, const char* price,
+             const char* quantityForSale, const char* quantityForRent, const char* rentalDuration);
 void DeleteBook(unsigned int bookOrder);
+
+
+
+//initializator
+void initBookSystem(){
+    getLastBookId();
+    getLastUserId();
+    getBooksCount();
+    getBooks();
+    //getUsers();
+}
+
+
 
 // checkers
 
@@ -83,6 +104,9 @@ bool isEmptyBook(Book book) {
     return (book.title == NULL);
 }
 
+
+
+
 //signup
 bool isAvailableUsername(char* username){
     for (int i = 0; i < MAX_USERS; ++i) 
@@ -95,6 +119,9 @@ char isCorrectSignupInfo(char* username, const char* name, const char* surname, 
     else if(!isAvailableUsername(username) || !strcmp(username, "admin")) return 2;
     return 0;
 }
+
+
+
 
 //addbook & edit
 bool isConvertibleToFloat(char* str){
@@ -127,11 +154,14 @@ bool isConvertibleToUInt(char* str){
 char isCorrectBookInfo(char* title, char* author, char* genre, char* price,  char* qSale, char* qRent, char* rDuration){
     if(!strcmp(title, "") || !strcmp(author, "") || !strcmp(genre, "") || !strcmp(price, "") ||
        !strcmp(qSale, "") || !strcmp(qRent, "") || !strcmp(rDuration, "")) return 1;
-    //else if(!isAvailableTitle(title)) return 2;
     else if(!isConvertibleToFloat(price) || !isConvertibleToUSInt(qSale) ||
             !isConvertibleToUSInt(qRent) || !isConvertibleToUSInt(rDuration)) return 3;
     return 0;
 }
+
+
+
+
 
 //converters
 
@@ -148,6 +178,9 @@ bool isCorrectLogin(char* username, char* password){
 }
 
 
+
+
+
 // setters
 void setLastBookId(){
     char lastIdS[10];
@@ -161,6 +194,13 @@ void setBooksCount(){
     itoa(booksCount, booksCountS, 10);
     clearFile("C:/Biblioguard/booksCount.txt");
     addToFile("C:/Biblioguard/booksCount.txt", booksCountS);
+}
+
+void setUsersCount(){
+    char usersCountS[10];
+    itoa(usersCount, usersCountS, 10);
+    clearFile("C:/Biblioguard/usersCount.txt");
+    addToFile("C:/Biblioguard/usersCount.txt", usersCountS);
 }
 
 void setLastUserId(){
@@ -200,12 +240,38 @@ void AddBook(char* title, char* author, char* genre, const char* price,
 }
 
 void SignUp(char* username, char* name, char* surname, char* password){
-    User newUser= {lastUserId, *username, *name, *surname, *password, 0};
+    User newUser= {lastUserId, "", "", "", "", 0};
+    strncpy(newUser.username, username, sizeof(newUser.username));
+    strncpy(newUser.name, name, sizeof(newUser.name));
+    strncpy(newUser.surname, surname, sizeof(newUser.surname));
+    strncpy(newUser.password, password, sizeof(newUser.password));
     users[lastUserId] = newUser;
     currentUser = &users[lastUserId];
-    lastUserId = lastUserId + 1;
-} 
+    
+    char lastUserIdStr[5];
+    sprintf(lastUserIdStr, "%hu", lastUserId);
+    char filename[50] = "C:/Biblioguard/Users/";
+    strcat(filename, lastUserIdStr);
+    strcat(filename, ".dat");
 
+    FILE* file;
+    fopen_s(&file, filename, "w+");
+    fprintf_s(file, USER_FORMAT_OUT, lastUserId, username, name, surname, password, 0);
+              
+    // FILE* file = fopen(filename, "wb");
+    // if (file != NULL) {
+    //     fwrite(&newUser, sizeof(User), 1, file);
+    //     fclose(file);
+    // } 
+    // else {
+    //     printf("Error opening file for writing.\n");
+    // }
+
+    ++lastUserId;
+    ++usersCount;
+    setLastUserId();
+    setUsersCount();
+} 
 
 // functions for user
 bool BuyBook(unsigned int buyerId, unsigned int bookId){
@@ -238,17 +304,28 @@ bool RentBook(unsigned int buyerId, unsigned int bookId){
     return false;
 }
 
-
 // editors
-void EditBook(unsigned int bookOrder, char* title, char* author, char* genre, float price, unsigned short int quantityForSale,
-    unsigned short int quantityForRent, unsigned short int rentalDuration){
-    strcpy(books[bookOrder].title, title);
-    strcpy(books[bookOrder].author, author);
-    strcpy(books[bookOrder].genre, genre);
-    books[bookOrder].price = price;
-    books[bookOrder].quantityForSale = quantityForSale;
-    books[bookOrder].quantityForRent = quantityForRent;
-    books[bookOrder].rentalDuration = rentalDuration;
+void EditBook(unsigned int bookOrder, char* title, char* author, char* genre, const char* price,
+             const char* quantityForSale, const char* quantityForRent, const char* rentalDuration){
+    strncpy(books[bookOrder].title, title, sizeof(books[bookOrder].title));
+    strncpy(books[bookOrder].author, author, sizeof(books[bookOrder].author));
+    strncpy(books[bookOrder].genre, genre, sizeof(books[bookOrder].genre));
+    books[bookOrder].price = atof(price);
+    books[bookOrder].quantityForSale = atoi(quantityForSale);
+    books[bookOrder].quantityForRent = atoi(quantityForRent);
+    books[bookOrder].rentalDuration = atoi(rentalDuration);
+
+    char bookOrderStr[5];
+    sprintf(bookOrderStr, "%hu", bookOrder);
+    char filename[50] = "C:/Biblioguard/Books/";
+    strcat(filename, bookOrderStr);
+    strcat(filename, ".dat");
+
+    clearFile(filename);
+    FILE* file;
+    fopen_s(&file, filename, "w+");
+    fprintf_s(file, BOOK_FORMAT_OUT, bookOrder, title, author, genre, books[bookOrder].price,
+              books[bookOrder].quantityForSale, books[bookOrder].quantityForRent, books[bookOrder].popularity);
 }
 
 void DeleteBook(unsigned int bookOrder){
@@ -275,6 +352,12 @@ void getBooksCount(){
     char booksCountC[5];
     readTextFromFile("C:/Biblioguard/booksCount.txt", booksCountC, 5);
     booksCount = atoi(booksCountC);
+}
+
+void getUsersCount(){
+    char usersCountC[5];
+    readTextFromFile("C:/Biblioguard/usersCount.txt", usersCountC, 5);
+    usersCount = atoi(usersCountC);
 }
 
 void getBooks(){
@@ -313,11 +396,55 @@ void getBooks(){
     }
 }
 
-//initializator
 
-void initBookSystem(){
-    getLastBookId();
-    getLastUserId();
-    getBooksCount();
-    getBooks();
+
+
+void getUsers(){
+    DIR *dir;
+    struct dirent *ent;
+    if ((dir = opendir("C:\\Biblioguard\\Users")) != NULL)
+    {
+        int i = 0;
+        while ((ent = readdir(dir)) != NULL)
+        {
+            if (ent->d_type == DT_REG)
+            {
+                printf("%s\n", ent->d_name);
+                char filePath[50];
+                snprintf(filePath, sizeof(filePath), "C:\\Biblioguard\\Users\\%s", ent->d_name);
+                char buffer[200];
+                User gottenuser;
+                FILE *file;
+                fopen_s(&file, filePath, "r");
+                fgets(buffer, 200, file);
+                while(!feof(file)){
+                    sscanf(buffer, USER_FORMAT_IN, &gottenuser.id, &gottenuser.username, &gottenuser.name, &gottenuser.surname,
+                           &gottenuser.password, &gottenuser.totalAmountPaid); //, &gottenuser.purchasedBooks, &gottenuser.rentedBooks);
+                    fgets(buffer, 200, file);
+                    //FILE *file = fopen(filePath, "rb");
+                    // if (file != NULL)
+                    // {
+                    //     // Read the entire structure from the file
+                    //     // fread(&gottenuser, sizeof(User), 1, file);
+                    //     // fclose(file);
+                    //     sscanf(buffer, USER_FORMAT_IN, &gottenuser.id, &gottenuser.username, &gottenuser.name, &gottenuser.surname,
+                    //            &gottenuser.password, &gottenuser.totalAmountPaid);//, &gottenuser.purchasedBooks, &gottenuser.rentedBooks);
+                    //     fgets(buffer, 200, file);
+                    // }
+                    // else
+                    // {
+                    //     printf("Error opening file for reading.\n");
+                    // }
+                } 
+                users[i] = gottenuser;
+                ++i;
+            }
+        }
+        closedir(dir);
+    }
+    else
+    {
+        perror("");
+        return;
+    }
 }
