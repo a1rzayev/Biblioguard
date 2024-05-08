@@ -41,12 +41,12 @@ char isCorrectBookInfo(char* title, char* author, char* genre, char* price,  cha
 bool isCorrectLogin(char* username, char* password);
 void setLastBookId();
 void setLastUserId();
-void setUsersCount();
-void setBooksCount();
+// void setUsersCount();
+// void setBooksCount();
 void getLastBookId();
 void getLastUserId();
-void getBooksCount();
-void getUsersCount();
+// void getBooksCount();
+// void getUsersCount();
 void getBooks();
 void getUsers();
 void AddBook(char* title, char* author, char* genre, const char* price,
@@ -64,7 +64,7 @@ void DeleteBook(unsigned int bookOrder);
 void initBookSystem(){
     getLastBookId();
     getLastUserId();
-    getBooksCount();
+    //getBooksCount();
     getBooks();
     //getUsers();
 }
@@ -189,19 +189,19 @@ void setLastBookId(){
     addToFile("C:/Biblioguard/lastBookId.txt", lastIdS);
 }
 
-void setBooksCount(){
-    char booksCountS[10];
-    itoa(booksCount, booksCountS, 10);
-    clearFile("C:/Biblioguard/booksCount.txt");
-    addToFile("C:/Biblioguard/booksCount.txt", booksCountS);
-}
+// void setBooksCount(){
+//     char booksCountS[10];
+//     itoa(booksCount, booksCountS, 10);
+//     clearFile("C:/Biblioguard/booksCount.txt");
+//     addToFile("C:/Biblioguard/booksCount.txt", booksCountS);
+// }
 
-void setUsersCount(){
-    char usersCountS[10];
-    itoa(usersCount, usersCountS, 10);
-    clearFile("C:/Biblioguard/usersCount.txt");
-    addToFile("C:/Biblioguard/usersCount.txt", usersCountS);
-}
+// void setUsersCount(){
+//     char usersCountS[10];
+//     itoa(usersCount, usersCountS, 10);
+//     clearFile("C:/Biblioguard/usersCount.txt");
+//     addToFile("C:/Biblioguard/usersCount.txt", usersCountS);
+// }
 
 void setLastUserId(){
     char lastIdS[10];
@@ -219,7 +219,7 @@ void AddBook(char* title, char* author, char* genre, const char* price,
     strncpy(newBook.title, title, sizeof(newBook.title));
     strncpy(newBook.author, author, sizeof(newBook.author));
     strncpy(newBook.genre, genre, sizeof(newBook.genre));
-    books[lastBookId] = newBook;
+    books[booksCount] = newBook;
     
     char lastBookIdStr[5];
     sprintf(lastBookIdStr, "%hu", lastBookId);
@@ -231,12 +231,13 @@ void AddBook(char* title, char* author, char* genre, const char* price,
     fopen_s(&file, filename, "w+");
     fprintf_s(file, BOOK_FORMAT_OUT, lastBookId, title, author, genre, newBook.price,
               newBook.quantityForSale, newBook.quantityForRent, newBook.popularity);
+    fclose(file);
               
 
     ++lastBookId;
     ++booksCount;
     setLastBookId();
-    setBooksCount();
+    //setBooksCount();
 }
 
 void SignUp(char* username, char* name, char* surname, char* password){
@@ -245,7 +246,7 @@ void SignUp(char* username, char* name, char* surname, char* password){
     strncpy(newUser.name, name, sizeof(newUser.name));
     strncpy(newUser.surname, surname, sizeof(newUser.surname));
     strncpy(newUser.password, password, sizeof(newUser.password));
-    users[lastUserId] = newUser;
+    users[usersCount] = newUser;
     currentUser = &users[lastUserId];
     
     char lastUserIdStr[5];
@@ -257,20 +258,12 @@ void SignUp(char* username, char* name, char* surname, char* password){
     FILE* file;
     fopen_s(&file, filename, "w+");
     fprintf_s(file, USER_FORMAT_OUT, lastUserId, username, name, surname, password, 0);
-              
-    // FILE* file = fopen(filename, "wb");
-    // if (file != NULL) {
-    //     fwrite(&newUser, sizeof(User), 1, file);
-    //     fclose(file);
-    // } 
-    // else {
-    //     printf("Error opening file for writing.\n");
-    // }
+    fclose(file);
 
     ++lastUserId;
     ++usersCount;
     setLastUserId();
-    setUsersCount();
+    //setUsersCount();
 } 
 
 // functions for user
@@ -307,13 +300,12 @@ bool RentBook(unsigned int buyerId, unsigned int bookId){
 // editors
 void EditBook(unsigned int bookOrder, char* title, char* author, char* genre, const char* price,
              const char* quantityForSale, const char* quantityForRent, const char* rentalDuration){
-    strncpy(books[bookOrder].title, title, sizeof(books[bookOrder].title));
-    strncpy(books[bookOrder].author, author, sizeof(books[bookOrder].author));
-    strncpy(books[bookOrder].genre, genre, sizeof(books[bookOrder].genre));
-    books[bookOrder].price = atof(price);
-    books[bookOrder].quantityForSale = atoi(quantityForSale);
-    books[bookOrder].quantityForRent = atoi(quantityForRent);
-    books[bookOrder].rentalDuration = atoi(rentalDuration);
+    Book editedBook = {lastBookId, "", "", "", atof(price), atoi(quantityForSale),
+                    atoi(quantityForRent), atoi(rentalDuration), 0};
+    strncpy(editedBook.title, title, sizeof(editedBook.title));
+    strncpy(editedBook.author, author, sizeof(editedBook.author));
+    strncpy(editedBook.genre, genre, sizeof(editedBook.genre));
+    books[bookOrder] = editedBook;
 
     char bookOrderStr[5];
     sprintf(bookOrderStr, "%hu", bookOrder);
@@ -326,11 +318,37 @@ void EditBook(unsigned int bookOrder, char* title, char* author, char* genre, co
     fopen_s(&file, filename, "w+");
     fprintf_s(file, BOOK_FORMAT_OUT, bookOrder, title, author, genre, books[bookOrder].price,
               books[bookOrder].quantityForSale, books[bookOrder].quantityForRent, books[bookOrder].popularity);
+    fclose(file);
 }
 
 void DeleteBook(unsigned int bookOrder){
-    unsigned int count = countNonNullBooks();
-    for (int i = bookOrder; i < count - 1; ++i) books[i] = books[i + 1];
+    //unsigned int count = countNonNullBooks();
+
+    char bookOrderStr[5];
+    sprintf(bookOrderStr, "%hu", books[bookOrder].id);
+    char filename[50] = "C:/Biblioguard/Books/";
+    strcat(filename, bookOrderStr);
+    strcat(filename, ".dat");
+    
+    for (int i = bookOrder; i < booksCount - 1; ++i){
+        books[i] = books[i + 1];
+    }
+    --booksCount;
+    //setBooksCount();
+
+    // Attempt to delete the file
+    if (remove(filename) == 0) {
+        printf("File '%s' deleted successfully.\n", filename);
+    } else {
+        // Print error message with more details
+        if (errno == ENOENT) {
+            printf("Error: File '%s' does not exist.\n", filename);
+        } else if (errno == EACCES) {
+            printf("Error: Permission denied to delete file '%s'.\n", filename);
+        } else {
+            printf("Error deleting file '%s': %s\n", filename, strerror(errno));
+        }
+    }
 }
 
 
@@ -348,24 +366,24 @@ void getLastUserId(){
     lastUserId = atoi(lastIdC);
 }
 
-void getBooksCount(){
-    char booksCountC[5];
-    readTextFromFile("C:/Biblioguard/booksCount.txt", booksCountC, 5);
-    booksCount = atoi(booksCountC);
-}
+// void getBooksCount(){
+//     char booksCountC[5];
+//     readTextFromFile("C:/Biblioguard/booksCount.txt", booksCountC, 5);
+//     booksCount = atoi(booksCountC);
+// }
 
-void getUsersCount(){
-    char usersCountC[5];
-    readTextFromFile("C:/Biblioguard/usersCount.txt", usersCountC, 5);
-    usersCount = atoi(usersCountC);
-}
+// void getUsersCount(){
+//     char usersCountC[5];
+//     readTextFromFile("C:/Biblioguard/usersCount.txt", usersCountC, 5);
+//     usersCount = atoi(usersCountC);
+// }
 
 void getBooks(){
     DIR *dir;
     struct dirent *ent;
     if ((dir = opendir("C:\\Biblioguard\\Books")) != NULL)
     {
-        int i = 0;
+        //int i = 0;
         while ((ent = readdir(dir)) != NULL)
         {
             if (ent->d_type == DT_REG)
@@ -383,8 +401,9 @@ void getBooks(){
                          &gottenbook.price, &gottenbook.quantityForSale, &gottenbook.quantityForRent, &gottenbook.popularity);
                     fgets(buffer, 200, file);
                 } 
-                books[i] = gottenbook;
-                ++i;
+                books[booksCount] = gottenbook;
+                ++booksCount;
+                fclose(file);
             }
         }
         closedir(dir);
@@ -404,7 +423,6 @@ void getUsers(){
     struct dirent *ent;
     if ((dir = opendir("C:\\Biblioguard\\Users")) != NULL)
     {
-        int i = 0;
         while ((ent = readdir(dir)) != NULL)
         {
             if (ent->d_type == DT_REG)
@@ -436,8 +454,9 @@ void getUsers(){
                     //     printf("Error opening file for reading.\n");
                     // }
                 } 
-                users[i] = gottenuser;
-                ++i;
+                users[usersCount] = gottenuser;
+                ++usersCount;
+                fclose(file);
             }
         }
         closedir(dir);

@@ -73,6 +73,12 @@ void UpdateAdminBookLabels(HWND hwnd) {
     }
 }
 
+void UpdateAdminView(HWND hwnd){
+    UpdateAdminScrollBar(hwnd);
+    UpdateAdminBookLabels(hwnd);
+    UpdateWindow(hwnd);
+}
+
 void ShowAdminView(HWND hwnd){
     adminBooksCount = booksCount;
 
@@ -85,7 +91,5 @@ void ShowAdminView(HWND hwnd){
     AdminToLoginButton = CreateWindow("BUTTON", "Back to login", WS_CHILD | WS_VISIBLE, 0, 640, 100, 40, hwnd, (HMENU)IDC_ADMIN_TOLOGIN_BUTTON, NULL, NULL);
     AdminScrollbar = CreateWindow("SCROLLBAR", "", WS_CHILD | WS_VISIBLE | SBS_VERT, clientRect.right - SCROLLBAR_WIDTH, 0, SCROLLBAR_WIDTH, clientRect.bottom, hwnd,  (HMENU)IDC_ADMIN_SCROLLBAR, NULL, NULL);
 
-    UpdateAdminScrollBar(hwnd);
-    UpdateAdminBookLabels(hwnd);
-    UpdateWindow(hwnd);
+    UpdateAdminView(hwnd);
 }

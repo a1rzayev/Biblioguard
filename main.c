@@ -65,6 +65,12 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             }
             else if (buttonID >= IDC_ADMIN_DELETE_ID0 && buttonID <= IDC_ADMIN_DELETE_ID0 + MAX_BOOKS - 1) {
                 unsigned int buttonIndex = buttonID - IDC_ADMIN_DELETE_ID0;
+                DeleteBook(buttonIndex);
+                // UpdateAdminView(hwnd);
+                // UpdateAdminBookLabels(hwnd);
+                // UpdateAdminScrollBar(hwnd);
+                HideAdminView(hwnd);
+                ShowAdminView(hwnd);
                 //printf("delete button %d clicked!\n", buttonIndex);
             }
 
@@ -255,7 +261,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     UpdateAdminBookLabels(hwnd);
                 }
 
-                break;
+                break;  
             }
             else if ((HWND)lParam == UserbooksScrollbar) {
                 SCROLLINFO userbooksSi;
