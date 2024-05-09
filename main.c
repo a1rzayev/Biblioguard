@@ -3,11 +3,11 @@
 #include "Views/Admin.h"
 #include <string.h>
 #include "Views/Home.h"
-// #include <stdio.h>
 #include "Repositories/BookRepository.h"
 #include "Views/AddBook.h"
 #include "Views/EditBook.h"
 #include "Views/UserBooks.h"
+#include "Views/Report.h"
 
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -162,6 +162,16 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     }
                     else MessageBox(hwnd, "Wrong username or password", "Error!", MB_OK | MB_ICONERROR);
                     break;      
+                
+                case IDC_ADMIN_TOREPORT_BUTTON:
+                    HideAdminView(hwnd);
+                    ShowReportView(hwnd);
+                    break;
+                
+                case IDC_REPORT_TOADMIN_BUTTON:
+                    HideReportView(hwnd);
+                    ShowAdminView(hwnd);
+                    break;
                 
                 case IDC_ADMIN_TOLOGIN_BUTTON:
                     HideAdminView(hwnd);
@@ -338,6 +348,44 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 if (HomeScrollPos != homeSi.nPos) {
                     SetScrollPos(HomeScrollbar, SB_CTL, HomeScrollPos, TRUE);
                     homeScrollPos = HomeScrollPos;
+                    UpdateHomeBookLabels(hwnd);
+                }
+                break;
+            }
+
+            else if ((HWND)lParam == ReportScrollbar) {
+                SCROLLINFO reportSi;
+                reportSi.cbSize = sizeof(reportSi);
+                reportSi.fMask = SIF_ALL;
+                GetScrollInfo(ReportScrollbar, SB_CTL, &reportSi);
+                int ReportScrollPos = reportSi.nPos;
+
+                switch (LOWORD(wParam)) {
+                    case SB_TOP:
+                        ReportScrollPos = 0;
+                        break;
+                    case SB_BOTTOM:
+                        ReportScrollPos = reportsShownCount - reportVisiblesCount;
+                        break;
+                    case SB_LINEUP:
+                        ReportScrollPos = max(0, ReportScrollPos - 1);
+                        break;
+                    case SB_LINEDOWN:
+                        ReportScrollPos = min(reportsShownCount - reportVisiblesCount, ReportScrollPos + 1);
+                        break;
+                    case SB_PAGEUP:
+                        ReportScrollPos = max(0, ReportScrollPos - reportVisiblesCount);
+                        break;
+                    case SB_PAGEDOWN:
+                        ReportScrollPos = min(reportsShownCount - reportVisiblesCount, ReportScrollPos + reportVisiblesCount);
+                        break;
+                    case SB_THUMBTRACK:
+                        ReportScrollPos = reportSi.nTrackPos;
+                        break;
+                }
+                if (ReportScrollPos != reportSi.nPos) {
+                    SetScrollPos(ReportScrollbar, SB_CTL, ReportScrollPos, TRUE);
+                    reportScrollPos = ReportScrollPos;
                     UpdateHomeBookLabels(hwnd);
                 }
                 break;

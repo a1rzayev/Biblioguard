@@ -9,15 +9,18 @@
 
 #define MAX_BOOKS 100
 #define MAX_USERS 100
-
+#define MAX_REPORTS 1000
 
 
 //usable variables
 Book books[MAX_BOOKS];
 User users[MAX_USERS];
+char reports[MAX_REPORTS][100];
+
 
 unsigned int booksCount = 0;
 unsigned int usersCount = 0;
+unsigned int reportsCount = 0;
 unsigned int lastBookId = 0;
 unsigned int lastUserId = 0;
 
