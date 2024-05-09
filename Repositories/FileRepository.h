@@ -108,14 +108,12 @@ char* readFile(const char *filename) {
 void initFileSystem(){
     CreateDirectoryA("C:/Biblioguard", NULL);
     CreateDirectoryA("C:/Biblioguard/Books", NULL);
-    CreateDirectoryA("C:/Biblioguard/UsersBooks", NULL);
-    CreateDirectoryA("C:/Biblioguard/rentedBooks", NULL);
-    CreateDirectoryA("C:/Biblioguard/purchasedBooks", NULL);
     CreateDirectoryA("C:/Biblioguard/Users", NULL);
-    // createFile("C:/Biblioguard/booksCount.txt", "0");
-    // createFile("C:/Biblioguard/usersCount.txt", "0");
+    CreateDirectoryA("C:/Biblioguard/UsersBooks", NULL);
+    CreateDirectoryA("C:/Biblioguard/UsersBooks/rentedBooks", NULL);
+    CreateDirectoryA("C:/Biblioguard/UsersBooks/purchasedBooks", NULL);
     createFile("C:/Biblioguard/lastBookId.txt", "0");
     createFile("C:/Biblioguard/lastUserId.txt", "0");
-
+    createFile("C:/Biblioguard/logging.txt", "");
 } 
 
