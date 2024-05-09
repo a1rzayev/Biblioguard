@@ -20,9 +20,42 @@ void UpdateAdminScrollBar(HWND hwnd) {
 
 void InitializeAdminBookLabels(HWND hwnd){
     int yPos = 50;
+    char title[50];
+    char priceChar[6];
+    char quantitySChar[4];
+    char quantityRChar[4];
+    char rentalDChar[4];
+    char popularityChar[4];
+    char info[256];
     for (int i = 0; i < adminBooksCount; ++i) {
-        AdminBooksListLabel[i * 4] = CreateWindow("STATIC", books[i].author, WS_CHILD | WS_VISIBLE, 110, yPos, 150, BOOK_HEIGHT, hwnd, (HMENU)(IDC_ADMIN_TITLE_ID0 + i), NULL, NULL);
-        AdminBooksListLabel[i * 4 + 1] = CreateWindow("STATIC", books[i].genre, WS_CHILD | WS_VISIBLE, 110, yPos + 40, 1000, BOOK_HEIGHT, hwnd,  (HMENU)(IDC_ADMIN_DESCRIPTION_ID0 + i), NULL, NULL);
+        strcpy(info, "");
+        strcpy(title, "");
+
+        strcat(title, books[i].title);
+        strcat(info, "Author:");
+        strcat(info, books[i].author);
+
+        strcat(info, " Genre: ");
+        strcat(info, books[i].genre);
+
+        snprintf(priceChar, 7, " %f", books[i].price);
+        strcat(info, priceChar);
+        strcat(info, "$ (S:");
+        snprintf(quantitySChar, 4, " %hu", books[i].quantityForSale);
+        strcat(info, quantitySChar);
+        strcat(info, " R:");
+        snprintf(quantityRChar, 4, " %hu", books[i].quantityForRent);
+        strcat(info, quantityRChar);
+        strcat(info, "[");
+        snprintf(rentalDChar, 4, " %hu", books[i].rentalDuration);
+        strcat(info, rentalDChar);
+        strcat(info, " days]) Popularity: ");
+        snprintf(popularityChar, 4, " %hu", books[i].popularity);
+        strcat(info, popularityChar);
+
+        snprintf(priceChar, 5, " %hu", books[i].quantityForSale);
+        AdminBooksListLabel[i * 4] = CreateWindow("STATIC", title, WS_CHILD | WS_VISIBLE, 110, yPos, 150, BOOK_HEIGHT, hwnd, (HMENU)(IDC_ADMIN_TITLE_ID0 + i), NULL, NULL);
+        AdminBooksListLabel[i * 4 + 1] = CreateWindow("STATIC", info, WS_CHILD | WS_VISIBLE, 110, yPos + 40, 1000, BOOK_HEIGHT, hwnd, (HMENU)(IDC_ADMIN_DESCRIPTION_ID0 + i), NULL, NULL);
         AdminBooksListLabel[i * 4 + 2] = CreateWindow("BUTTON", "Edit", WS_CHILD | WS_VISIBLE, 1110, yPos + 40, 50, BOOK_HEIGHT, hwnd, (HMENU)(IDC_ADMIN_EDIT_ID0 + i), NULL, NULL);
         AdminBooksListLabel[i * 4 + 3] = CreateWindow("BUTTON", "X", WS_CHILD | WS_VISIBLE, 1160, yPos + 40, 50,  BOOK_HEIGHT, hwnd, (HMENU)(IDC_ADMIN_DELETE_ID0 + i), NULL, NULL);
         yPos += 2 * BOOK_HEIGHT;
@@ -40,8 +73,14 @@ void UpdateAdminBookLabels(HWND hwnd) {
     }
 }
 
+void UpdateAdminView(HWND hwnd){
+    UpdateAdminScrollBar(hwnd);
+    UpdateAdminBookLabels(hwnd);
+    UpdateWindow(hwnd);
+}
+
 void ShowAdminView(HWND hwnd){
-    adminBooksCount = MAX_BOOKS;
+    adminBooksCount = booksCount;
 
     InitializeAdminBookLabels(hwnd);
     RECT clientRect;
@@ -52,7 +91,5 @@ void ShowAdminView(HWND hwnd){
     AdminToLoginButton = CreateWindow("BUTTON", "Back to login", WS_CHILD | WS_VISIBLE, 0, 640, 100, 40, hwnd, (HMENU)IDC_ADMIN_TOLOGIN_BUTTON, NULL, NULL);
     AdminScrollbar = CreateWindow("SCROLLBAR", "", WS_CHILD | WS_VISIBLE | SBS_VERT, clientRect.right - SCROLLBAR_WIDTH, 0, SCROLLBAR_WIDTH, clientRect.bottom, hwnd,  (HMENU)IDC_ADMIN_SCROLLBAR, NULL, NULL);
 
-    UpdateAdminScrollBar(hwnd);
-    UpdateAdminBookLabels(hwnd);
-    UpdateWindow(hwnd);
+    UpdateAdminView(hwnd);
 }

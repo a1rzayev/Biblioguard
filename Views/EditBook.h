@@ -13,26 +13,33 @@ void ShowEditView(HWND hwnd, unsigned int id) {
     SetWindowText(EditQrentInput, "");
     SetWindowText(EditRdurationInput, "");
 
-    char priceChar[5];
+    
+    char title[50];
+    char author[50];
+    char genre[25];
+    char priceChar[6];
     char quantitySChar[4];
     char quantityRChar[4];
     char rentalDChar[4];
-    sprintf(priceChar, "%.2f", books[id].price); 
-    sprintf(quantitySChar, "%d", books[id].quantityForSale); 
-    sprintf(quantityRChar, "%d", books[id].quantityForRent); 
-    sprintf(rentalDChar, "%d", books[id].rentalDuration); 
+    strcat(title, books[id].title);
+    strcat(author, books[id].author);
+    strcat(genre, books[id].genre);
+    snprintf(priceChar, 7, "%f", books[id].price); 
+    snprintf(quantitySChar, 4, "%hu", books[id].quantityForSale); 
+    snprintf(quantityRChar, 4, "%hu", books[id].quantityForRent); 
+    snprintf(rentalDChar, 4, "%hu", books[id].rentalDuration); 
 
     EditTitleLabel = CreateWindow("STATIC", "Title:", WS_CHILD | WS_VISIBLE, 350, 280, 100, 20, hwnd, (HMENU)IDC_EDIT_TITLE_LABEL, NULL, NULL);
-    EditTitleInput = CreateWindow("EDIT", books[id].title, WS_CHILD | WS_VISIBLE | WS_BORDER, 450, 280, 180, 20, hwnd, (HMENU)IDC_EDIT_TITLE_EDIT, NULL, NULL);
+    EditTitleInput = CreateWindow("EDIT", title, WS_CHILD | WS_VISIBLE | WS_BORDER, 450, 280, 180, 20, hwnd, (HMENU)IDC_EDIT_TITLE_EDIT, NULL, NULL);
     SendMessage(EditTitleInput, EM_SETLIMITTEXT, (WPARAM)50, 0);
     
 
     EditAuthorLabel = CreateWindow("STATIC", "Author:", WS_CHILD | WS_VISIBLE, 350, 320, 100, 20, hwnd, (HMENU)IDC_EDIT_AUTHOR_LABEL, NULL, NULL);
-    EditAuthorInput = CreateWindow("EDIT", books[id].author, WS_CHILD | WS_VISIBLE | WS_BORDER, 450, 320, 180, 20, hwnd, (HMENU)IDC_EDIT_AUTHOR_EDIT, NULL, NULL);
+    EditAuthorInput = CreateWindow("EDIT", author, WS_CHILD | WS_VISIBLE | WS_BORDER, 450, 320, 180, 20, hwnd, (HMENU)IDC_EDIT_AUTHOR_EDIT, NULL, NULL);
     SendMessage(EditAuthorInput, EM_SETLIMITTEXT, (WPARAM)50, 0);
 
     EditGenreLabel = CreateWindow("STATIC", "Genre:", WS_CHILD | WS_VISIBLE, 350, 360, 100, 20, hwnd, (HMENU)IDC_EDIT_GENRE_LABEL, NULL, NULL);
-    EditGenreInput = CreateWindow("EDIT", books[id].genre, WS_CHILD | WS_VISIBLE | WS_BORDER, 450, 360, 180, 20, hwnd, (HMENU)IDC_EDIT_GENRE_EDIT, NULL, NULL);
+    EditGenreInput = CreateWindow("EDIT", genre, WS_CHILD | WS_VISIBLE | WS_BORDER, 450, 360, 180, 20, hwnd, (HMENU)IDC_EDIT_GENRE_EDIT, NULL, NULL);
     SendMessage(EditGenreInput, EM_SETLIMITTEXT, (WPARAM)25, 0);
 
     EditPriceLabel = CreateWindow("STATIC", "Price:", WS_CHILD | WS_VISIBLE, 350, 400, 100, 20, hwnd, (HMENU)IDC_EDIT_PRICE_LABEL, NULL, NULL);

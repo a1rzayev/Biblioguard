@@ -1,5 +1,4 @@
 #include "Book.h"
-#include <stdbool.h>
 
 typedef struct
 {
@@ -9,6 +8,6 @@ typedef struct
     char surname[20];
     char password[20];
     float totalAmountPaid;
-    Book* purchasedBooks[100]; 
-    Book* rentedBooks[100];
+    unsigned int purchasedBooks[100]; 
+    unsigned int rentedBooks[100];
 } User;

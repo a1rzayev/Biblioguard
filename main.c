@@ -1,9 +1,9 @@
 #include "Views/LogIn.h"
-#include <stdio.h>
 #include "Views/SignUp.h"
 #include "Views/Admin.h"
 #include <string.h>
 #include "Views/Home.h"
+// #include <stdio.h>
 #include "Repositories/BookRepository.h"
 #include "Views/AddBook.h"
 #include "Views/EditBook.h"
@@ -13,6 +13,9 @@
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+    initFileSystem();
+    initBookSystem();
+
     WNDCLASS wc = {0};
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = hInstance;
@@ -20,9 +23,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 
     RegisterClass(&wc);
-    //HICON icon = LoadIcon(NULL, IDI_QUESTION);
-    //HDC hdc;
-    //DrawIcon(hdc, 10, 20, icon); 
 
     HWND hwnd = CreateWindowEx(
         0,
@@ -36,9 +36,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         return 0;
     }
     SetClassLongPtr(hwnd, GCLP_HICON, (LONG_PTR) LoadIcon(hInstance, MAKEINTRESOURCE(480))); 
-    // HICON hIcon = (HICON)LoadImage(hInstance, "icon.ico", IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
-    // SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
-    // SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
 
 
 
@@ -59,33 +56,41 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch (uMsg) {
         case WM_COMMAND:
-            int buttonID = LOWORD(wParam);
-            if (buttonID >= IDC_ADMIN_EDIT_ID0 && buttonID <= IDC_ADMIN_EDIT_ID0 + MAX_BOOKS - 1) {
-                int buttonIndex = buttonID - IDC_ADMIN_EDIT_ID0;
+            unsigned int buttonIndex = 0;
+            unsigned int buttonID = LOWORD(wParam);
+            
+            if (buttonID >= IDC_ADMIN_DELETE_ID0 && buttonID <= IDC_ADMIN_DELETE_ID0 + MAX_BOOKS - 1) {
+                unsigned int deleteButtonIndex = buttonID - IDC_ADMIN_DELETE_ID0;
+                DeleteBook(deleteButtonIndex);
+                // UpdateAdminView(hwnd);
+                // UpdateAdminBookLabels(hwnd);
+                // UpdateAdminScrollBar(hwnd);
                 HideAdminView(hwnd);
-                ShowEditView(hwnd, buttonIndex);
-                printf("edit button %d clicked!\n", buttonIndex);
-
+                ShowAdminView(hwnd);
+                //printf("delete button %d clicked!\n", buttonIndex);
             }
-            else if (buttonID >= IDC_ADMIN_DELETE_ID0 && buttonID <= IDC_ADMIN_DELETE_ID0 + MAX_BOOKS - 1) {
-                int buttonIndex = buttonID - IDC_ADMIN_DELETE_ID0;
-                printf("delete button %d clicked!\n", buttonIndex);
+            else if (buttonID >= IDC_ADMIN_EDIT_ID0 && buttonID <= IDC_ADMIN_EDIT_ID0 + MAX_BOOKS - 1) {
+                unsigned int editButtonIndex = buttonID - IDC_ADMIN_EDIT_ID0 ;
+                editingBookOrder = editButtonIndex;
+                HideAdminView(hwnd);
+                ShowEditView(hwnd, editButtonIndex);
+                //printf("edit button %d clicked!\n", buttonIndex);
             }
 
-            switch (LOWORD(wParam)) {
+            switch (buttonID) {
                 //edit lifetime
                 case IDC_EDIT_TOADMIN_BUTTON:
                     HideEditView(hwnd);
                     ShowAdminView(hwnd);
                     break;
                 case IDC_EDIT_SUBMIT_BUTTON:
-                    char titleE[50];
-                    char authorE[50];
-                    char genreE[20];
-                    char priceCharE[5];
-                    char quantitySCharE[4];
-                    char quantityRCharE[4];
-                    char rentalDCharE[4];
+                    char titleE[51];
+                    char authorE[26];
+                    char genreE[26];
+                    char priceCharE[10];
+                    char quantitySCharE[5];
+                    char quantityRCharE[5];
+                    char rentalDCharE[5];
                     GetWindowText(EditTitleInput, titleE, sizeof(titleE));
                     GetWindowText(EditAuthorInput, authorE, sizeof(authorE));
                     GetWindowText(EditGenreInput, genreE, sizeof(genreE));
@@ -104,7 +109,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     else if(resultE == 3)
                         MessageBox(hwnd, "Write correct numbers", "Error!", MB_OK | MB_ICONERROR);
                     else {
-                        //Addbook(usernameS, nameS, surnameS, passwordS);
+                        EditBook(editingBookOrder, titleE, authorE, genreE, priceCharE, quantitySCharE, quantityRCharE, rentalDCharE);
                         HideEditView(hwnd);
                         ShowAdminView(hwnd);
                     }
@@ -170,13 +175,13 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     ShowAddbookView(hwnd);
                     break;
                 case IDC_ADDBOOK_SUBMIT_BUTTON:
-                    char titleA[50];
-                    char authorA[50];
-                    char genreA[20];
-                    char priceCharA[5];
-                    char quantitySCharA[4];
-                    char quantityRCharA[4];
-                    char rentalDCharA[4];
+                    char titleA[51];
+                    char authorA[26];
+                    char genreA[26];
+                    char priceCharA[10];
+                    char quantitySCharA[5];
+                    char quantityRCharA[5];
+                    char rentalDCharA[5];
             
                     GetWindowText(AddbookTitleInput, titleA, sizeof(titleA));
                     GetWindowText(AddbookAuthorInput, authorA, sizeof(authorA));
@@ -196,7 +201,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     else if(resultA == 3)
                         MessageBox(hwnd, "Write correct numbers", "Error!", MB_OK | MB_ICONERROR);
                     else {
-                        //Addbook(usernameS, nameS, surnameS, passwordS);
+                        AddBook(titleA, authorA, genreA, priceCharA, quantitySCharA, quantityRCharA, rentalDCharA);
                         HideAddbookView(hwnd);
                         ShowAdminView(hwnd);
                     }
@@ -259,7 +264,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     UpdateAdminBookLabels(hwnd);
                 }
 
-                break;
+                break;  
             }
             else if ((HWND)lParam == UserbooksScrollbar) {
                 SCROLLINFO userbooksSi;
