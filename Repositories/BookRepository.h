@@ -21,6 +21,8 @@ unsigned int usersCount = 0;
 unsigned int lastBookId = 0;
 unsigned int lastUserId = 0;
 
+unsigned int editingBookOrder;
+
 User* currentUser;
 
 const char* BOOK_FORMAT_IN = "(%i, %[^,], %[^,], %[^,], %f, %hu, %hu, %hu)\n";
@@ -300,7 +302,7 @@ bool RentBook(unsigned int buyerId, unsigned int bookId){
 // editors
 void EditBook(unsigned int bookOrder, char* title, char* author, char* genre, const char* price,
              const char* quantityForSale, const char* quantityForRent, const char* rentalDuration){
-    Book editedBook = {lastBookId, "", "", "", atof(price), atoi(quantityForSale),
+    Book editedBook = {books[bookOrder].id, "", "", "", atof(price), atoi(quantityForSale),
                     atoi(quantityForRent), atoi(rentalDuration), 0};
     strncpy(editedBook.title, title, sizeof(editedBook.title));
     strncpy(editedBook.author, author, sizeof(editedBook.author));
@@ -308,15 +310,15 @@ void EditBook(unsigned int bookOrder, char* title, char* author, char* genre, co
     books[bookOrder] = editedBook;
 
     char bookOrderStr[5];
-    sprintf(bookOrderStr, "%hu", bookOrder);
+    sprintf(bookOrderStr, "%hu", books[bookOrder].id);
     char filename[50] = "C:/Biblioguard/Books/";
     strcat(filename, bookOrderStr);
     strcat(filename, ".dat");
 
-    clearFile(filename);
+    //clearFile(filename);
     FILE* file;
     fopen_s(&file, filename, "w+");
-    fprintf_s(file, BOOK_FORMAT_OUT, bookOrder, title, author, genre, books[bookOrder].price,
+    fprintf_s(file, BOOK_FORMAT_OUT, books[bookOrder].id, title, author, genre, books[bookOrder].price,
               books[bookOrder].quantityForSale, books[bookOrder].quantityForRent, books[bookOrder].popularity);
     fclose(file);
 }

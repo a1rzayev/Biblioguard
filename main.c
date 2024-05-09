@@ -56,22 +56,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch (uMsg) {
         case WM_COMMAND:
+            unsigned int buttonIndex = 0;
             unsigned int buttonID = LOWORD(wParam);
-            if (buttonID >= IDC_ADMIN_EDIT_ID0 && buttonID <= IDC_ADMIN_EDIT_ID0 + MAX_BOOKS - 1) {
-                unsigned int buttonIndex = buttonID - IDC_ADMIN_EDIT_ID0;
-                HideAdminView(hwnd);
-                ShowEditView(hwnd, buttonIndex);
-                //printf("edit button %d clicked!\n", buttonIndex);
-            }
-            else if (buttonID >= IDC_ADMIN_DELETE_ID0 && buttonID <= IDC_ADMIN_DELETE_ID0 + MAX_BOOKS - 1) {
-                unsigned int buttonIndex = buttonID - IDC_ADMIN_DELETE_ID0;
-                DeleteBook(buttonIndex);
+            
+            if (buttonID >= IDC_ADMIN_DELETE_ID0 && buttonID <= IDC_ADMIN_DELETE_ID0 + MAX_BOOKS - 1) {
+                unsigned int deleteButtonIndex = buttonID - IDC_ADMIN_DELETE_ID0;
+                DeleteBook(deleteButtonIndex);
                 // UpdateAdminView(hwnd);
                 // UpdateAdminBookLabels(hwnd);
                 // UpdateAdminScrollBar(hwnd);
                 HideAdminView(hwnd);
                 ShowAdminView(hwnd);
                 //printf("delete button %d clicked!\n", buttonIndex);
+            }
+            else if (buttonID >= IDC_ADMIN_EDIT_ID0 && buttonID <= IDC_ADMIN_EDIT_ID0 + MAX_BOOKS - 1) {
+                unsigned int editButtonIndex = buttonID - IDC_ADMIN_EDIT_ID0 ;
+                editingBookOrder = editButtonIndex;
+                HideAdminView(hwnd);
+                ShowEditView(hwnd, editButtonIndex);
+                //printf("edit button %d clicked!\n", buttonIndex);
             }
 
             switch (buttonID) {
@@ -81,13 +84,13 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     ShowAdminView(hwnd);
                     break;
                 case IDC_EDIT_SUBMIT_BUTTON:
-                    char titleE[50];
-                    char authorE[50];
-                    char genreE[20];
-                    char priceCharE[7];
-                    char quantitySCharE[4];
-                    char quantityRCharE[4];
-                    char rentalDCharE[4];
+                    char titleE[51];
+                    char authorE[26];
+                    char genreE[26];
+                    char priceCharE[10];
+                    char quantitySCharE[5];
+                    char quantityRCharE[5];
+                    char rentalDCharE[5];
                     GetWindowText(EditTitleInput, titleE, sizeof(titleE));
                     GetWindowText(EditAuthorInput, authorE, sizeof(authorE));
                     GetWindowText(EditGenreInput, genreE, sizeof(genreE));
@@ -106,7 +109,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     else if(resultE == 3)
                         MessageBox(hwnd, "Write correct numbers", "Error!", MB_OK | MB_ICONERROR);
                     else {
-                        EditBook(buttonID - IDC_ADMIN_EDIT_ID0, titleE, authorE, genreE, priceCharE, quantitySCharE, quantityRCharE, rentalDCharE);
+                        EditBook(editingBookOrder, titleE, authorE, genreE, priceCharE, quantitySCharE, quantityRCharE, rentalDCharE);
                         HideEditView(hwnd);
                         ShowAdminView(hwnd);
                     }
