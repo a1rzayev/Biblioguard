@@ -171,6 +171,18 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 case IDC_REPORT_TOADMIN_BUTTON:
                     HideReportView(hwnd);
                     ShowAdminView(hwnd);
+                    break;     
+                
+                case IDC_ADMIN_PRICESORT_BUTTON:
+                    SortBooksByPriceD();
+                    HideAdminView(hwnd);
+                    ShowAdminView(hwnd);
+                    break;
+                
+                case IDC_ADMIN_POPULARITYSORT_BUTTON:
+                    SortBooksByPopularityD();
+                    HideAdminView(hwnd);
+                    ShowAdminView(hwnd);
                     break;
                 
                 case IDC_ADMIN_TOLOGIN_BUTTON:
@@ -223,6 +235,19 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 case IDC_HOME_TOLOGIN_BUTTON:
                     HideHomeView(hwnd);
                     ShowLoginView(hwnd);
+                    break;
+                    
+                
+                case IDC_HOME_PRICESORT_BUTTON:
+                    SortBooksByPriceD();
+                    HideHomeView(hwnd);
+                    ShowHomeView(hwnd);
+                    break;
+                
+                case IDC_HOME_POPULARITYSORT_BUTTON:
+                    SortBooksByPopularityD();
+                    HideHomeView(hwnd);
+                    ShowHomeView(hwnd);
                     break;
                 case IDC_HOME_TOUSERBOOKS_BUTTON:
                     HideHomeView(hwnd);

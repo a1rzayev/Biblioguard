@@ -20,7 +20,7 @@ void UpdateHomeScrollBar(HWND hwnd) {
 
 void InitializeHomeBookLabels(HWND hwnd){
     int yPos = 50;
-    char title[50];
+    char title[256];
     char priceChar[6];
     char quantitySChar[4];
     char quantityRChar[4];
@@ -29,9 +29,7 @@ void InitializeHomeBookLabels(HWND hwnd){
     char info[256];
     for (int i = 0; i < homeBooksCount; ++i) {
         strcpy(info, "");
-        strcpy(title, "");
-
-        strcat(title, books[i].title);
+        strcpy(title, books[i].title);
 
         strcat(info, "Author: ");
         strcat(info, books[i].author);
@@ -80,6 +78,9 @@ void ShowHomeView(HWND hwnd){
     RECT clientRect;
     GetClientRect(hwnd, &clientRect);
     homeVisibleBooksCount = clientRect.bottom / BOOK_HEIGHT;
+    HomePriceSortButton = CreateWindow("BUTTON", "Sort(price)", WS_CHILD | WS_VISIBLE, 0, 480, 100, 40, hwnd, (HMENU)IDC_HOME_PRICESORT_BUTTON, NULL, NULL);
+    HomePopularitySortButton = CreateWindow("BUTTON", "Sort(popularity)", WS_CHILD | WS_VISIBLE, 0, 520, 100, 40, hwnd, (HMENU)IDC_HOME_POPULARITYSORT_BUTTON, NULL, NULL);
+    
     HomeBooksLabel = CreateWindow("STATIC", "Books", WS_CHILD | WS_VISIBLE, 0, 0, 100, 40, hwnd, (HMENU)IDC_HOME_BOOKS_LABEL, NULL, NULL);
     HomeToUserbooksButton = CreateWindow("BUTTON", "My books", WS_CHILD | WS_VISIBLE, 0, 600, 100, 40, hwnd, (HMENU)IDC_HOME_TOUSERBOOKS_BUTTON, NULL, NULL);
     HomeToLoginButton = CreateWindow("BUTTON", "Back to login", WS_CHILD | WS_VISIBLE, 0, 640, 100, 40, hwnd, (HMENU)IDC_HOME_TOLOGIN_BUTTON, NULL, NULL);

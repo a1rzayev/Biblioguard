@@ -38,6 +38,8 @@
 #define IDC_ADMIN_TOLOGIN_BUTTON 303
 #define IDC_ADMIN_TOADD_BUTTON 304
 #define IDC_ADMIN_TOREPORT_BUTTON 305
+#define IDC_ADMIN_PRICESORT_BUTTON 306
+#define IDC_ADMIN_POPULARITYSORT_BUTTON 307
 #define IDC_ADMIN_EDIT_ID0 1000
 #define IDC_ADMIN_DELETE_ID0 21000
 #define IDC_ADMIN_TITLE_ID0 3000
@@ -106,6 +108,8 @@
 #define IDC_HOME_SCROLLBAR 902
 #define IDC_HOME_TOLOGIN_BUTTON 903
 #define IDC_HOME_TOUSERBOOKS_BUTTON 904
+#define IDC_HOME_PRICESORT_BUTTON 906
+#define IDC_HOME_POPULARITYSORT_BUTTON 907
 #define IDC_HOME_BUY_ID0 5000
 #define IDC_HOME_RENT_ID0 6000
 #define IDC_HOME_TITLE_ID0 7000
@@ -141,6 +145,8 @@ HWND ReportToAdminButton;
 //admin elements
 HWND AdminBooksLabel;
 HWND AdminBooksListLabel[MAX_BOOKS * 4];
+HWND AdminPriceSortButton;
+HWND AdminPopularitySortButton;
 HWND AdminScrollbar;
 HWND AdminToLoginButton;
 HWND AdminToAddButton;
@@ -157,6 +163,8 @@ HWND UserbooksToHomeButton;
 //home elements
 HWND HomeBooksLabel;
 HWND HomeBooksListLabel[MAX_BOOKS * 4];
+HWND HomePriceSortButton;
+HWND HomePopularitySortButton;
 HWND HomeScrollbar;
 HWND HomeToLoginButton;
 HWND HomeToUserbooksButton;
@@ -279,6 +287,8 @@ void HideAdminView(HWND hwnd){
     ShowWindow(AdminBooksLabel, SW_HIDE);
     ShowWindow(AdminScrollbar, SW_HIDE);
     ShowWindow(AdminToLoginButton, SW_HIDE);
+    ShowWindow(AdminPriceSortButton, SW_HIDE);
+    ShowWindow(AdminPopularitySortButton, SW_HIDE);
     ShowWindow(AdminToAddButton, SW_HIDE);
     ShowWindow(AdminToReportButton, SW_HIDE);
     UpdateWindow(hwnd);
@@ -316,6 +326,8 @@ void HideHomeView(HWND hwnd){
     ShowWindow(HomeScrollbar, SW_HIDE);
     ShowWindow(HomeToLoginButton, SW_HIDE);
     ShowWindow(HomeToUserbooksButton, SW_HIDE);
+    ShowWindow(HomePriceSortButton, SW_HIDE);
+    ShowWindow(HomePopularitySortButton, SW_HIDE);
     UpdateWindow(hwnd);
 }
 

@@ -62,7 +62,43 @@ bool RentBook(unsigned int buyerId, unsigned int bookId);
 void EditBook(unsigned int bookOrder, char* title, char* author, char* genre, const char* price,
              const char* quantityForSale, const char* quantityForRent, const char* rentalDuration);
 void DeleteBook(unsigned int bookOrder);
+void SortBooksByPopularityD();
+void SortBooksByPriceD();
 
+
+void SortBooksByPopularityD() { //selection sort for sorting books by popularity field
+    int i, j, maxIndex;
+    Book temp;
+    for (i = 0; i < booksCount - 1; ++i) {
+        maxIndex = i;
+        for (j = i + 1; j < booksCount; ++j) {
+            if (books[j].popularity > books[maxIndex].popularity) {
+                maxIndex = j;
+            }
+        }
+        // Swap the found maximum element with the first element
+        temp = books[maxIndex];
+        books[maxIndex] = books[i];
+        books[i] = temp;
+    }
+}
+
+void SortBooksByPriceD() { //selection sort for sorting books by price field
+    int i, j, maxIndex;
+    Book temp;
+    for (i = 0; i < booksCount - 1; ++i) {
+        maxIndex = i;
+        for (j = i + 1; j < booksCount; ++j) {
+            if (books[j].price > books[maxIndex].price) {
+                maxIndex = j;
+            }
+        }
+        // Swap the found maximum element with the first element
+        temp = books[maxIndex];
+        books[maxIndex] = books[i];
+        books[i] = temp;
+    }
+}
 
 
 //initializator
@@ -172,9 +208,13 @@ char isCorrectBookInfo(char* title, char* author, char* genre, char* price,  cha
 
 //login
 bool isCorrectLogin(char* username, char* password){
+    char usernameA[20], passwordA[20];
+    strcpy(usernameA, username);
+    strcpy(passwordA, password);
     if(username == "admin") return false;
-    for (int i = 0; i < MAX_USERS; ++i) {
-        if(users[i].username == username && users[i].password == password){
+    for (int i = 0; i < usersCount; ++i) {
+        printf("%s %s", (char *)users[i].username, (char *)users[i].password);
+        if(users[i].username == usernameA && users[i].password == passwordA){
             return true;
             currentUser = &users[i];
         }
@@ -354,6 +394,9 @@ void DeleteBook(unsigned int bookOrder){
             printf("Error deleting file '%s': %s\n", filename, strerror(errno));
         }
     }
+    // reports[reportsCount] = 
+    // sprintf(bookOrderStr, "%hu", books[bookOrder].id);
+    // addToFile("C:/Biblioguard/logging.txt", )
 }
 
 

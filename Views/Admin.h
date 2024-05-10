@@ -20,7 +20,7 @@ void UpdateAdminScrollBar(HWND hwnd) {
 
 void InitializeAdminBookLabels(HWND hwnd){
     int yPos = 50;
-    char title[50];
+    char title[256];
     char priceChar[6];
     char quantitySChar[4];
     char quantityRChar[4];
@@ -29,9 +29,8 @@ void InitializeAdminBookLabels(HWND hwnd){
     char info[256];
     for (int i = 0; i < adminBooksCount; ++i) {
         strcpy(info, "");
-        strcpy(title, "");
 
-        strcat(title, books[i].title);
+        strcpy(title, books[i].title);
         strcat(info, "Author:");
         strcat(info, books[i].author);
 
@@ -54,7 +53,7 @@ void InitializeAdminBookLabels(HWND hwnd){
         strcat(info, popularityChar);
 
         snprintf(priceChar, 5, " %hu", books[i].quantityForSale);
-        AdminBooksListLabel[i * 4] = CreateWindow("STATIC", title, WS_CHILD | WS_VISIBLE, 110, yPos, 150, BOOK_HEIGHT, hwnd, (HMENU)(IDC_ADMIN_TITLE_ID0 + i), NULL, NULL);
+        AdminBooksListLabel[i * 4] = CreateWindow("STATIC", books[i].title, WS_CHILD | WS_VISIBLE, 110, yPos, 150, BOOK_HEIGHT, hwnd, (HMENU)(IDC_ADMIN_TITLE_ID0 + i), NULL, NULL);
         AdminBooksListLabel[i * 4 + 1] = CreateWindow("STATIC", info, WS_CHILD | WS_VISIBLE, 110, yPos + 40, 1000, BOOK_HEIGHT, hwnd, (HMENU)(IDC_ADMIN_DESCRIPTION_ID0 + i), NULL, NULL);
         AdminBooksListLabel[i * 4 + 2] = CreateWindow("BUTTON", "Edit", WS_CHILD | WS_VISIBLE, 1110, yPos + 40, 50, BOOK_HEIGHT, hwnd, (HMENU)(IDC_ADMIN_EDIT_ID0 + i), NULL, NULL);
         AdminBooksListLabel[i * 4 + 3] = CreateWindow("BUTTON", "X", WS_CHILD | WS_VISIBLE, 1160, yPos + 40, 50,  BOOK_HEIGHT, hwnd, (HMENU)(IDC_ADMIN_DELETE_ID0 + i), NULL, NULL);
@@ -86,6 +85,9 @@ void ShowAdminView(HWND hwnd){
     RECT clientRect;
     GetClientRect(hwnd, &clientRect);
     adminVisibleBooksCount = clientRect.bottom / BOOK_HEIGHT;
+    AdminPriceSortButton = CreateWindow("BUTTON", "Sort(price)", WS_CHILD | WS_VISIBLE, 0, 480, 100, 40, hwnd, (HMENU)IDC_ADMIN_PRICESORT_BUTTON, NULL, NULL);
+    AdminPopularitySortButton = CreateWindow("BUTTON", "Sort(popularity)", WS_CHILD | WS_VISIBLE, 0, 520, 100, 40, hwnd, (HMENU)IDC_ADMIN_POPULARITYSORT_BUTTON, NULL, NULL);
+    
     AdminBooksLabel = CreateWindow("STATIC", "Books", WS_CHILD | WS_VISIBLE, 0, 0, 100, 40, hwnd, (HMENU)IDC_ADMIN_BOOKS_LABEL, NULL, NULL);
     AdminToReportButton = CreateWindow("BUTTON", "Report", WS_CHILD | WS_VISIBLE, 0, 560, 100, 40, hwnd, (HMENU)IDC_ADMIN_TOREPORT_BUTTON, NULL, NULL);
     AdminToAddButton = CreateWindow("BUTTON", "Add new book", WS_CHILD | WS_VISIBLE, 0, 600, 100, 40, hwnd, (HMENU)IDC_ADMIN_TOADD_BUTTON, NULL, NULL);

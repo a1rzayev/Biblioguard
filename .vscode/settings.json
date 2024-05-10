@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "charconv": "c",
-        "xmemory": "c"
+        "xmemory": "c",
+        "random": "c"
     }
 }
