@@ -2,6 +2,8 @@
     "files.associations": {
         "charconv": "c",
         "xmemory": "c",
-        "random": "c"
+        "random": "c",
+        "viewcontroller.h": "c",
+        "bookcontroller.h": "c"
     }
 }

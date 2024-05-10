@@ -1,5 +1,5 @@
-#include "../Repositories/ViewRepository.h"
-#include "../Repositories/BookRepository.h"
+#include "../Controllers/ViewController.h"
+#include "../Controllers/BookController.h"
 
 #pragma once
 
