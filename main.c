@@ -76,6 +76,22 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 ShowEditView(hwnd, editButtonIndex);
                 //printf("edit button %d clicked!\n", buttonIndex);
             }
+            else if (buttonID >= IDC_HOME_RENT_ID0 && buttonID <= IDC_HOME_RENT_ID0 + MAX_BOOKS - 1) {
+                unsigned int rentButtonIndex = buttonID - IDC_HOME_RENT_ID0;
+                if (RentBook(currentUser->id, rentButtonIndex)) {
+                    HideHomeView(hwnd);
+                    ShowHomeView(hwnd);
+                }
+                else MessageBox(hwnd, "Not enough books to rent", "Error!", MB_OK | MB_ICONERROR);
+            }
+            else if (buttonID >= IDC_HOME_BUY_ID0 && buttonID <= IDC_HOME_BUY_ID0 + MAX_BOOKS - 1) {
+                unsigned int buyButtonIndex = buttonID - IDC_HOME_BUY_ID0;
+                if (BuyBook(currentUser->id, buyButtonIndex)) {
+                    HideHomeView(hwnd);
+                    ShowHomeView(hwnd);
+                }
+                else MessageBox(hwnd, "Not enough books to buy", "Error!", MB_OK | MB_ICONERROR);
+            }
 
             switch (buttonID) {
                 //edit lifetime

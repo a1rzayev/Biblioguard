@@ -1,9 +1,9 @@
 #include <windows.h>
+#include <limits.h>
 
 #pragma once
 
 #define MAIN 1
-
 #define MAX_BOOKS 100
 #define MAX_REPORTS 1000
 #define BOOK_HEIGHT 30

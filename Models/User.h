@@ -8,6 +8,8 @@ typedef struct
     char surname[20];
     char password[20];
     float totalAmountPaid;
+    unsigned int purchasedCount;
+    unsigned int rentedCount;
     unsigned int purchasedBooks[100]; 
     unsigned int rentedBooks[100];
 } User;

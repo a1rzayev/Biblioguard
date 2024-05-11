@@ -54,8 +54,8 @@ void InitializeHomeBookLabels(HWND hwnd){
 
         HomeBooksListLabel[i * 4] = CreateWindow("STATIC", books[i].title, WS_CHILD | WS_VISIBLE, 110, yPos, 150, BOOK_HEIGHT, hwnd, (HMENU)(IDC_HOME_TITLE_ID0 + i), NULL, NULL);
         HomeBooksListLabel[i * 4 + 1] = CreateWindow("STATIC", info, WS_CHILD | WS_VISIBLE, 110, yPos + 40, 1000, BOOK_HEIGHT, hwnd,  (HMENU)(IDC_HOME_DESCRIPTION_ID0 + i), NULL, NULL);
-        HomeBooksListLabel[i * 4 + 2] = CreateWindow("BUTTON", "Rent", WS_CHILD | WS_VISIBLE, 1110, yPos + 40, 50, BOOK_HEIGHT, hwnd, (HMENU)(IDC_HOME_BUY_ID0 + i), NULL, NULL);
-        HomeBooksListLabel[i * 4 + 3] = CreateWindow("BUTTON", "Buy", WS_CHILD | WS_VISIBLE, 1160, yPos + 40, 50,  BOOK_HEIGHT, hwnd, (HMENU)(IDC_HOME_RENT_ID0 + i), NULL, NULL);
+        HomeBooksListLabel[i * 4 + 2] = CreateWindow("BUTTON", "Buy", WS_CHILD | WS_VISIBLE, 1110, yPos + 40, 50, BOOK_HEIGHT, hwnd, (HMENU)(IDC_HOME_BUY_ID0 + i), NULL, NULL);
+        HomeBooksListLabel[i * 4 + 3] = CreateWindow("BUTTON", "Rent", WS_CHILD | WS_VISIBLE, 1160, yPos + 40, 50,  BOOK_HEIGHT, hwnd, (HMENU)(IDC_HOME_RENT_ID0 + i), NULL, NULL);
         yPos += 2 * BOOK_HEIGHT;
     }
 }
