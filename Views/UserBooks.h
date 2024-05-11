@@ -27,12 +27,12 @@ void InitializeUserbooksBookLabelsR(HWND hwnd){
     char infoR[256];
     char infoB[256];
     Book myRentedBooks[100];
-    for(int i = 0; i < currentUser->rentedCount; ++i){
+    for(int i = 0; i < currentUser.rentedCount; ++i){
         for(int j = 0; j < booksCount; ++j){
-            if(books[j].id == currentUser->rentedBooks[i]) myRentedBooks[i] = books[j];
+            if(books[j].id == currentUser.rentedBooks[i]) myRentedBooks[i] = books[j];
         }
     }
-    for (int i = 0; i < currentUser->rentedCount; ++i) {
+    for (int i = 0; i < currentUser.rentedCount; ++i) {
         strcpy(infoR, "");
         strcpy(title, myRentedBooks[i].title);
         strcat(infoR, "Author: ");
@@ -64,12 +64,12 @@ void InitializeUserbooksBookLabelsB(HWND hwnd){
     char infoR[256];
     char infoB[256];
     Book myPurchasedBooks[100];
-    for(int i = 0; i < currentUser->purchasedCount; ++i){
+    for(int i = 0; i < currentUser.purchasedCount; ++i){
         for(int j = 0; j < booksCount; ++j){
-            if(books[j].id == currentUser->purchasedBooks[i]) myPurchasedBooks[i] = books[j];
+            if(books[j].id == currentUser.purchasedBooks[i]) myPurchasedBooks[i] = books[j];
         }
     }
-    for (int i = 0; i < currentUser->purchasedCount; ++i) {
+    for (int i = 0; i < currentUser.purchasedCount; ++i) {
         strcpy(infoB, "");
         strcpy(title, myPurchasedBooks[i].title);
         strcat(infoR, "Author: ");
@@ -91,7 +91,7 @@ void InitializeUserbooksBookLabelsB(HWND hwnd){
 
 void UpdateUserbooksBookLabelsR(HWND hwnd) {
     int yPos =  -userbooksScrollPos * BOOK_HEIGHT;
-    for (int i = 0; i < currentUser->rentedCount; ++i) {
+    for (int i = 0; i < currentUser.rentedCount; ++i) {
         SetWindowPos(UserbooksRentedListLabel[i * 3], NULL, 750, yPos, 150, BOOK_HEIGHT, SWP_NOZORDER);
         SetWindowPos(UserbooksRentedListLabel[i * 3 + 1], NULL, 750, yPos + 40, 400, BOOK_HEIGHT, SWP_NOZORDER);
         SetWindowPos(UserbooksRentedListLabel[i * 3 + 2], NULL, 1150, yPos + 40, 30, BOOK_HEIGHT, SWP_NOZORDER);
@@ -101,7 +101,7 @@ void UpdateUserbooksBookLabelsR(HWND hwnd) {
 
 void UpdateUserbooksBookLabelsB(HWND hwnd) {
     int yPos =  -userbooksScrollPos * BOOK_HEIGHT;
-    for (int i = 0; i < currentUser->purchasedCount; ++i) {
+    for (int i = 0; i < currentUser.purchasedCount; ++i) {
         SetWindowPos(UserbooksPurchasedListLabel[i * 3], NULL, 110, yPos, 150, BOOK_HEIGHT, SWP_NOZORDER);
         SetWindowPos(UserbooksPurchasedListLabel[i * 3 + 1], NULL, 110, yPos + 40, 400, BOOK_HEIGHT, SWP_NOZORDER);
         SetWindowPos(UserbooksPurchasedListLabel[i * 3 + 2], NULL, 510, yPos + 40, 30, BOOK_HEIGHT, SWP_NOZORDER);

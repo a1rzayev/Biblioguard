@@ -24,7 +24,7 @@ unsigned int reportsCount = 0;
 unsigned int lastBookId = 0;
 unsigned int lastUserId = 0;
 
-User* currentUser;
+User currentUser;
 
 unsigned int editingBookOrder;
 
@@ -206,7 +206,7 @@ bool isCorrectLogin(char* username, char* password){
     for (int i = 0; i < usersCount; ++i) {
         printf("%s %s", username, password);
         if(!strcmp(users[i].username, username) && !strcmp(users[i].password, password)){
-            currentUser = &users[i];
+            currentUser = users[i];
             return true;
         }
     }
@@ -283,7 +283,7 @@ void SignUp(char* username, char* name, char* surname, char* password){
     strncpy(newUser.surname, surname, sizeof(newUser.surname));
     strncpy(newUser.password, password, sizeof(newUser.password));
     users[usersCount] = newUser;
-    currentUser = &users[lastUserId];
+    currentUser = users[lastUserId];
     
     char lastUserIdStr[5];
     sprintf(lastUserIdStr, "%hu", lastUserId);
@@ -367,26 +367,34 @@ bool BuyBook(unsigned int buyerId, unsigned int bookOrder){
         users[buyerId].purchasedCount++;
         users[buyerId].totalAmountPaid += books[bookOrder].price;
         WriteBook(books[bookOrder]);
-        WriteUser(users[buyerId]);
+        WriteUser(currentUser);
 
         char filePath[50];
         char userIdStr[5];
-        sprintf(userIdStr, "%hu", users[buyerId].id);
+        sprintf(userIdStr, "%hu", currentUser.id);
         char idStr[5];
         sprintf(idStr, "%hu", books[bookOrder].id);
         strcat(filePath, "C:/Biblioguard/UsersBooks/purchasedBooks/");
         strcat(filePath, userIdStr);
         strcat(filePath, ".dat");
-        addToFile(filePath, idStr);
+        FILE *file = fopen(filePath, "a");
+        if (file == NULL)
+        {
+            printf("Error opening file.\n");
+            return false;
+        }
+        fprintf(file, idStr);
+
+        fclose(file);
         
 
-        char* infoText = "User(id = ";
-        strcat(infoText, users[buyerId].id);
+        char infoText[256] = "User(id = ";
+        strcat(infoText, userIdStr);
         strcat(infoText, ") bought book(id = ");
-        strcat(infoText, books[bookOrder].id);
+        strcat(infoText, idStr);
         strcat(infoText, "\n");
         // addToFile("C:/Biblioguard/logging.txt", infoText);
-        FILE *file = fopen("C:/Biblioguard/logging.txt", "a");
+        file = fopen("C:/Biblioguard/logging.txt", "a");
         if (file == NULL)
         {
             printf("Error opening file.\n");
@@ -395,7 +403,7 @@ bool BuyBook(unsigned int buyerId, unsigned int bookOrder){
         fprintf(file, infoText);
 
         fclose(file);
-        printf("user(%i) bought a book(%i)", users[buyerId].id, books[bookOrder].id);
+        printf("user(%i) bought a book(%i)", currentUser.id, books[bookOrder].id);
         return true;
     }
     return false;
@@ -408,7 +416,7 @@ bool RentBook(unsigned int buyerId, unsigned int bookOrder){
         users[buyerId].rentedCount++;
         users[buyerId].totalAmountPaid += books[bookOrder].price;
         WriteBook(books[bookOrder]);
-        WriteUser(users[buyerId]);
+        WriteUser(currentUser);
 
         char filePath[50];
         char userIdStr[5];
@@ -418,15 +426,23 @@ bool RentBook(unsigned int buyerId, unsigned int bookOrder){
         strcat(filePath, "C:/Biblioguard/UsersBooks/rentedBooks/");
         strcat(filePath, userIdStr);
         strcat(filePath, ".dat");
-        addToFile(filePath, idStr);
+        FILE *file = fopen(filePath, "a");
+        if (file == NULL)
+        {
+            printf("Error opening file.\n");
+            return false;
+        }
+        fprintf(file, idStr);
+
+        fclose(file);
 
 
-        char* infoText = "User(id = ";
-        strcat(infoText, users[buyerId].id);
+        char infoText[256] = "User(id = ";
+        strcat(infoText, userIdStr);
         strcat(infoText, ") rented book(id = ");
-        strcat(infoText, books[bookOrder].id);
+        strcat(infoText, idStr);
         strcat(infoText, "\n");
-        FILE *file = fopen("C:/Biblioguard/logging.txt", "a");
+        file = fopen("C:/Biblioguard/logging.txt", "a");
         if (file == NULL)
         {
             printf("Error opening file.\n");

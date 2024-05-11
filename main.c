@@ -80,7 +80,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             }
             else if (buttonID >= IDC_HOME_RENT_ID0 && buttonID <= IDC_HOME_RENT_ID0 + MAX_BOOKS - 1) {
                 unsigned int rentButtonIndex = buttonID - IDC_HOME_RENT_ID0;
-                if (RentBook(currentUser->id, rentButtonIndex)) {
+                if (RentBook(currentUser.id, rentButtonIndex)) {
                     HideHomeView(hwnd);
                     ShowHomeView(hwnd);
                     char text[256];
@@ -90,7 +90,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             }
             else if (buttonID >= IDC_HOME_BUY_ID0 && buttonID <= IDC_HOME_BUY_ID0 + MAX_BOOKS - 1) {
                 unsigned int buyButtonIndex = buttonID - IDC_HOME_BUY_ID0;
-                if (BuyBook(currentUser->id, buyButtonIndex)) {
+                if (BuyBook(currentUser.id, buyButtonIndex)) {
                     HideHomeView(hwnd);
                     ShowHomeView(hwnd);
                 }
@@ -228,7 +228,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 
                 case IDC_ADMIN_TOLOGIN_BUTTON:
                     HideAdminView(hwnd);
-                    currentUser = NULL;
                     ShowLoginView(hwnd);
                     break;
 
