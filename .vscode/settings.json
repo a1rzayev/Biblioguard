@@ -6,6 +6,7 @@
         "viewcontroller.h": "c",
         "bookcontroller.h": "c",
         "xlocale": "c",
-        "system_error": "c"
+        "system_error": "c",
+        "userbooks.h": "c"
     }
 }

@@ -1,5 +1,8 @@
 #include <windows.h>
 #include <stdio.h>
+// #include "../Models/Book.h"
+
+#pragma once
 
 void createFile(const char* filename, const char* text){
     FILE *file = fopen(filename, "r");
@@ -22,11 +25,19 @@ void clearFile(const char* filename){
     if (file != NULL) fclose(file);
 }
 
-void addToFile(const char* filename, char* text){
+void addToFile(const char* filename, const char* text){
     FILE* file = fopen(filename, "a");
     if (file != NULL) {
         fputs(text, file);
         fputs("\n", file);
+        fclose(file);
+    }
+}
+
+void addToFileA(const char* filename, char text[256]){
+    FILE* file = fopen(filename, "a");
+    if (file != NULL) {
+        fwrite(text, sizeof(char), strlen(text), file);
         fclose(file);
     }
 }

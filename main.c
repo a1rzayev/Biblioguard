@@ -8,7 +8,7 @@
 #include "Views/EditBook.h"
 #include "Views/UserBooks.h"
 #include "Views/Report.h"
-
+//#include "Resources/MainResources.rc"
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -21,6 +21,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     wc.hInstance = hInstance;
     wc.lpszClassName = "Biblioguard";
     wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    //wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
+
 
     RegisterClass(&wc);
 
@@ -81,6 +83,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 if (RentBook(currentUser->id, rentButtonIndex)) {
                     HideHomeView(hwnd);
                     ShowHomeView(hwnd);
+                    char text[256];
+                    //addToFile("C:/Biblioguard/logging.txt", )
                 }
                 else MessageBox(hwnd, "Not enough books to rent", "Error!", MB_OK | MB_ICONERROR);
             }
@@ -91,6 +95,26 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     ShowHomeView(hwnd);
                 }
                 else MessageBox(hwnd, "Not enough books to buy", "Error!", MB_OK | MB_ICONERROR);
+            }
+            else if (buttonID >= IDC_USERBOOKS_PURCHASED_DELETE_ID0 && buttonID <= IDC_USERBOOKS_PURCHASED_DELETE_ID0 + MAX_BOOKS - 1) {
+                unsigned int buyButtonIndex = buttonID - IDC_USERBOOKS_PURCHASED_DELETE_ID0;
+                // if (BuyBook(currentUser->id, buyButtonIndex)) {
+                //     HideHomeView(hwnd);
+                //     ShowHomeView(hwnd);
+                // }
+                // else MessageBox(hwnd, "Not enough books to buy", "Error!", MB_OK | MB_ICONERROR);
+                
+                //DeletePurchasedBook();
+            }
+            else if (buttonID >= IDC_USERBOOKS_RENTED_DELETE_ID0 && buttonID <= IDC_USERBOOKS_RENTED_DELETE_ID0 + MAX_BOOKS - 1) {
+                unsigned int buyButtonIndex = buttonID - IDC_USERBOOKS_RENTED_DELETE_ID0;
+                // if (BuyBook(currentUser->id, buyButtonIndex)) {
+                //     HideHomeView(hwnd);
+                //     ShowHomeView(hwnd);
+                // }
+                // else MessageBox(hwnd, "Not enough books to buy", "Error!", MB_OK | MB_ICONERROR);
+                
+                //DeletePurchasedBook();
             }
 
             switch (buttonID) {
@@ -180,6 +204,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     break;      
                 
                 case IDC_ADMIN_TOREPORT_BUTTON:
+                    getReports();
                     HideAdminView(hwnd);
                     ShowReportView(hwnd);
                     break;
@@ -350,7 +375,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 if (UserbooksScrollPos != userbooksSi.nPos) {
                     SetScrollPos(UserbooksScrollbar, SB_CTL, UserbooksScrollPos, TRUE);
                     userbooksScrollPos = UserbooksScrollPos;
-                    UpdateUserbooksBookLabels(hwnd);
+                    UpdateUserbooksBookLabelsR(hwnd);
+                    UpdateUserbooksBookLabelsB(hwnd);
                 }
 
                 break;

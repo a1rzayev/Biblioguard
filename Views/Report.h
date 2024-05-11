@@ -25,7 +25,7 @@ void InitializeReportLabels(HWND hwnd){
         // strcpy(info, "");
 
         // strcat(info, reports[i]);
-        ReportListLabel[i] = CreateWindow("STATIC", reports[i], WS_CHILD | WS_VISIBLE, 110, yPos, 150, REPORT_HEIGHT, hwnd, (HMENU)(IDC_REPORT_INFO_ID0 + i), NULL, NULL);
+        ReportListLabel[i] = CreateWindow("STATIC", reports[i], WS_CHILD | WS_VISIBLE, 110, yPos, 1000, REPORT_HEIGHT, hwnd, (HMENU)(IDC_REPORT_INFO_ID0 + i), NULL, NULL);
         yPos += REPORT_HEIGHT;
     }
 }
@@ -33,7 +33,7 @@ void InitializeReportLabels(HWND hwnd){
 void UpdateReportLabels(HWND hwnd) {
     int yPos =  -reportScrollPos * REPORT_HEIGHT;
     for (int i = 0; i < reportsShownCount; ++i) {
-        SetWindowPos(ReportListLabel[i], NULL, 110, yPos, 150, REPORT_HEIGHT, SWP_NOZORDER);
+        SetWindowPos(ReportListLabel[i], NULL, 110, yPos, 1000, REPORT_HEIGHT, SWP_NOZORDER);
         yPos += REPORT_HEIGHT + 40;
     }
 }

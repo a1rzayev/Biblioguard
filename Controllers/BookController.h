@@ -50,6 +50,7 @@ void getLastBookId();
 void getLastUserId();
 void getBooks();
 void getUsers();
+void getReports();
 void AddBook(char* title, char* author, char* genre, const char* price,
              const char* quantityForSale, const char* quantityForRent, const char* rentalDuration);
 void SignUp(char* username, char* name, char* surname, char* password);
@@ -148,8 +149,8 @@ bool isEmptyBook(Book book) {
 
 //signup
 bool isAvailableUsername(char* username){
-    for (int i = 0; i < MAX_USERS; ++i) 
-        if(users[i].username == username) return false;
+    for (int i = 0; i < usersCount; ++i) 
+        if(!strcmp(users[i].username, username)) return false;
     return true;
 }
 
@@ -259,6 +260,20 @@ void AddBook(char* title, char* author, char* genre, const char* price,
     ++booksCount;
     setLastBookId();
     //setBooksCount();
+
+    char infoText[256] = "Book(id = ";
+    strcat(infoText, lastBookIdStr);
+    strcat(infoText, ") was added");
+    strcat(infoText, "\n");
+    // addToFile("C:/Biblioguard/logging.txt", infoText);
+    file = fopen("C:/Biblioguard/logging.txt", "a");
+    if (file == NULL) {
+        printf("Error opening file.\n");
+        return;
+    }
+    fprintf(file, infoText);
+
+    fclose(file);
 }
 
 void SignUp(char* username, char* name, char* surname, char* password){
@@ -296,6 +311,21 @@ void SignUp(char* username, char* name, char* surname, char* password){
     ++lastUserId;
     ++usersCount;
     setLastUserId();
+
+    
+    char infoText[256] = "User(id = ";
+    strcat(infoText, lastUserIdStr);
+    strcat(infoText, ") was authorized");
+    strcat(infoText, "\n");
+    // addToFile("C:/Biblioguard/logging.txt", infoText);
+    file = fopen("C:/Biblioguard/logging.txt", "a");
+    if (file == NULL) {
+        printf("Error opening file.\n");
+        return;
+    }
+    fprintf(file, infoText);
+
+    fclose(file);
     //setUsersCount();
 } 
 
@@ -334,20 +364,39 @@ bool BuyBook(unsigned int buyerId, unsigned int bookOrder){
     if(books[bookOrder].quantityForSale > 0) {
         books[bookOrder].quantityForSale--;
         users[buyerId].purchasedBooks[users[buyerId].purchasedCount] = books[bookOrder].id;
+        users[buyerId].purchasedCount++;
         users[buyerId].totalAmountPaid += books[bookOrder].price;
-        //rewrite
         WriteBook(books[bookOrder]);
         WriteUser(users[buyerId]);
 
         char filePath[50];
-        snprintf(filePath, sizeof(filePath), "C:/Biblioguard/UsersBooks/purchasedBooks/%s", users[buyerId].id);
-        FILE *file;
-        fopen_s(&file, filePath, "a");
-        fprintf_s(file, "%i\n", books[bookOrder].id);
-        fclose(file);
-        return true;
+        char userIdStr[5];
+        sprintf(userIdStr, "%hu", users[buyerId].id);
+        char idStr[5];
+        sprintf(idStr, "%hu", books[bookOrder].id);
+        strcat(filePath, "C:/Biblioguard/UsersBooks/purchasedBooks/");
+        strcat(filePath, userIdStr);
+        strcat(filePath, ".dat");
+        addToFile(filePath, idStr);
+        
 
+        char* infoText = "User(id = ";
+        strcat(infoText, users[buyerId].id);
+        strcat(infoText, ") bought book(id = ");
+        strcat(infoText, books[bookOrder].id);
+        strcat(infoText, "\n");
+        // addToFile("C:/Biblioguard/logging.txt", infoText);
+        FILE *file = fopen("C:/Biblioguard/logging.txt", "a");
+        if (file == NULL)
+        {
+            printf("Error opening file.\n");
+            return false;
+        }
+        fprintf(file, infoText);
+
+        fclose(file);
         printf("user(%i) bought a book(%i)", users[buyerId].id, books[bookOrder].id);
+        return true;
     }
     return false;
 }
@@ -356,19 +405,37 @@ bool RentBook(unsigned int buyerId, unsigned int bookOrder){
     if(books[bookOrder].quantityForRent > 0) {
         books[bookOrder].quantityForRent--;
         users[buyerId].rentedBooks[users[buyerId].rentedCount] = books[bookOrder].id;
+        users[buyerId].rentedCount++;
         users[buyerId].totalAmountPaid += books[bookOrder].price;
-        //rewrite
         WriteBook(books[bookOrder]);
         WriteUser(users[buyerId]);
 
         char filePath[50];
-        snprintf(filePath, sizeof(filePath), "C:/Biblioguard/UsersBooks/rentedBooks/%s", users[buyerId].id);
-        FILE *file;
-        fopen_s(&file, filePath, "a");
-        fprintf_s(file, "%i\n", books[bookOrder].id);
-        fclose(file);
+        char userIdStr[5];
+        sprintf(userIdStr, "%hu", users[buyerId].id);
+        char idStr[5];
+        sprintf(idStr, "%hu", books[bookOrder].id);
+        strcat(filePath, "C:/Biblioguard/UsersBooks/rentedBooks/");
+        strcat(filePath, userIdStr);
+        strcat(filePath, ".dat");
+        addToFile(filePath, idStr);
 
-        printf("user(%i) rented a book(%i)", users[buyerId].id, books[bookOrder].id);
+
+        char* infoText = "User(id = ";
+        strcat(infoText, users[buyerId].id);
+        strcat(infoText, ") rented book(id = ");
+        strcat(infoText, books[bookOrder].id);
+        strcat(infoText, "\n");
+        FILE *file = fopen("C:/Biblioguard/logging.txt", "a");
+        if (file == NULL)
+        {
+            printf("Error opening file.\n");
+            return false;
+        }
+        fprintf(file, infoText);
+
+        fclose(file);
+        printf("user(%i) bought a book(%i)", users[buyerId].id, books[bookOrder].id);
         return true;
     }
     return false;
@@ -474,6 +541,29 @@ void getBooks(){
     {
         perror("");
         return;
+    }
+}
+
+void getReports(){
+    reportsCount = 0;
+    FILE *file = fopen("C:/Biblioguard/logging.txt", "r");
+    if (file == NULL) {
+        printf("Error opening file.\n");
+        return;
+    }
+    while (fgets(reports[reportsCount], 100, file) != NULL) {
+        reports[reportsCount][strcspn(reports[reportsCount], "\n")] = '\0';
+        ++reportsCount;
+
+        if (reportsCount >= MAX_REPORTS) {
+            printf("Maximum number of lines reached.\n");
+            break;
+        }
+    }
+    fclose(file);
+    printf("Lines read from file:\n");
+    for (int i = 0; i < reportsCount; ++i) {
+        printf("%s\n", reports[i]);
     }
 }
 
