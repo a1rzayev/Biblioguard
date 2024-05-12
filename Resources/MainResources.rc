@@ -1,2 +1,2 @@
-#include "Views/ViewRepository.h"
-MAIN ICON "icon.ico"
+IDI_ICON1 ICON "your_icon.ico"
+

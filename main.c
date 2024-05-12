@@ -3,12 +3,12 @@
 #include "Views/Admin.h"
 #include <string.h>
 #include "Views/Home.h"
-// #include <stdio.h>
-#include "Repositories/BookRepository.h"
+#include "Controllers/BookController.h"
 #include "Views/AddBook.h"
 #include "Views/EditBook.h"
 #include "Views/UserBooks.h"
-
+#include "Views/Report.h"
+//#include "Resources/MainResources.rc"
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -21,6 +21,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     wc.hInstance = hInstance;
     wc.lpszClassName = "Biblioguard";
     wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    //wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
+
 
     RegisterClass(&wc);
 
@@ -75,6 +77,44 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 HideAdminView(hwnd);
                 ShowEditView(hwnd, editButtonIndex);
                 //printf("edit button %d clicked!\n", buttonIndex);
+            }
+            else if (buttonID >= IDC_HOME_RENT_ID0 && buttonID <= IDC_HOME_RENT_ID0 + MAX_BOOKS - 1) {
+                unsigned int rentButtonIndex = buttonID - IDC_HOME_RENT_ID0;
+                if (RentBook(currentUser->id, rentButtonIndex)) {
+                    HideHomeView(hwnd);
+                    ShowHomeView(hwnd);
+                    char text[256];
+                    //addToFile("C:/Biblioguard/logging.txt", )
+                }
+                else MessageBox(hwnd, "Not enough books to rent", "Error!", MB_OK | MB_ICONERROR);
+            }
+            else if (buttonID >= IDC_HOME_BUY_ID0 && buttonID <= IDC_HOME_BUY_ID0 + MAX_BOOKS - 1) {
+                unsigned int buyButtonIndex = buttonID - IDC_HOME_BUY_ID0;
+                if (BuyBook(currentUser->id, buyButtonIndex)) {
+                    HideHomeView(hwnd);
+                    ShowHomeView(hwnd);
+                }
+                else MessageBox(hwnd, "Not enough books to buy", "Error!", MB_OK | MB_ICONERROR);
+            }
+            else if (buttonID >= IDC_USERBOOKS_PURCHASED_DELETE_ID0 && buttonID <= IDC_USERBOOKS_PURCHASED_DELETE_ID0 + MAX_BOOKS - 1) {
+                unsigned int buyButtonIndex = buttonID - IDC_USERBOOKS_PURCHASED_DELETE_ID0;
+                // if (BuyBook(currentUser->id, buyButtonIndex)) {
+                //     HideHomeView(hwnd);
+                //     ShowHomeView(hwnd);
+                // }
+                // else MessageBox(hwnd, "Not enough books to buy", "Error!", MB_OK | MB_ICONERROR);
+                
+                //DeletePurchasedBook();
+            }
+            else if (buttonID >= IDC_USERBOOKS_RENTED_DELETE_ID0 && buttonID <= IDC_USERBOOKS_RENTED_DELETE_ID0 + MAX_BOOKS - 1) {
+                unsigned int buyButtonIndex = buttonID - IDC_USERBOOKS_RENTED_DELETE_ID0;
+                // if (BuyBook(currentUser->id, buyButtonIndex)) {
+                //     HideHomeView(hwnd);
+                //     ShowHomeView(hwnd);
+                // }
+                // else MessageBox(hwnd, "Not enough books to buy", "Error!", MB_OK | MB_ICONERROR);
+                
+                //DeletePurchasedBook();
             }
 
             switch (buttonID) {
@@ -163,9 +203,31 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     else MessageBox(hwnd, "Wrong username or password", "Error!", MB_OK | MB_ICONERROR);
                     break;      
                 
+                case IDC_ADMIN_TOREPORT_BUTTON:
+                    getReports();
+                    HideAdminView(hwnd);
+                    ShowReportView(hwnd);
+                    break;
+                
+                case IDC_REPORT_TOADMIN_BUTTON:
+                    HideReportView(hwnd);
+                    ShowAdminView(hwnd);
+                    break;     
+                
+                case IDC_ADMIN_PRICESORT_BUTTON:
+                    SortBooksByPriceD();
+                    HideAdminView(hwnd);
+                    ShowAdminView(hwnd);
+                    break;
+                
+                case IDC_ADMIN_POPULARITYSORT_BUTTON:
+                    SortBooksByPopularityD();
+                    HideAdminView(hwnd);
+                    ShowAdminView(hwnd);
+                    break;
+                
                 case IDC_ADMIN_TOLOGIN_BUTTON:
                     HideAdminView(hwnd);
-                    currentUser = NULL;
                     ShowLoginView(hwnd);
                     break;
 
@@ -213,6 +275,19 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 case IDC_HOME_TOLOGIN_BUTTON:
                     HideHomeView(hwnd);
                     ShowLoginView(hwnd);
+                    break;
+                    
+                
+                case IDC_HOME_PRICESORT_BUTTON:
+                    SortBooksByPriceD();
+                    HideHomeView(hwnd);
+                    ShowHomeView(hwnd);
+                    break;
+                
+                case IDC_HOME_POPULARITYSORT_BUTTON:
+                    SortBooksByPopularityD();
+                    HideHomeView(hwnd);
+                    ShowHomeView(hwnd);
                     break;
                 case IDC_HOME_TOUSERBOOKS_BUTTON:
                     HideHomeView(hwnd);
@@ -299,7 +374,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 if (UserbooksScrollPos != userbooksSi.nPos) {
                     SetScrollPos(UserbooksScrollbar, SB_CTL, UserbooksScrollPos, TRUE);
                     userbooksScrollPos = UserbooksScrollPos;
-                    UpdateUserbooksBookLabels(hwnd);
+                    UpdateUserbooksBookLabelsR(hwnd);
+                    UpdateUserbooksBookLabelsB(hwnd);
                 }
 
                 break;
@@ -338,6 +414,44 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 if (HomeScrollPos != homeSi.nPos) {
                     SetScrollPos(HomeScrollbar, SB_CTL, HomeScrollPos, TRUE);
                     homeScrollPos = HomeScrollPos;
+                    UpdateHomeBookLabels(hwnd);
+                }
+                break;
+            }
+
+            else if ((HWND)lParam == ReportScrollbar) {
+                SCROLLINFO reportSi;
+                reportSi.cbSize = sizeof(reportSi);
+                reportSi.fMask = SIF_ALL;
+                GetScrollInfo(ReportScrollbar, SB_CTL, &reportSi);
+                int ReportScrollPos = reportSi.nPos;
+
+                switch (LOWORD(wParam)) {
+                    case SB_TOP:
+                        ReportScrollPos = 0;
+                        break;
+                    case SB_BOTTOM:
+                        ReportScrollPos = reportsShownCount - reportVisiblesCount;
+                        break;
+                    case SB_LINEUP:
+                        ReportScrollPos = max(0, ReportScrollPos - 1);
+                        break;
+                    case SB_LINEDOWN:
+                        ReportScrollPos = min(reportsShownCount - reportVisiblesCount, ReportScrollPos + 1);
+                        break;
+                    case SB_PAGEUP:
+                        ReportScrollPos = max(0, ReportScrollPos - reportVisiblesCount);
+                        break;
+                    case SB_PAGEDOWN:
+                        ReportScrollPos = min(reportsShownCount - reportVisiblesCount, ReportScrollPos + reportVisiblesCount);
+                        break;
+                    case SB_THUMBTRACK:
+                        ReportScrollPos = reportSi.nTrackPos;
+                        break;
+                }
+                if (ReportScrollPos != reportSi.nPos) {
+                    SetScrollPos(ReportScrollbar, SB_CTL, ReportScrollPos, TRUE);
+                    reportScrollPos = ReportScrollPos;
                     UpdateHomeBookLabels(hwnd);
                 }
                 break;

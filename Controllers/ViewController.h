@@ -1,11 +1,13 @@
 #include <windows.h>
+#include <limits.h>
 
 #pragma once
 
 #define MAIN 1
-
 #define MAX_BOOKS 100
+#define MAX_REPORTS 1000
 #define BOOK_HEIGHT 30
+#define REPORT_HEIGHT 30
 #define SCROLLBAR_WIDTH 20
 
 //login codes
@@ -35,10 +37,19 @@
 #define IDC_ADMIN_SCROLLBAR 302
 #define IDC_ADMIN_TOLOGIN_BUTTON 303
 #define IDC_ADMIN_TOADD_BUTTON 304
+#define IDC_ADMIN_TOREPORT_BUTTON 305
+#define IDC_ADMIN_PRICESORT_BUTTON 306
+#define IDC_ADMIN_POPULARITYSORT_BUTTON 307
 #define IDC_ADMIN_EDIT_ID0 1000
 #define IDC_ADMIN_DELETE_ID0 21000
 #define IDC_ADMIN_TITLE_ID0 3000
 #define IDC_ADMIN_DESCRIPTION_ID0 4000
+
+//report codes
+#define IDC_REPORT_LABEL 601
+#define IDC_REPORT_SCROLLBAR 602
+#define IDC_REPORT_TOADMIN_BUTTON 603
+#define IDC_REPORT_INFO_ID0 6000
 
 
 //userbooks codes
@@ -97,6 +108,8 @@
 #define IDC_HOME_SCROLLBAR 902
 #define IDC_HOME_TOLOGIN_BUTTON 903
 #define IDC_HOME_TOUSERBOOKS_BUTTON 904
+#define IDC_HOME_PRICESORT_BUTTON 906
+#define IDC_HOME_POPULARITYSORT_BUTTON 907
 #define IDC_HOME_BUY_ID0 5000
 #define IDC_HOME_RENT_ID0 6000
 #define IDC_HOME_TITLE_ID0 7000
@@ -123,12 +136,21 @@ HWND SignUpPasswordInput;
 HWND SignUpToLoginButton; 
 HWND SignUpSubmitButton; 
 
+//report elements
+HWND ReportLabel;
+HWND ReportListLabel[MAX_REPORTS];
+HWND ReportScrollbar;
+HWND ReportToAdminButton;
+
 //admin elements
 HWND AdminBooksLabel;
 HWND AdminBooksListLabel[MAX_BOOKS * 4];
+HWND AdminPriceSortButton;
+HWND AdminPopularitySortButton;
 HWND AdminScrollbar;
 HWND AdminToLoginButton;
 HWND AdminToAddButton;
+HWND AdminToReportButton;
 
 //userbooks elements
 HWND UserbooksPurchasedLabel;
@@ -138,9 +160,11 @@ HWND UserbooksRentedListLabel[MAX_BOOKS * 3];
 HWND UserbooksScrollbar;
 HWND UserbooksToHomeButton;
 
-//admin elements
+//home elements
 HWND HomeBooksLabel;
 HWND HomeBooksListLabel[MAX_BOOKS * 4];
+HWND HomePriceSortButton;
+HWND HomePopularitySortButton;
 HWND HomeScrollbar;
 HWND HomeToLoginButton;
 HWND HomeToUserbooksButton;
@@ -263,7 +287,26 @@ void HideAdminView(HWND hwnd){
     ShowWindow(AdminBooksLabel, SW_HIDE);
     ShowWindow(AdminScrollbar, SW_HIDE);
     ShowWindow(AdminToLoginButton, SW_HIDE);
+    ShowWindow(AdminPriceSortButton, SW_HIDE);
+    ShowWindow(AdminPopularitySortButton, SW_HIDE);
     ShowWindow(AdminToAddButton, SW_HIDE);
+    ShowWindow(AdminToReportButton, SW_HIDE);
+    UpdateWindow(hwnd);
+}
+
+
+
+void HideReportList(HWND hwnd){
+    for (int i = 0; i < MAX_REPORTS; ++i) {       
+        ShowWindow(ReportListLabel[i], SW_HIDE);
+    }
+}
+
+void HideReportView(HWND hwnd){
+    HideReportList(hwnd);
+    ShowWindow(ReportLabel, SW_HIDE);
+    ShowWindow(ReportScrollbar, SW_HIDE);
+    ShowWindow(ReportToAdminButton, SW_HIDE);
     UpdateWindow(hwnd);
 }
 
@@ -283,6 +326,8 @@ void HideHomeView(HWND hwnd){
     ShowWindow(HomeScrollbar, SW_HIDE);
     ShowWindow(HomeToLoginButton, SW_HIDE);
     ShowWindow(HomeToUserbooksButton, SW_HIDE);
+    ShowWindow(HomePriceSortButton, SW_HIDE);
+    ShowWindow(HomePopularitySortButton, SW_HIDE);
     UpdateWindow(hwnd);
 }
 

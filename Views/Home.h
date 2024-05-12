@@ -1,5 +1,5 @@
-#include "../Repositories/ViewRepository.h"
-#include "../Repositories/BookRepository.h"
+#include "../Controllers/ViewController.h"
+#include "../Controllers/BookController.h"
 
 #pragma once
 
@@ -20,7 +20,7 @@ void UpdateHomeScrollBar(HWND hwnd) {
 
 void InitializeHomeBookLabels(HWND hwnd){
     int yPos = 50;
-    char title[50];
+    char title[256];
     char priceChar[6];
     char quantitySChar[4];
     char quantityRChar[4];
@@ -29,9 +29,7 @@ void InitializeHomeBookLabels(HWND hwnd){
     char info[256];
     for (int i = 0; i < homeBooksCount; ++i) {
         strcpy(info, "");
-        strcpy(title, "");
-
-        strcat(title, books[i].title);
+        strcpy(title, books[i].title);
 
         strcat(info, "Author: ");
         strcat(info, books[i].author);
@@ -56,8 +54,8 @@ void InitializeHomeBookLabels(HWND hwnd){
 
         HomeBooksListLabel[i * 4] = CreateWindow("STATIC", books[i].title, WS_CHILD | WS_VISIBLE, 110, yPos, 150, BOOK_HEIGHT, hwnd, (HMENU)(IDC_HOME_TITLE_ID0 + i), NULL, NULL);
         HomeBooksListLabel[i * 4 + 1] = CreateWindow("STATIC", info, WS_CHILD | WS_VISIBLE, 110, yPos + 40, 1000, BOOK_HEIGHT, hwnd,  (HMENU)(IDC_HOME_DESCRIPTION_ID0 + i), NULL, NULL);
-        HomeBooksListLabel[i * 4 + 2] = CreateWindow("BUTTON", "Rent", WS_CHILD | WS_VISIBLE, 1110, yPos + 40, 50, BOOK_HEIGHT, hwnd, (HMENU)(IDC_HOME_BUY_ID0 + i), NULL, NULL);
-        HomeBooksListLabel[i * 4 + 3] = CreateWindow("BUTTON", "Buy", WS_CHILD | WS_VISIBLE, 1160, yPos + 40, 50,  BOOK_HEIGHT, hwnd, (HMENU)(IDC_HOME_RENT_ID0 + i), NULL, NULL);
+        HomeBooksListLabel[i * 4 + 2] = CreateWindow("BUTTON", "Buy", WS_CHILD | WS_VISIBLE, 1110, yPos + 40, 50, BOOK_HEIGHT, hwnd, (HMENU)(IDC_HOME_BUY_ID0 + i), NULL, NULL);
+        HomeBooksListLabel[i * 4 + 3] = CreateWindow("BUTTON", "Rent", WS_CHILD | WS_VISIBLE, 1160, yPos + 40, 50,  BOOK_HEIGHT, hwnd, (HMENU)(IDC_HOME_RENT_ID0 + i), NULL, NULL);
         yPos += 2 * BOOK_HEIGHT;
     }
 }
@@ -80,6 +78,9 @@ void ShowHomeView(HWND hwnd){
     RECT clientRect;
     GetClientRect(hwnd, &clientRect);
     homeVisibleBooksCount = clientRect.bottom / BOOK_HEIGHT;
+    HomePriceSortButton = CreateWindow("BUTTON", "Sort(price)", WS_CHILD | WS_VISIBLE, 0, 480, 100, 40, hwnd, (HMENU)IDC_HOME_PRICESORT_BUTTON, NULL, NULL);
+    HomePopularitySortButton = CreateWindow("BUTTON", "Sort(popularity)", WS_CHILD | WS_VISIBLE, 0, 520, 100, 40, hwnd, (HMENU)IDC_HOME_POPULARITYSORT_BUTTON, NULL, NULL);
+    
     HomeBooksLabel = CreateWindow("STATIC", "Books", WS_CHILD | WS_VISIBLE, 0, 0, 100, 40, hwnd, (HMENU)IDC_HOME_BOOKS_LABEL, NULL, NULL);
     HomeToUserbooksButton = CreateWindow("BUTTON", "My books", WS_CHILD | WS_VISIBLE, 0, 600, 100, 40, hwnd, (HMENU)IDC_HOME_TOUSERBOOKS_BUTTON, NULL, NULL);
     HomeToLoginButton = CreateWindow("BUTTON", "Back to login", WS_CHILD | WS_VISIBLE, 0, 640, 100, 40, hwnd, (HMENU)IDC_HOME_TOLOGIN_BUTTON, NULL, NULL);

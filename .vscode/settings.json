@@ -1,6 +1,12 @@
 {
     "files.associations": {
         "charconv": "c",
-        "xmemory": "c"
+        "xmemory": "c",
+        "random": "c",
+        "viewcontroller.h": "c",
+        "bookcontroller.h": "c",
+        "xlocale": "c",
+        "system_error": "c",
+        "userbooks.h": "c"
     }
 }
