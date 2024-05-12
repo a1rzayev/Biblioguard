@@ -372,6 +372,7 @@ bool BuyBook(unsigned int buyerId, unsigned int bookOrder){
         books[bookOrder].quantityForSale--;
         users[buyerId].purchasedBooks[users[buyerId].purchasedCount] = books[bookOrder];
         users[buyerId].purchasedCount++;
+        books[bookOrder].popularity++;
         users[buyerId].totalAmountPaid += books[bookOrder].price;
         WriteBook(books[bookOrder]);
         WriteUser(users[buyerId]);
@@ -412,6 +413,7 @@ bool RentBook(unsigned int buyerId, unsigned int bookOrder){
         books[bookOrder].quantityForRent--;
         users[buyerId].rentedBooks[users[buyerId].rentedCount] = books[bookOrder];
         users[buyerId].rentedCount++;
+        books[bookOrder].popularity++;
         users[buyerId].totalAmountPaid += books[bookOrder].price;
         WriteBook(books[bookOrder]);
         WriteUser(users[buyerId]);

@@ -51,19 +51,19 @@ void ShowEditView(HWND hwnd, unsigned int id) {
 
     EditPriceLabel = CreateWindow("STATIC", "Price:", WS_CHILD | WS_VISIBLE, 350, 400, 100, 20, hwnd, (HMENU)IDC_EDIT_PRICE_LABEL, NULL, NULL);
     EditPriceInput = CreateWindow("EDIT", priceChar, WS_CHILD | WS_VISIBLE | WS_BORDER, 450, 400, 180, 20, hwnd, (HMENU)IDC_EDIT_PRICE_EDIT, NULL, NULL);
-    SendMessage(EditPriceInput, EM_SETLIMITTEXT, (WPARAM)5, 0);
+    SendMessage(EditPriceInput, EM_SETLIMITTEXT, (WPARAM)6, 0);
 
     EditQsaleLabel = CreateWindow("STATIC", "Quantity(sale):", WS_CHILD | WS_VISIBLE, 650, 280, 100, 40, hwnd, (HMENU)IDC_EDIT_QSALE_LABEL, NULL, NULL);
     EditQsaleInput = CreateWindow("EDIT", quantitySChar, WS_CHILD | WS_VISIBLE | WS_BORDER, 750, 280, 180, 40, hwnd, (HMENU)IDC_EDIT_QSALE_EDIT, NULL, NULL);
-    SendMessage(EditQsaleInput, EM_SETLIMITTEXT, (WPARAM)4, 0);
+    SendMessage(EditQsaleInput, EM_SETLIMITTEXT, (WPARAM)2, 0);
     
     EditQrentLabel = CreateWindow("STATIC", "Quantity(rent):", WS_CHILD | WS_VISIBLE, 650, 330, 100, 40, hwnd, (HMENU)IDC_EDIT_QRENT_LABEL, NULL, NULL);
     EditQrentInput = CreateWindow("EDIT", quantityRChar, WS_CHILD | WS_VISIBLE | WS_BORDER, 750, 330, 180, 40, hwnd, (HMENU)IDC_EDIT_QRENT_EDIT, NULL, NULL);
-    SendMessage(EditQrentInput, EM_SETLIMITTEXT, (WPARAM)4, 0);
+    SendMessage(EditQrentInput, EM_SETLIMITTEXT, (WPARAM)2, 0);
     
     EditRdurationLabel = CreateWindow("STATIC", "Rental duration(days):", WS_CHILD | WS_VISIBLE, 650, 380, 100, 40, hwnd, (HMENU)IDC_EDIT_RDURATION_LABEL, NULL, NULL);
     EditRdurationInput = CreateWindow("EDIT", rentalDChar, WS_CHILD | WS_VISIBLE | WS_BORDER, 750, 380, 180, 40, hwnd, (HMENU)IDC_EDIT_RDURATION_EDIT, NULL, NULL);
-    SendMessage(EditRdurationInput, EM_SETLIMITTEXT, (WPARAM)4, 0);
+    SendMessage(EditRdurationInput, EM_SETLIMITTEXT, (WPARAM)2, 0);
 
     EditSubmitButton = CreateWindow("BUTTON", "Edit book", WS_CHILD | WS_VISIBLE, 350, 440, 100, 20, hwnd, (HMENU)IDC_EDIT_SUBMIT_BUTTON, NULL, NULL);
     EditToAdminButton = CreateWindow("BUTTON", "Back", WS_CHILD | WS_VISIBLE, 830, 440, 100, 20, hwnd, (HMENU)IDC_EDIT_TOADMIN_BUTTON, NULL, NULL);
