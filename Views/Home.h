@@ -3,9 +3,23 @@
 
 #pragma once
 
+//used to define scroll-info
 int homeBooksCount;
 int homeVisibleBooksCount;
 int homeScrollPos = 0; 
+
+//updates scrollbar
+void UpdateHomeScrollBar(HWND hwnd);
+//initializes books list
+void InitializeHomeBookLabels(HWND hwnd);
+//updates books list
+void UpdateHomeBookLabels(HWND hwnd);
+//shows home view
+void ShowHomeView(HWND hwnd);
+
+
+
+
 
 void UpdateHomeScrollBar(HWND hwnd) {
     SCROLLINFO homeSi;

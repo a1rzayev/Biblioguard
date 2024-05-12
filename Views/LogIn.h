@@ -3,6 +3,12 @@
 
 #pragma once
 
+//show login view
+void ShowLoginView(HWND hwnd);
+
+
+
+
 
 void ShowLoginView(HWND hwnd) {
     LogInUsernameLabel = CreateWindow("STATIC", "Username:", WS_CHILD | WS_VISIBLE, 500, 300, 100, 20, hwnd, (HMENU)IDC_LOGIN_USERNAME_LABEL, NULL, NULL);

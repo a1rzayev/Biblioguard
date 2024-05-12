@@ -5,95 +5,120 @@
 #include "FileController.h"
 #include <stdbool.h>
 #include "../Libraries/dirent.h"
+
 #pragma once
 
+//usable constants
 #define MAX_BOOKS 100
 #define MAX_USERS 100
 #define MAX_REPORTS 1000
-
 
 //usable variables
 Book books[MAX_BOOKS];
 User users[MAX_USERS];
 char reports[MAX_REPORTS][100];
-
-
 unsigned int booksCount = 0;
 unsigned int usersCount = 0;
 unsigned int reportsCount = 0;
 unsigned int lastBookId = 0;
 unsigned int lastUserId = 0;
-
+unsigned int editingBookOrder;
 User* currentUser;
 
-unsigned int editingBookOrder;
-
+//input-output formats
 const char* BOOK_FORMAT_IN = "(%i, %[^,], %[^,], %[^,], %f, %hu, %hu, %hu, %hu)\n";
 const char* BOOK_FORMAT_OUT = "(%i, %s, %s, %s, %f, %hu, %hu, %hu, %hu)\n";
 const char* USER_FORMAT_IN = "(%i, %[^,], %[^,], %[^,], %[^,], %f, %i, %i)\n";
 const char* USER_FORMAT_OUT = "(%i, %s, %s, %s, %s, %f, %i, %i)\n";
 
-//declarations of functions
+//counts not-null book
 unsigned int countNonNullBooks();
+//checks if the book is salable
 bool isSalable(unsigned int bookId);
+//checks if the book is rentable
 bool isRentable(unsigned int bookId);
+//checks if signup-info is correct
 char isCorrectSignupInfo(char* username, const char* name, const char* surname, const char* password);
+//checks if the string is convertible to float
 bool isConvertibleToFloat(char* str);
+//checks if the string is convertible to unsigned short int
 bool isConvertibleToUSInt(char* str);
+//checks if the string is convertible to unsigned int
 bool isConvertibleToUInt(char* str);
+//checks if book is empty
 bool isEmptyBook(Book book);
+//checks if book-info is correct 
 char isCorrectBookInfo(char* title, char* author, char* genre, char* price,  char* qSale, char* qRent, char* rDuration);
+//checks if login-info is correct 
 bool isCorrectLogin(char* username, char* password);
+//sets last book-id
 void setLastBookId();
+//sets last user-id
 void setLastUserId();
+//gets last book-id
 void getLastBookId();
+//gets last user-id
 void getLastUserId();
+//gets books
 void getBooks();
+//gets users
 void getUsers();
+//gets reports
 void getReports();
+//adds new book
 void AddBook(char* title, char* author, char* genre, const char* price,
              const char* quantityForSale, const char* quantityForRent, const char* rentalDuration);
+//signs up new user
 void SignUp(char* username, char* name, char* surname, char* password);
+//buys book
 bool BuyBook(unsigned int buyerId, unsigned int bookId);
+//rents book
 bool RentBook(unsigned int buyerId, unsigned int bookId);
+//edits book
 void EditBook(unsigned int bookOrder, char* title, char* author, char* genre, const char* price,
              const char* quantityForSale, const char* quantityForRent, const char* rentalDuration);
+//deletes book
 void DeleteBook(unsigned int bookOrder);
+ //selection sort for sorting books by popularity field
 void SortBooksByPopularityD();
+ //selection sort for sorting books by price field
 void SortBooksByPriceD();
+//writes book-info to its file
 void WriteBook(Book newBook);
+//writes user-info to its file
 void WriteUser(User newUser);
 
-void SortBooksByPopularityD() { //selection sort for sorting books by popularity field
+
+
+
+
+//sorts
+void SortBooksByPopularityD() {
     int i, j, maxIndex;
     Book temp;
     if (booksCount <= 1) return;
     for (i = 0; i < booksCount - 1; ++i) {
         maxIndex = i;
         for (j = i + 1; j < booksCount; ++j) {
-            if (books[j].popularity > books[maxIndex].popularity) {
+            if (books[j].popularity > books[maxIndex].popularity)
                 maxIndex = j;
-            }
         }
-        // Swap the found maximum element with the first element
         temp = books[maxIndex];
         books[maxIndex] = books[i];
         books[i] = temp;
     }
 }
 
-void SortBooksByPriceD() { //selection sort for sorting books by price field
+void SortBooksByPriceD() {
     int i, j, maxIndex;
     Book temp;
     if (booksCount <= 1) return;
     for (i = 0; i < booksCount - 1; ++i) {
         maxIndex = i;
         for (j = i + 1; j < booksCount; ++j) {
-            if (books[j].price > books[maxIndex].price) {
+            if (books[j].price > books[maxIndex].price)
                 maxIndex = j;
-            }
         }
-        // Swap the found maximum element with the first element
         temp = books[maxIndex];
         books[maxIndex] = books[i];
         books[i] = temp;
@@ -110,9 +135,7 @@ void initBookSystem(){
 }
 
 
-
-// checkers
-
+//---------checkers----------//
 //books
 bool isSalable(unsigned int bookId){
     for (int i = 0; i < MAX_BOOKS; ++i) {
@@ -145,8 +168,6 @@ bool isEmptyBook(Book book) {
 }
 
 
-
-
 //signup
 bool isAvailableUsername(char* username){
     for (int i = 0; i < usersCount; ++i) 
@@ -159,6 +180,7 @@ char isCorrectSignupInfo(char* username, const char* name, const char* surname, 
     else if(!isAvailableUsername(username) || !strcmp(username, "admin")) return 2;
     return 0;
 }
+
 
 //addbook & edit
 bool isConvertibleToFloat(char* str){
@@ -196,6 +218,7 @@ char isCorrectBookInfo(char* title, char* author, char* genre, char* price,  cha
     return 0;
 }
 
+
 //login
 bool isCorrectLogin(char* username, char* password){
     if(username == "admin") return false;
@@ -208,10 +231,7 @@ bool isCorrectLogin(char* username, char* password){
     }
     return false;
 }
-
-
-
-
+//---------checkers----------//
 
 // setters
 void setLastBookId(){
@@ -229,10 +249,7 @@ void setLastUserId(){
 }
 
 
-
-
-
-// adders
+// appenders
 void AddBook(char* title, char* author, char* genre, const char* price,
              const char* quantityForSale, const char* quantityForRent, const char* rentalDuration){
     Book newBook = {lastBookId, "", "", "", atof(price), atoi(quantityForSale),
@@ -349,15 +366,13 @@ void WriteUser(User newUser){
 }
 
 
-
-
-
 // functions for user
 bool BuyBook(unsigned int buyerId, unsigned int bookOrder){
     if(books[bookOrder].quantityForSale > 0) {
         books[bookOrder].quantityForSale--;
         users[buyerId].purchasedBooks[users[buyerId].purchasedCount] = books[bookOrder];
         users[buyerId].purchasedCount++;
+        books[bookOrder].popularity++;
         users[buyerId].totalAmountPaid += books[bookOrder].price;
         WriteBook(books[bookOrder]);
         WriteUser(users[buyerId]);
@@ -398,6 +413,7 @@ bool RentBook(unsigned int buyerId, unsigned int bookOrder){
         books[bookOrder].quantityForRent--;
         users[buyerId].rentedBooks[users[buyerId].rentedCount] = books[bookOrder];
         users[buyerId].rentedCount++;
+        books[bookOrder].popularity++;
         users[buyerId].totalAmountPaid += books[bookOrder].price;
         WriteBook(books[bookOrder]);
         WriteUser(users[buyerId]);
@@ -436,6 +452,7 @@ bool RentBook(unsigned int buyerId, unsigned int bookOrder){
     }
     return false;
 }
+
 
 // editors
 void EditBook(unsigned int bookOrder, char* title, char* author, char* genre, const char* price,
@@ -482,9 +499,6 @@ void DeleteBook(unsigned int bookOrder){
             printf("Error deleting file '%s': %s\n", filename, strerror(errno));
     }
 }
-
-
-
 
 
 // getters
