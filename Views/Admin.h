@@ -3,9 +3,25 @@
 
 #pragma once
 
+//used to define scroll-info
 int adminBooksCount;
 int adminVisibleBooksCount;
 int adminScrollPos = 0; 
+
+//updates scrollbar
+void UpdateAdminScrollBar(HWND hwnd);
+//initializes books list
+void InitializeAdminBookLabels(HWND hwnd);
+//updates books list
+void UpdateAdminBookLabels(HWND hwnd);
+//updates admin view
+void UpdateAdminView(HWND hwnd);
+//shows admin view
+void ShowAdminView(HWND hwnd);
+
+
+
+
 
 void UpdateAdminScrollBar(HWND hwnd) {
     SCROLLINFO adminSi;
@@ -18,7 +34,7 @@ void UpdateAdminScrollBar(HWND hwnd) {
     SetScrollInfo(AdminScrollbar, SB_CTL, &adminSi, TRUE);
 }
 
-void InitializeAdminBookLabels(HWND hwnd){
+void InitializeAdminBookLabels(HWND hwnd) {
     int yPos = 50;
     char title[256];
     char priceChar[6];
@@ -72,7 +88,7 @@ void UpdateAdminBookLabels(HWND hwnd) {
     }
 }
 
-void UpdateAdminView(HWND hwnd){
+void UpdateAdminView(HWND hwnd) {
     UpdateAdminScrollBar(hwnd);
     UpdateAdminBookLabels(hwnd);
     UpdateWindow(hwnd);

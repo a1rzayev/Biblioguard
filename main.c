@@ -8,24 +8,33 @@
 #include "Views/EditBook.h"
 #include "Views/UserBooks.h"
 #include "Views/Report.h"
-//#include "Resources/MainResources.rc"
 
+
+
+
+
+//realizes all event-listeners, exception-handlers
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+//main function. creates window, initially starts login-view create message listener(to check each step) 
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow);
+
+
+
+
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
     initFileSystem();
     initBookSystem();
 
-    WNDCLASS wc = {0};
+    //initialize window 
+    WNDCLASS wc = {0}; 
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = hInstance;
     wc.lpszClassName = "Biblioguard";
     wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-    //wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
-
-
     RegisterClass(&wc);
 
+    //show window
     HWND hwnd = CreateWindowEx(
         0,
         wc.lpszClassName,
@@ -33,19 +42,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, CW_USEDEFAULT, 1280, 720,
         NULL, NULL, hInstance, NULL);
-
-    if (hwnd == NULL) {
+    if (hwnd == NULL) 
         return 0;
-    }
-    SetClassLongPtr(hwnd, GCLP_HICON, (LONG_PTR) LoadIcon(hInstance, MAKEINTRESOURCE(480))); 
-
-
-
-    ShowLoginView(hwnd); // show login page initially
-
+    
+    //show login page initially
+    ShowLoginView(hwnd);
     ShowWindow(hwnd, nCmdShow);
     UpdateWindow(hwnd);
 
+    //get messages(button-click, text-regocnization and etc.)
     MSG msg = {0};
     while (GetMessage(&msg, NULL, 0, 0)) {
         TranslateMessage(&msg);
@@ -58,36 +63,34 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch (uMsg) {
         case WM_COMMAND:
+            //handles dynamic buttons(edit, delete, rent, buy). each book has their own button
             unsigned int buttonIndex = 0;
             unsigned int buttonID = LOWORD(wParam);
             
+            //checks dynamic delete buttons
             if (buttonID >= IDC_ADMIN_DELETE_ID0 && buttonID <= IDC_ADMIN_DELETE_ID0 + MAX_BOOKS - 1) {
                 unsigned int deleteButtonIndex = buttonID - IDC_ADMIN_DELETE_ID0;
                 DeleteBook(deleteButtonIndex);
-                // UpdateAdminView(hwnd);
-                // UpdateAdminBookLabels(hwnd);
-                // UpdateAdminScrollBar(hwnd);
                 HideAdminView(hwnd);
                 ShowAdminView(hwnd);
-                //printf("delete button %d clicked!\n", buttonIndex);
             }
+            //checks dynamic edit buttons
             else if (buttonID >= IDC_ADMIN_EDIT_ID0 && buttonID <= IDC_ADMIN_EDIT_ID0 + MAX_BOOKS - 1) {
                 unsigned int editButtonIndex = buttonID - IDC_ADMIN_EDIT_ID0 ;
                 editingBookOrder = editButtonIndex;
                 HideAdminView(hwnd);
                 ShowEditView(hwnd, editButtonIndex);
-                //printf("edit button %d clicked!\n", buttonIndex);
             }
+            //checks dynamic rent buttons
             else if (buttonID >= IDC_HOME_RENT_ID0 && buttonID <= IDC_HOME_RENT_ID0 + MAX_BOOKS - 1) {
                 unsigned int rentButtonIndex = buttonID - IDC_HOME_RENT_ID0;
                 if (RentBook(currentUser->id, rentButtonIndex)) {
                     HideHomeView(hwnd);
                     ShowHomeView(hwnd);
-                    char text[256];
-                    //addToFile("C:/Biblioguard/logging.txt", )
                 }
                 else MessageBox(hwnd, "Not enough books to rent", "Error!", MB_OK | MB_ICONERROR);
             }
+            //checks dynamic buy buttons
             else if (buttonID >= IDC_HOME_BUY_ID0 && buttonID <= IDC_HOME_BUY_ID0 + MAX_BOOKS - 1) {
                 unsigned int buyButtonIndex = buttonID - IDC_HOME_BUY_ID0;
                 if (BuyBook(currentUser->id, buyButtonIndex)) {
@@ -96,29 +99,10 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 }
                 else MessageBox(hwnd, "Not enough books to buy", "Error!", MB_OK | MB_ICONERROR);
             }
-            else if (buttonID >= IDC_USERBOOKS_PURCHASED_DELETE_ID0 && buttonID <= IDC_USERBOOKS_PURCHASED_DELETE_ID0 + MAX_BOOKS - 1) {
-                unsigned int buyButtonIndex = buttonID - IDC_USERBOOKS_PURCHASED_DELETE_ID0;
-                // if (BuyBook(currentUser->id, buyButtonIndex)) {
-                //     HideHomeView(hwnd);
-                //     ShowHomeView(hwnd);
-                // }
-                // else MessageBox(hwnd, "Not enough books to buy", "Error!", MB_OK | MB_ICONERROR);
-                
-                //DeletePurchasedBook();
-            }
-            else if (buttonID >= IDC_USERBOOKS_RENTED_DELETE_ID0 && buttonID <= IDC_USERBOOKS_RENTED_DELETE_ID0 + MAX_BOOKS - 1) {
-                unsigned int buyButtonIndex = buttonID - IDC_USERBOOKS_RENTED_DELETE_ID0;
-                // if (BuyBook(currentUser->id, buyButtonIndex)) {
-                //     HideHomeView(hwnd);
-                //     ShowHomeView(hwnd);
-                // }
-                // else MessageBox(hwnd, "Not enough books to buy", "Error!", MB_OK | MB_ICONERROR);
-                
-                //DeletePurchasedBook();
-            }
 
+            //handles constant buttons(that have static value)
             switch (buttonID) {
-                //edit lifetime
+                //edit events
                 case IDC_EDIT_TOADMIN_BUTTON:
                     HideEditView(hwnd);
                     ShowAdminView(hwnd);
@@ -142,8 +126,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     char resultE = isCorrectBookInfo(titleE, authorE, genreE, priceCharE,
                                                     quantitySCharE, quantityRCharE, rentalDCharE);
 
-                    //if(resultE == 2)
-                    //    MessageBox(hwnd, "This title is already taken", "Error!", MB_OK | MB_ICONERROR);
                     if(resultE == 1)
                         MessageBox(hwnd, "Fill all spaces", "Error!", MB_OK | MB_ICONERROR);
                     else if(resultE == 3)
@@ -154,11 +136,14 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                         ShowAdminView(hwnd);
                     }
                     break;
-                //signup lifetime   
-                case IDC_LOGIN_TOSIGNUP_BUTTON:
-                    HideLoginView(hwnd);
-                    ShowSignupView(hwnd);
+                
+                //report events
+                case IDC_REPORT_TOADMIN_BUTTON:
+                    HideReportView(hwnd);
+                    ShowAdminView(hwnd);
                     break;
+
+                //signup events   
                 case IDC_SIGNUP_SUBMIT_BUTTON:
                     char usernameS[20];
                     char nameS[20];
@@ -186,7 +171,11 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     ShowLoginView(hwnd);
                     break;
 
-                //admin lifetime
+                //login events
+                case IDC_LOGIN_TOSIGNUP_BUTTON:
+                    HideLoginView(hwnd);
+                    ShowSignupView(hwnd);
+                    break;
                 case IDC_LOGIN_SUBMIT_BUTTON:
                     char usernameL[20];
                     char passwordL[20];
@@ -201,41 +190,34 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                         ShowHomeView(hwnd);
                     }
                     else MessageBox(hwnd, "Wrong username or password", "Error!", MB_OK | MB_ICONERROR);
-                    break;      
-                
+                    break;  
+
+                //admin events    
                 case IDC_ADMIN_TOREPORT_BUTTON:
                     getReports();
                     HideAdminView(hwnd);
                     ShowReportView(hwnd);
-                    break;
-                
-                case IDC_REPORT_TOADMIN_BUTTON:
-                    HideReportView(hwnd);
-                    ShowAdminView(hwnd);
                     break;     
-                
                 case IDC_ADMIN_PRICESORT_BUTTON:
                     SortBooksByPriceD();
                     HideAdminView(hwnd);
                     ShowAdminView(hwnd);
                     break;
-                
                 case IDC_ADMIN_POPULARITYSORT_BUTTON:
                     SortBooksByPopularityD();
                     HideAdminView(hwnd);
                     ShowAdminView(hwnd);
                     break;
-                
                 case IDC_ADMIN_TOLOGIN_BUTTON:
                     HideAdminView(hwnd);
                     ShowLoginView(hwnd);
                     break;
-
-                //addbook lifetime
                 case IDC_ADMIN_TOADD_BUTTON:
                     HideAdminView(hwnd);
                     ShowAddbookView(hwnd);
                     break;
+
+                //addbook events
                 case IDC_ADDBOOK_SUBMIT_BUTTON:
                     char titleA[51];
                     char authorA[26];
@@ -272,18 +254,17 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     HideAddbookView(hwnd);
                     ShowAdminView(hwnd);
                     break;
+
+                //home events
                 case IDC_HOME_TOLOGIN_BUTTON:
                     HideHomeView(hwnd);
                     ShowLoginView(hwnd);
                     break;
-                    
-                
                 case IDC_HOME_PRICESORT_BUTTON:
                     SortBooksByPriceD();
                     HideHomeView(hwnd);
                     ShowHomeView(hwnd);
                     break;
-                
                 case IDC_HOME_POPULARITYSORT_BUTTON:
                     SortBooksByPopularityD();
                     HideHomeView(hwnd);
@@ -300,9 +281,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             }
             break;
         case WM_VSCROLL: 
-            // process scrollbar messages
+            //scrollbar calculations for admin view
             if ((HWND)lParam == AdminScrollbar) {
-            case IDC_ADMIN_SCROLLBAR:
                 SCROLLINFO adminSi;
                 adminSi.cbSize = sizeof(adminSi);
                 adminSi.fMask = SIF_ALL;
@@ -341,6 +321,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 
                 break;  
             }
+
+            //scrollbar calculations for userbooks view
             else if ((HWND)lParam == UserbooksScrollbar) {
                 SCROLLINFO userbooksSi;
                 userbooksSi.cbSize = sizeof(userbooksSi);
@@ -381,6 +363,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 break;
             }
 
+            //scrollbar calculations for home view
             else if ((HWND)lParam == HomeScrollbar) {
                 SCROLLINFO homeSi;
                 homeSi.cbSize = sizeof(homeSi);
@@ -418,7 +401,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 }
                 break;
             }
-
+            //scrollbar calculations for report view
             else if ((HWND)lParam == ReportScrollbar) {
                 SCROLLINFO reportSi;
                 reportSi.cbSize = sizeof(reportSi);
@@ -458,15 +441,20 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             }
             
             break;
+        //set sized of the window
         case WM_GETMINMAXINFO: {
             MINMAXINFO* lpMMI = (MINMAXINFO*)lParam;
             lpMMI->ptMaxTrackSize.x = 1280;
             lpMMI->ptMaxTrackSize.y = 720;
+            lpMMI->ptMinTrackSize.x = 1280;
+            lpMMI->ptMinTrackSize.y = 720;
             break;
         }
+        //destructor of the application
         case WM_DESTROY:
             PostQuitMessage(0);
             break;
+        //returns default window if there is an error
         default:
             return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }

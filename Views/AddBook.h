@@ -2,6 +2,13 @@
 
 #pragma once
 
+//shows addbook view
+void ShowAddbookView(HWND hwnd);
+
+
+
+
+
 void ShowAddbookView(HWND hwnd) {
     AddbookTitleLabel = CreateWindow("STATIC", "Title:", WS_CHILD | WS_VISIBLE, 350, 280, 100, 20, hwnd, (HMENU)IDC_ADDBOOK_TITLE_LABEL, NULL, NULL);
     AddbookTitleInput = CreateWindow("EDIT", "", WS_CHILD | WS_VISIBLE | WS_BORDER, 450, 280, 180, 20, hwnd, (HMENU)IDC_ADDBOOK_TITLE_EDIT, NULL, NULL);

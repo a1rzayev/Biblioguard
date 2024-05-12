@@ -1,10 +1,36 @@
 #include <windows.h>
 #include <stdio.h>
-// #include "../Models/Book.h"
 
 #pragma once
 
-void createFile(const char* filename, const char* text){
+//creates file with initial value
+void createFile(const char* filename, const char* text);
+//clears file content
+void clearFile(const char* filename);
+//appends string to the file
+void addToFile(const char* filename, const char* text);
+//appends char array to the file
+void addToFileA(const char* filename, char text[256]);
+//sets last id to the function
+void setLastId(const char* filename, unsigned int* lastId);
+//edit file, containing book
+void editBookFileF(Book* book, char* filename);
+//read file, containing book
+Book readBookFileF(char* filename);
+//edit file
+void editFile(const char* filename);
+//read line-text from the file
+size_t readTextFromFile(const char *filename, char *buffer, size_t bufferSize);
+//read all file
+char* readFile(const char *filename);
+//initializes file configuration
+void initFileSystem();
+
+
+
+
+
+void createFile(const char* filename, const char* text) {
     FILE *file = fopen(filename, "r");
     if (file == NULL || fgetc(file) == EOF) {
         file = fopen(filename, "w");
@@ -20,12 +46,12 @@ void createFile(const char* filename, const char* text){
     fclose(file);
 }
 
-void clearFile(const char* filename){
+void clearFile(const char* filename) {
     FILE* file = fopen(filename, "w");
     if (file != NULL) fclose(file);
 }
 
-void addToFile(const char* filename, const char* text){
+void addToFile(const char* filename, const char* text) {
     FILE* file = fopen(filename, "a");
     if (file != NULL) {
         fputs(text, file);
@@ -34,7 +60,7 @@ void addToFile(const char* filename, const char* text){
     }
 }
 
-void addToFileA(const char* filename, char text[256]){
+void addToFileA(const char* filename, char text[256]) {
     FILE* file = fopen(filename, "a");
     if (file != NULL) {
         fwrite(text, sizeof(char), strlen(text), file);
@@ -42,7 +68,7 @@ void addToFileA(const char* filename, char text[256]){
     }
 }
 
-void setLastId(const char* filename, unsigned int* lastId){
+void setLastId(const char* filename, unsigned int* lastId) {
     FILE* file = fopen(filename, "r");
     char* text;
     if(file != NULL){
@@ -50,8 +76,7 @@ void setLastId(const char* filename, unsigned int* lastId){
     }
 }
 
-void editBookFileF(Book* book, char* filename)
-{
+void editBookFileF(Book* book, char* filename) {
     clearFile(filename);
 
     FILE* outfile = fopen(filename, "wb");
@@ -59,8 +84,7 @@ void editBookFileF(Book* book, char* filename)
     fclose(outfile);      
 }
 
-Book readBookFileF(char* filename)
-{
+Book readBookFileF(char* filename) {
     Book book;
     FILE* infile = fopen(filename, "wb+");
     fread(&book, sizeof(Book), 1, infile);
@@ -68,7 +92,7 @@ Book readBookFileF(char* filename)
     return book;      
 }
 
-void editFile(const char* filename){
+void editFile(const char* filename) {
     clearFile(filename);
 }
 
@@ -97,9 +121,7 @@ char* readFile(const char *filename) {
     }
 }
 
-
-
-void initFileSystem(){
+void initFileSystem() {
     CreateDirectoryA("C:/Biblioguard", NULL);
     CreateDirectoryA("C:/Biblioguard/Books", NULL);
     CreateDirectoryA("C:/Biblioguard/Users", NULL);
@@ -110,4 +132,3 @@ void initFileSystem(){
     createFile("C:/Biblioguard/lastUserId.txt", "0");
     createFile("C:/Biblioguard/logging.txt", "");
 } 
-

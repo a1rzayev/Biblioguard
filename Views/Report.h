@@ -3,9 +3,25 @@
 
 #pragma once
 
+//used to define scroll-info
 int reportsShownCount;
 int reportVisiblesCount;
 int reportScrollPos = 0; 
+
+//updates scrollbar
+void UpdateReportScrollBar(HWND hwnd);
+//initializes reports list
+void InitializeReportLabels(HWND hwnd);
+//updates reports list
+void UpdateReportLabels(HWND hwnd);
+//update report view
+void UpdateReportView(HWND hwnd);
+//show report view
+void ShowReportView(HWND hwnd);
+
+
+
+
 
 void UpdateReportScrollBar(HWND hwnd) {
     SCROLLINFO reportSi;
@@ -20,11 +36,7 @@ void UpdateReportScrollBar(HWND hwnd) {
 
 void InitializeReportLabels(HWND hwnd){
     int yPos = 50;
-    // char info[100];
     for (int i = 0; i < reportsShownCount; ++i) {
-        // strcpy(info, "");
-
-        // strcat(info, reports[i]);
         ReportListLabel[i] = CreateWindow("STATIC", reports[i], WS_CHILD | WS_VISIBLE, 110, yPos, 1000, REPORT_HEIGHT, hwnd, (HMENU)(IDC_REPORT_INFO_ID0 + i), NULL, NULL);
         yPos += REPORT_HEIGHT;
     }

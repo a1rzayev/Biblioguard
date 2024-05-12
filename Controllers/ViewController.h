@@ -3,6 +3,7 @@
 
 #pragma once
 
+//usable constants
 #define MAIN 1
 #define MAX_BOOKS 100
 #define MAX_REPORTS 1000
@@ -57,8 +58,6 @@
 #define IDC_USERBOOKS_RENTED_LABEL 802
 #define IDC_USERBOOKS_SCROLLBAR 803
 #define IDC_USERBOOKS_TOHOME_BUTTON 804
-#define IDC_USERBOOKS_PURCHASED_DELETE_ID0 9000
-#define IDC_USERBOOKS_RENTED_DELETE_ID0 10000
 #define IDC_USERBOOKS_PURCHASED_TITLE_ID0 11000
 #define IDC_USERBOOKS_RENTED_TITLE_ID0 12000
 #define IDC_USERBOOKS_PURCHASED_DESCRIPTION_ID0 13000
@@ -155,8 +154,8 @@ HWND AdminToReportButton;
 //userbooks elements
 HWND UserbooksPurchasedLabel;
 HWND UserbooksRentedLabel;
-HWND UserbooksPurchasedListLabel[MAX_BOOKS * 3];
-HWND UserbooksRentedListLabel[MAX_BOOKS * 3];
+HWND UserbooksPurchasedListLabel[MAX_BOOKS * 2];
+HWND UserbooksRentedListLabel[MAX_BOOKS * 2];
 HWND UserbooksScrollbar;
 HWND UserbooksToHomeButton;
 
@@ -205,10 +204,39 @@ HWND EditRdurationInput;
 HWND EditSubmitButton;
 HWND EditToAdminButton;
 
+//hides edit view
+void HideEditView(HWND hwnd);
+//hides addbook view
+void HideAddbookView(HWND hwnd);
+//hides login view
+void HideLoginView(HWND hwnd);
+//hides signup view
+void HideSignupView(HWND hwnd);
+//hides admin-books list
+void HideAdminBooksList(HWND hwnd);
+//hides admin view
+void HideAdminView(HWND hwnd);
+//hides reports list
+void HideReportList(HWND hwnd);
+//hides report view
+void HideReportView(HWND hwnd);
+//hides home-books list
+void HideHomeBooksList(HWND hwnd);
+//hides home view
+void HideHomeView(HWND hwnd);
+//hides user-purchased-books list
+void HideUserbooksPurchasedList(HWND hwnd);
+//hides user-rented-books list
+void HideUserbooksRentedList(HWND hwnd);
+//hides userbooks view
+void HideUserbooksView(HWND hwnd);
+
+
+
 
 
 //hiders
-void HideEditView(HWND hwnd){
+void HideEditView(HWND hwnd) {
     ShowWindow(EditTitleLabel, SW_HIDE);
     ShowWindow(EditTitleInput, SW_HIDE);
     ShowWindow(EditAuthorLabel, SW_HIDE);
@@ -228,8 +256,7 @@ void HideEditView(HWND hwnd){
     UpdateWindow(hwnd);
 }
 
-
-void HideAddbookView(HWND hwnd){
+void HideAddbookView(HWND hwnd) {
     ShowWindow(AddbookTitleLabel, SW_HIDE);
     ShowWindow(AddbookTitleInput, SW_HIDE);
     ShowWindow(AddbookAuthorLabel, SW_HIDE);
@@ -249,8 +276,7 @@ void HideAddbookView(HWND hwnd){
     UpdateWindow(hwnd);
 }
 
-
-void HideLoginView(HWND hwnd){
+void HideLoginView(HWND hwnd) {
     ShowWindow(LogInUsernameLabel, SW_HIDE);
     ShowWindow(LogInUsernameInput, SW_HIDE);
     ShowWindow(LogInPasswordLabel, SW_HIDE);
@@ -259,7 +285,7 @@ void HideLoginView(HWND hwnd){
     ShowWindow(LogInConfirmButton, SW_HIDE);
 }
 
-void HideSignupView(HWND hwnd){
+void HideSignupView(HWND hwnd) {
     ShowWindow(SignUpUsernameLabel, SW_HIDE);
     ShowWindow(SignUpUsernameInput, SW_HIDE);
     ShowWindow(SignUpNameLabel, SW_HIDE);
@@ -273,7 +299,7 @@ void HideSignupView(HWND hwnd){
     UpdateWindow(hwnd);
 }
 
-void HideAdminBooksList(HWND hwnd){
+void HideAdminBooksList(HWND hwnd) {
     for (int i = 0; i < MAX_BOOKS; ++i) {       
         ShowWindow(AdminBooksListLabel[i * 4], SW_HIDE);
         ShowWindow(AdminBooksListLabel[i * 4 + 1], SW_HIDE);
@@ -282,7 +308,7 @@ void HideAdminBooksList(HWND hwnd){
     }
 }
 
-void HideAdminView(HWND hwnd){
+void HideAdminView(HWND hwnd) {
     HideAdminBooksList(hwnd);
     ShowWindow(AdminBooksLabel, SW_HIDE);
     ShowWindow(AdminScrollbar, SW_HIDE);
@@ -294,15 +320,13 @@ void HideAdminView(HWND hwnd){
     UpdateWindow(hwnd);
 }
 
-
-
-void HideReportList(HWND hwnd){
+void HideReportList(HWND hwnd) {
     for (int i = 0; i < MAX_REPORTS; ++i) {       
         ShowWindow(ReportListLabel[i], SW_HIDE);
     }
 }
 
-void HideReportView(HWND hwnd){
+void HideReportView(HWND hwnd) {
     HideReportList(hwnd);
     ShowWindow(ReportLabel, SW_HIDE);
     ShowWindow(ReportScrollbar, SW_HIDE);
@@ -310,8 +334,7 @@ void HideReportView(HWND hwnd){
     UpdateWindow(hwnd);
 }
 
-
-void HideHomeBooksList(HWND hwnd){
+void HideHomeBooksList(HWND hwnd) {
     for (int i = 0; i < MAX_BOOKS; ++i) {       
         ShowWindow(HomeBooksListLabel[i * 4], SW_HIDE);
         ShowWindow(HomeBooksListLabel[i * 4 + 1], SW_HIDE);
@@ -320,7 +343,7 @@ void HideHomeBooksList(HWND hwnd){
     }
 }
 
-void HideHomeView(HWND hwnd){
+void HideHomeView(HWND hwnd) {
     HideHomeBooksList(hwnd);
     ShowWindow(HomeBooksLabel, SW_HIDE);
     ShowWindow(HomeScrollbar, SW_HIDE);
@@ -331,12 +354,7 @@ void HideHomeView(HWND hwnd){
     UpdateWindow(hwnd);
 }
 
-
-
-
-
-
-void HideUserbooksPurchasedList(HWND hwnd){
+void HideUserbooksPurchasedList(HWND hwnd) {
     for (int i = 0; i < MAX_BOOKS; ++i) {       
         ShowWindow(UserbooksPurchasedListLabel[i * 3], SW_HIDE);
         ShowWindow(UserbooksPurchasedListLabel[i * 3 + 1], SW_HIDE);
@@ -344,7 +362,7 @@ void HideUserbooksPurchasedList(HWND hwnd){
     }
 }
 
-void HideUserbooksRentedList(HWND hwnd){
+void HideUserbooksRentedList(HWND hwnd) {
     for (int i = 0; i < MAX_BOOKS; ++i) {       
         ShowWindow(UserbooksRentedListLabel[i * 3], SW_HIDE);
         ShowWindow(UserbooksRentedListLabel[i * 3 + 1], SW_HIDE);

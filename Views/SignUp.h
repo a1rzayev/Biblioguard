@@ -2,6 +2,13 @@
 
 #pragma once
 
+//shows signup view
+void ShowSignupView(HWND hwnd);
+
+
+
+
+
 void ShowSignupView(HWND hwnd) {
     SignUpUsernameLabel = CreateWindow("STATIC", "Username:", WS_CHILD | WS_VISIBLE, 500, 280, 100, 20, hwnd, (HMENU)IDC_SIGNUP_USERNAME_LABEL, NULL, NULL);
     SignUpUsernameInput = CreateWindow("EDIT", "", WS_CHILD | WS_VISIBLE | WS_BORDER, 600, 280, 180, 20, hwnd, (HMENU)IDC_SIGNUP_USERNAME_EDIT, NULL, NULL);

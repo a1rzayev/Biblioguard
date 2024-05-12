@@ -3,6 +3,13 @@
 
 #pragma once
 
+//shows edit view
+void ShowEditView(HWND hwnd, unsigned int id);
+
+
+
+
+
 void ShowEditView(HWND hwnd, unsigned int id) {
     
     SetWindowText(EditTitleInput, "");
