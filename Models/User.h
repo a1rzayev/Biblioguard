@@ -10,6 +10,6 @@ typedef struct
     float totalAmountPaid;
     unsigned int purchasedCount;
     unsigned int rentedCount;
-    unsigned int purchasedBooks[100]; 
-    unsigned int rentedBooks[100];
+    Book purchasedBooks[100]; 
+    Book rentedBooks[100];
 } User;

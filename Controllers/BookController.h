@@ -24,7 +24,7 @@ unsigned int reportsCount = 0;
 unsigned int lastBookId = 0;
 unsigned int lastUserId = 0;
 
-User currentUser;
+User* currentUser;
 
 unsigned int editingBookOrder;
 
@@ -204,9 +204,9 @@ char isCorrectBookInfo(char* title, char* author, char* genre, char* price,  cha
 bool isCorrectLogin(char* username, char* password){
     if(username == "admin") return false;
     for (int i = 0; i < usersCount; ++i) {
-        printf("%s %s", username, password);
+        //printf("%s %s", username, password);
         if(!strcmp(users[i].username, username) && !strcmp(users[i].password, password)){
-            currentUser = users[i];
+            currentUser = &users[i];
             return true;
         }
     }
@@ -283,7 +283,7 @@ void SignUp(char* username, char* name, char* surname, char* password){
     strncpy(newUser.surname, surname, sizeof(newUser.surname));
     strncpy(newUser.password, password, sizeof(newUser.password));
     users[usersCount] = newUser;
-    currentUser = users[lastUserId];
+    currentUser = &users[lastUserId];
     
     char lastUserIdStr[5];
     sprintf(lastUserIdStr, "%hu", lastUserId);
@@ -363,27 +363,23 @@ void WriteUser(User newUser){
 bool BuyBook(unsigned int buyerId, unsigned int bookOrder){
     if(books[bookOrder].quantityForSale > 0) {
         books[bookOrder].quantityForSale--;
-        users[buyerId].purchasedBooks[users[buyerId].purchasedCount] = books[bookOrder].id;
+        users[buyerId].purchasedBooks[users[buyerId].purchasedCount] = books[bookOrder];
         users[buyerId].purchasedCount++;
         users[buyerId].totalAmountPaid += books[bookOrder].price;
         WriteBook(books[bookOrder]);
-        WriteUser(currentUser);
+        WriteUser(users[buyerId]);
 
         char filePath[50];
         char userIdStr[5];
-        sprintf(userIdStr, "%hu", currentUser.id);
+        sprintf(userIdStr, "%hu", currentUser->id);
         char idStr[5];
         sprintf(idStr, "%hu", books[bookOrder].id);
         strcat(filePath, "C:/Biblioguard/UsersBooks/purchasedBooks/");
         strcat(filePath, userIdStr);
         strcat(filePath, ".dat");
         FILE *file = fopen(filePath, "a");
-        if (file == NULL)
-        {
-            printf("Error opening file.\n");
-            return false;
-        }
-        fprintf(file, idStr);
+        fprintf_s(file, BOOK_FORMAT_OUT, books[bookOrder].id, books[bookOrder].title, books[bookOrder].author, books[bookOrder].genre,
+                books[bookOrder].price, books[bookOrder].quantityForSale, books[bookOrder].quantityForRent, books[bookOrder].popularity);
 
         fclose(file);
         
@@ -393,17 +389,11 @@ bool BuyBook(unsigned int buyerId, unsigned int bookOrder){
         strcat(infoText, ") bought book(id = ");
         strcat(infoText, idStr);
         strcat(infoText, "\n");
-        // addToFile("C:/Biblioguard/logging.txt", infoText);
         file = fopen("C:/Biblioguard/logging.txt", "a");
-        if (file == NULL)
-        {
-            printf("Error opening file.\n");
-            return false;
-        }
-        fprintf(file, infoText);
+        fprintf_s(file, infoText);
 
         fclose(file);
-        printf("user(%i) bought a book(%i)", currentUser.id, books[bookOrder].id);
+        printf("user(%i) bought a book(%i)", currentUser->id, books[bookOrder].id);
         return true;
     }
     return false;
@@ -412,11 +402,11 @@ bool BuyBook(unsigned int buyerId, unsigned int bookOrder){
 bool RentBook(unsigned int buyerId, unsigned int bookOrder){
     if(books[bookOrder].quantityForRent > 0) {
         books[bookOrder].quantityForRent--;
-        users[buyerId].rentedBooks[users[buyerId].rentedCount] = books[bookOrder].id;
+        users[buyerId].rentedBooks[users[buyerId].rentedCount] = books[bookOrder];
         users[buyerId].rentedCount++;
         users[buyerId].totalAmountPaid += books[bookOrder].price;
         WriteBook(books[bookOrder]);
-        WriteUser(currentUser);
+        WriteUser(users[buyerId]);
 
         char filePath[50];
         char userIdStr[5];
@@ -427,12 +417,8 @@ bool RentBook(unsigned int buyerId, unsigned int bookOrder){
         strcat(filePath, userIdStr);
         strcat(filePath, ".dat");
         FILE *file = fopen(filePath, "a");
-        if (file == NULL)
-        {
-            printf("Error opening file.\n");
-            return false;
-        }
-        fprintf(file, idStr);
+        fprintf_s(file, BOOK_FORMAT_OUT, books[bookOrder].id, books[bookOrder].title, books[bookOrder].author, books[bookOrder].genre,
+                books[bookOrder].price, books[bookOrder].quantityForSale, books[bookOrder].quantityForRent, books[bookOrder].popularity);
 
         fclose(file);
 
@@ -443,8 +429,7 @@ bool RentBook(unsigned int buyerId, unsigned int bookOrder){
         strcat(infoText, idStr);
         strcat(infoText, "\n");
         file = fopen("C:/Biblioguard/logging.txt", "a");
-        if (file == NULL)
-        {
+        if (file == NULL) {
             printf("Error opening file.\n");
             return false;
         }
@@ -459,7 +444,7 @@ bool RentBook(unsigned int buyerId, unsigned int bookOrder){
 
 // editors
 void EditBook(unsigned int bookOrder, char* title, char* author, char* genre, const char* price,
-             const char* quantityForSale, const char* quantityForRent, const char* rentalDuration){
+             const char* quantityForSale, const char* quantityForRent, const char* rentalDuration) {
     Book editedBook = {books[bookOrder].id, "", "", "", atof(price), atoi(quantityForSale),
                     atoi(quantityForRent), atoi(rentalDuration), 0};
     strncpy(editedBook.title, title, sizeof(editedBook.title));
@@ -487,26 +472,24 @@ void DeleteBook(unsigned int bookOrder){
     strcat(filename, bookOrderStr);
     strcat(filename, ".dat");
     
-    for (int i = bookOrder; i < booksCount - 1; ++i){
+    for (int i = bookOrder; i < booksCount - 1; ++i)
         books[i] = books[i + 1];
-    }
     --booksCount;
 
-    if (remove(filename) == 0) {
+    if (remove(filename) == 0)
         printf("File '%s' deleted successfully.\n", filename);
-    } else {
-        if (errno == ENOENT) {
+    else {
+        if (errno == ENOENT)
             printf("Error: File '%s' does not exist.\n", filename);
-        } else if (errno == EACCES) {
+        else if (errno == EACCES)
             printf("Error: Permission denied to delete file '%s'.\n", filename);
-        } else {
+        else
             printf("Error deleting file '%s': %s\n", filename, strerror(errno));
-        }
     }
-    // reports[reportsCount] = 
-    // sprintf(bookOrderStr, "%hu", books[bookOrder].id);
-    // addToFile("C:/Biblioguard/logging.txt", )
 }
+
+
+
 
 
 // getters
@@ -586,12 +569,9 @@ void getReports(){
 void getUsers(){
     DIR *dir;
     struct dirent *ent;
-    if ((dir = opendir("C:/Biblioguard/Users")) != NULL)
-    {
-        while ((ent = readdir(dir)) != NULL)
-        {
-            if (ent->d_type == DT_REG)
-            {
+    if ((dir = opendir("C:/Biblioguard/Users")) != NULL) {
+        while ((ent = readdir(dir)) != NULL) {
+            if (ent->d_type == DT_REG) {
                 printf("%s\n", ent->d_name);
                 char filePath[50];
                 snprintf(filePath, sizeof(filePath), "C:/Biblioguard/Users/%s", ent->d_name);
@@ -600,24 +580,10 @@ void getUsers(){
                 FILE *file;
                 fopen_s(&file, filePath, "r");
                 fgets(buffer, 200, file);
-                while(!feof(file)){
+                while(!feof(file)) {
                     sscanf(buffer, USER_FORMAT_IN, &gottenuser.id, &gottenuser.username, &gottenuser.name, &gottenuser.surname,
                            &gottenuser.password, &gottenuser.totalAmountPaid, &gottenuser.purchasedCount, &gottenuser.rentedCount); //, &gottenuser.purchasedBooks, &gottenuser.rentedBooks);
                     fgets(buffer, 200, file);
-                    //FILE *file = fopen(filePath, "rb");
-                    // if (file != NULL)
-                    // {
-                    //     // Read the entire structure from the file
-                    //     // fread(&gottenuser, sizeof(User), 1, file);
-                    //     // fclose(file);
-                    //     sscanf(buffer, USER_FORMAT_IN, &gottenuser.id, &gottenuser.username, &gottenuser.name, &gottenuser.surname,
-                    //            &gottenuser.password, &gottenuser.totalAmountPaid);//, &gottenuser.purchasedBooks, &gottenuser.rentedBooks);
-                    //     fgets(buffer, 200, file);
-                    // }
-                    // else
-                    // {
-                    //     printf("Error opening file for reading.\n");
-                    // }
                 } 
                 users[usersCount] = gottenuser;
                 ++usersCount;
@@ -626,12 +592,9 @@ void getUsers(){
         }
         closedir(dir);
     }
-    if ((dir = opendir("C:/Biblioguard/UsersBooks/purchasedBooks")) != NULL)
-    {
-        while ((ent = readdir(dir)) != NULL)
-        {
-            if (ent->d_type == DT_REG)
-            {
+    if ((dir = opendir("C:/Biblioguard/UsersBooks/purchasedBooks")) != NULL) {
+        while ((ent = readdir(dir)) != NULL) {
+            if (ent->d_type == DT_REG) {
                 printf("%s\n", ent->d_name);
                 
                 char filePath[50];
@@ -640,39 +603,34 @@ void getUsers(){
                 char indexC[3];
                 unsigned int index;
                 int i = 0;
-                while(ent->d_name[i] != '.'){
+                while(ent->d_name[i] != '.') {
                     indexC[i] = ent->d_name[i];
                     ++i;                
                 }
                 index = atoi(indexC);
                 char buffer[200];
-                unsigned int purchasedBooks[100];
+                Book purchasedBooks[100];
                 unsigned int purchasedBooksIndexer = 0;
                 unsigned int tempNumb;
                 FILE *file;
                 fopen_s(&file, filePath, "r");
-                while (fscanf(file, "%d", &tempNumb) == 1)
-                {
-                    if (purchasedBooksIndexer >= 100)
-                    {
-                        printf("Error: Too many numbers in the file.\n");
-                        fclose(file);
-                        return;
-                    }
-                    users[index].purchasedBooks[purchasedBooksIndexer++] = tempNumb;
+                while (fgets(buffer, 256, file) != NULL) {
+                    if (sscanf(buffer, BOOK_FORMAT_IN, &users[index].purchasedBooks[purchasedBooksIndexer].id,
+                            &users[index].purchasedBooks[purchasedBooksIndexer].title, &users[index].purchasedBooks[purchasedBooksIndexer].author,
+                            &users[index].purchasedBooks[purchasedBooksIndexer].genre, &users[index].purchasedBooks[purchasedBooksIndexer].price, 
+                            &users[index].purchasedBooks[purchasedBooksIndexer].quantityForSale, &users[index].purchasedBooks[purchasedBooksIndexer].quantityForRent,
+                            &users[index].purchasedBooks[purchasedBooksIndexer].rentalDuration, &users[index].purchasedBooks[purchasedBooksIndexer].popularity) != 9)
+                                    printf("Error parsing line: %s", buffer);
+                    ++purchasedBooksIndexer;
                 }
-
                 fclose(file);
             }
         }
         closedir(dir);
     }
-    if ((dir = opendir("C:/Biblioguard/UsersBooks/rentedBooks")) != NULL)
-    {
-        while ((ent = readdir(dir)) != NULL)
-        {
-            if (ent->d_type == DT_REG)
-            {
+    if ((dir = opendir("C:/Biblioguard/UsersBooks/rentedBooks")) != NULL) {
+        while ((ent = readdir(dir)) != NULL) {
+            if (ent->d_type == DT_REG) {
                 printf("%s\n", ent->d_name);
                 
                 char filePath[50];
@@ -687,29 +645,26 @@ void getUsers(){
                 }
                 index = atoi(indexC);
                 char buffer[200];
-                unsigned int rentedBooks[100];
+                Book rentedBooks[100];
                 unsigned int rentedBooksIndexer = 0;
                 unsigned int tempNumb;
                 FILE *file;
                 fopen_s(&file, filePath, "r");
-                while (fscanf(file, "%d", &tempNumb) == 1)
-                {
-                    if (rentedBooksIndexer >= 100)
-                    {
-                        printf("Error: Too many numbers in the file.\n");
-                        fclose(file);
-                        return;
-                    }
-                    users[index].rentedBooks[rentedBooksIndexer++] = tempNumb;
+                while (fgets(buffer, 256, file) != NULL) {
+                    if (sscanf(buffer, BOOK_FORMAT_IN, &users[index].rentedBooks[rentedBooksIndexer].id,
+                            &users[index].rentedBooks[rentedBooksIndexer].title, &users[index].rentedBooks[rentedBooksIndexer].author,
+                            &users[index].rentedBooks[rentedBooksIndexer].genre, &users[index].rentedBooks[rentedBooksIndexer].price, 
+                            &users[index].rentedBooks[rentedBooksIndexer].quantityForSale, &users[index].rentedBooks[rentedBooksIndexer].quantityForRent,
+                            &users[index].rentedBooks[rentedBooksIndexer].rentalDuration, &users[index].rentedBooks[rentedBooksIndexer].popularity) != 9)
+                                    printf("Error parsing line: %s", buffer);
+                    ++rentedBooksIndexer;
                 }
-
                 fclose(file);
             }
         }
         closedir(dir);
     }
-    else
-    {
+    else {
         perror("");
         return;
     }
