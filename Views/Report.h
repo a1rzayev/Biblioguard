@@ -12,7 +12,7 @@ void UpdateReportScrollBar(HWND hwnd) {
     reportSi.cbSize = sizeof(reportSi);
     reportSi.fMask = SIF_RANGE | SIF_PAGE | SIF_POS;
     reportSi.nMin = 0;
-    reportSi.nMax = 4 * reportsShownCount - 3 * reportVisiblesCount;
+    reportSi.nMax = reportsShownCount - reportVisiblesCount;
     reportSi.nPage = reportVisiblesCount;
     reportSi.nPos = reportScrollPos;
     SetScrollInfo(ReportScrollbar, SB_CTL, &reportSi, TRUE);

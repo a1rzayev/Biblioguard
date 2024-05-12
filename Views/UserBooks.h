@@ -34,6 +34,7 @@ void InitializeUserbooksBookLabelsR(HWND hwnd){
         strcat(infoR, currentUser->rentedBooks[i].genre);
         snprintf(priceChar, 7, " %f", currentUser->rentedBooks[i].price);
         strcat(infoR, priceChar);
+        strcat(infoR, "$");
         strcat(infoR, "[Expires in ");
         snprintf(rentalDChar, 4, " %hu", currentUser->rentedBooks[i].rentalDuration);
         strcat(infoR, rentalDChar);
@@ -64,6 +65,7 @@ void InitializeUserbooksBookLabelsB(HWND hwnd){
         strcat(infoB, currentUser->purchasedBooks[i].genre);
         snprintf(priceChar, 7, " %f", currentUser->purchasedBooks[i].price);
         strcat(infoB, priceChar);
+        strcat(infoB, "$");
         strcat(infoB, " Popularity: ");
         snprintf(popularityChar, 4, " %hu", currentUser->purchasedBooks[i].popularity);
         strcat(infoB, popularityChar);

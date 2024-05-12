@@ -160,9 +160,6 @@ char isCorrectSignupInfo(char* username, const char* name, const char* surname, 
     return 0;
 }
 
-
-
-
 //addbook & edit
 bool isConvertibleToFloat(char* str){
     char *endptr;
@@ -199,7 +196,6 @@ char isCorrectBookInfo(char* title, char* author, char* genre, char* price,  cha
     return 0;
 }
 
-
 //login
 bool isCorrectLogin(char* username, char* password){
     if(username == "admin") return false;
@@ -212,6 +208,9 @@ bool isCorrectLogin(char* username, char* password){
     }
     return false;
 }
+
+
+
 
 
 // setters
@@ -265,7 +264,6 @@ void AddBook(char* title, char* author, char* genre, const char* price,
     strcat(infoText, lastBookIdStr);
     strcat(infoText, ") was added");
     strcat(infoText, "\n");
-    // addToFile("C:/Biblioguard/logging.txt", infoText);
     file = fopen("C:/Biblioguard/logging.txt", "a");
     if (file == NULL) {
         printf("Error opening file.\n");
@@ -301,12 +299,6 @@ void SignUp(char* username, char* name, char* surname, char* password){
     fopen_s(&file, filename, "w+");
     fprintf_s(file, USER_FORMAT_OUT, lastUserId, username, name, surname, password, 0, 0, 0);
     fclose(file);
-    
-    fopen_s(&file, rentFilename, "w+");
-    fclose(file);
-    
-    fopen_s(&file, buyFilename, "w+");
-    fclose(file);
 
     ++lastUserId;
     ++usersCount;
@@ -326,7 +318,6 @@ void SignUp(char* username, char* name, char* surname, char* password){
     fprintf(file, infoText);
 
     fclose(file);
-    //setUsersCount();
 } 
 
 void WriteBook(Book newBook){
@@ -357,9 +348,11 @@ void WriteUser(User newUser){
     fclose(file);
 }
 
+
+
+
+
 // functions for user
-
-
 bool BuyBook(unsigned int buyerId, unsigned int bookOrder){
     if(books[bookOrder].quantityForSale > 0) {
         books[bookOrder].quantityForSale--;
@@ -369,18 +362,18 @@ bool BuyBook(unsigned int buyerId, unsigned int bookOrder){
         WriteBook(books[bookOrder]);
         WriteUser(users[buyerId]);
 
-        char filePath[50];
+        char filePath[50] = "C:/Biblioguard/UsersBooks/purchasedBooks/";
         char userIdStr[5];
         sprintf(userIdStr, "%hu", currentUser->id);
         char idStr[5];
         sprintf(idStr, "%hu", books[bookOrder].id);
-        strcat(filePath, "C:/Biblioguard/UsersBooks/purchasedBooks/");
         strcat(filePath, userIdStr);
         strcat(filePath, ".dat");
-        FILE *file = fopen(filePath, "a");
+        FILE *file;
+        fopen_s(&file, filePath, "a");
         fprintf_s(file, BOOK_FORMAT_OUT, books[bookOrder].id, books[bookOrder].title, books[bookOrder].author, books[bookOrder].genre,
-                books[bookOrder].price, books[bookOrder].quantityForSale, books[bookOrder].quantityForRent, books[bookOrder].popularity);
-
+                books[bookOrder].price, books[bookOrder].quantityForSale, books[bookOrder].quantityForRent, books[bookOrder].rentalDuration, books[bookOrder].popularity);
+        printf("\n%s\n", filePath);
         fclose(file);
         
 
@@ -388,11 +381,12 @@ bool BuyBook(unsigned int buyerId, unsigned int bookOrder){
         strcat(infoText, userIdStr);
         strcat(infoText, ") bought book(id = ");
         strcat(infoText, idStr);
+        strcat(infoText, ")");
         strcat(infoText, "\n");
-        file = fopen("C:/Biblioguard/logging.txt", "a");
-        fprintf_s(file, infoText);
+        FILE *fileR = fopen("C:/Biblioguard/logging.txt", "a");
+        fprintf_s(fileR, infoText);
 
-        fclose(file);
+        fclose(fileR);
         printf("user(%i) bought a book(%i)", currentUser->id, books[bookOrder].id);
         return true;
     }
@@ -408,18 +402,18 @@ bool RentBook(unsigned int buyerId, unsigned int bookOrder){
         WriteBook(books[bookOrder]);
         WriteUser(users[buyerId]);
 
-        char filePath[50];
+        char filePath[50] = "C:/Biblioguard/UsersBooks/rentedBooks/";
         char userIdStr[5];
         sprintf(userIdStr, "%hu", users[buyerId].id);
         char idStr[5];
         sprintf(idStr, "%hu", books[bookOrder].id);
-        strcat(filePath, "C:/Biblioguard/UsersBooks/rentedBooks/");
         strcat(filePath, userIdStr);
         strcat(filePath, ".dat");
-        FILE *file = fopen(filePath, "a");
+        FILE *file;
+        fopen_s(&file, filePath, "a");
         fprintf_s(file, BOOK_FORMAT_OUT, books[bookOrder].id, books[bookOrder].title, books[bookOrder].author, books[bookOrder].genre,
-                books[bookOrder].price, books[bookOrder].quantityForSale, books[bookOrder].quantityForRent, books[bookOrder].popularity);
-
+                books[bookOrder].price, books[bookOrder].quantityForSale, books[bookOrder].quantityForRent, books[bookOrder].rentalDuration, books[bookOrder].popularity);
+        printf("\n%s\n", filePath);
         fclose(file);
 
 
@@ -427,15 +421,16 @@ bool RentBook(unsigned int buyerId, unsigned int bookOrder){
         strcat(infoText, userIdStr);
         strcat(infoText, ") rented book(id = ");
         strcat(infoText, idStr);
+        strcat(infoText, ")");
         strcat(infoText, "\n");
-        file = fopen("C:/Biblioguard/logging.txt", "a");
-        if (file == NULL) {
+        FILE *fileR = fopen("C:/Biblioguard/logging.txt", "w+");
+        if (fileR == NULL) {
             printf("Error opening file.\n");
             return false;
         }
-        fprintf(file, infoText);
+        fprintf_s(fileR, infoText);
 
-        fclose(file);
+        fclose(fileR);
         printf("user(%i) bought a book(%i)", users[buyerId].id, books[bookOrder].id);
         return true;
     }
